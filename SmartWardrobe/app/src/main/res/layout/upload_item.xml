@@ -1,0 +1,42 @@
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="10dp"
+    app:cardBackgroundColor="#ffe4e1">
+
+    <RelativeLayout
+        android:layout_width="120dp"
+        android:layout_height="180dp">
+
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true">
+
+            <Button
+                android:id="@+id/upload_new_item_button"
+                android:layout_width="50dp"
+                android:layout_height="60dp"
+                app:cornerRadius="30dp"
+                android:backgroundTint="#FF3366"
+                android:text="+"
+                android:layout_marginBottom="50dp"
+                android:textSize="24sp"
+                 />
+        </FrameLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="New item"
+            android:textStyle="bold"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            android:layout_marginTop="110dp" />
+    </RelativeLayout>
+</androidx.cardview.widget.CardView>

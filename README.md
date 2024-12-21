@@ -1,2 +1,2 @@
-# SmartWadrobe
+# SmartWardrobe
 Group Project

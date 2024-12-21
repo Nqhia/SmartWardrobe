@@ -1,0 +1,21 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <style name="Base.Theme.ClothesApp" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/colorPrimaryDark</item>
+        <item name="colorPrimaryVariant">@color/colorPrimary</item>
+        <item name="colorOnPrimary">@color/black</item>
+
+        <item name="colorSecondary">@color/colorSecondaryDark</item>
+        <item name="colorSecondaryVariant">@color/colorSecondaryVariant</item>
+        <item name="colorOnSecondary">@color/white</item>
+    </style>
+
+    <!-- Dark mode -->
+    <!-- Screen background if dark mode on -->
+    <style name="Screen">
+        <item name="android:background">#232323</item>
+    </style>
+    <!-- Text background if dark mode on -->
+    <style name="Text">
+        <item name="android:textColor">#FFFFFF</item>
+    </style>
+</resources>
