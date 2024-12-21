@@ -34,7 +34,7 @@ public class UploadImageFragment extends Fragment {
     private ImageView imgCaptured;
     private Uri imageUri;
     private ClosetViewModel closetViewModel;
-    private String selectedCategory;  // Danh mục đã chọn
+    private String selectedCategory;
 
     private final ActivityResultLauncher<String> requestPermissionLauncher = registerForActivityResult(
             new ActivityResultContracts.RequestPermission(), isGranted -> {
@@ -96,19 +96,19 @@ public class UploadImageFragment extends Fragment {
             if (selectedCategory != null) {
                 switch (selectedCategory) {
                     case "upperBody":
-                        closetViewModel.addUpperBodyItem(newClothingItem); // Thêm vào upperBody
+                        closetViewModel.addUpperBodyItem(newClothingItem);
                         break;
                     case "lowerBody":
-                        closetViewModel.addLowerBodyItem(newClothingItem); // Thêm vào lowerBody
+                        closetViewModel.addLowerBodyItem(newClothingItem);
                         break;
                     case "footwear":
-                        closetViewModel.addFootwearItem(newClothingItem); // Thêm vào footwear
+                        closetViewModel.addFootwearItem(newClothingItem);
                         break;
                     default:
                         break;
                 }
             }
-            getActivity().getSupportFragmentManager().popBackStack(); // Quay lại fragment trước
+            getActivity().getSupportFragmentManager().popBackStack();
         });
 
         return rootView;
@@ -140,7 +140,6 @@ public class UploadImageFragment extends Fragment {
         return null;
     }
 
-    // Thiết lập danh mục được chọn từ ClosetAdapter
     public void setSelectedCategory(String category) {
         this.selectedCategory = category;
     }

@@ -30,7 +30,7 @@ android {
 }
 
 dependencies {
-    implementation platform('com.google.firebase:firebase-bom:33.7.0')
+    implementation platform(libs.firebase.bom)
     implementation libs.appcompat
     implementation libs.material
     implementation libs.activity
@@ -44,20 +44,14 @@ dependencies {
     androidTestImplementation libs.espresso.core
     implementation libs.material
     implementation libs.constraintlayout
-    /*implementation 'org.mongodb:mongodb-driver-sync:4.4.0'
-    implementation 'org.mongodb:mongodb-driver-reactivestreams:4.4.0'*/
     implementation libs.retrofit
     implementation libs.converter.gson
     coreLibraryDesugaring libs.desugar.jdk.libs
     implementation libs.okhttp
     implementation libs.logging.interceptor
-    implementation 'com.google.firebase:firebase-storage:21.0.1'
-
-    // Image Loading
+    implementation libs.firebase.storage
     implementation libs.glide
     annotationProcessor libs.glide.compiler
-
-    // Circular ImageView
     implementation libs.circle.imageview
 
 }
