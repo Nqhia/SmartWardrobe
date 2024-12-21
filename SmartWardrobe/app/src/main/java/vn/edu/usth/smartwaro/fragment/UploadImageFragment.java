@@ -1,3 +1,4 @@
+// UploadImageFragment.java
 package vn.edu.usth.smartwaro.fragment;
 
 import android.content.Intent;
@@ -10,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -25,6 +27,7 @@ import java.io.IOException;
 import vn.edu.usth.smartwaro.R;
 import vn.edu.usth.smartwaro.mycloset.ClothingItem;
 import vn.edu.usth.smartwaro.mycloset.ClosetViewModel;
+import vn.edu.usth.smartwaro.network.FlaskNetwork;
 
 public class UploadImageFragment extends Fragment {
 
@@ -32,9 +35,11 @@ public class UploadImageFragment extends Fragment {
     private Button btnOk;
     private Button btnGallery;
     private ImageView imgCaptured;
+    private ProgressBar progressBar;
     private Uri imageUri;
     private ClosetViewModel closetViewModel;
     private String selectedCategory;
+    private FlaskNetwork flaskNetwork;
 
     private final ActivityResultLauncher<String> requestPermissionLauncher = registerForActivityResult(
             new ActivityResultContracts.RequestPermission(), isGranted -> {
@@ -48,9 +53,7 @@ public class UploadImageFragment extends Fragment {
     private final ActivityResultLauncher<Intent> cameraActivityResultLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(), result -> {
                 if (result.getResultCode() == getActivity().RESULT_OK && imageUri != null) {
-                    imgCaptured.setImageURI(imageUri);
-                    btnOk.setVisibility(View.VISIBLE);
-                    Log.d("UploadImageFragment", "Image captured with URI: " + imageUri);
+                    processImage(imageUri);
                 } else {
                     Toast.makeText(getContext(), "Failed to capture image", Toast.LENGTH_SHORT).show();
                 }
@@ -60,9 +63,7 @@ public class UploadImageFragment extends Fragment {
             new ActivityResultContracts.GetContent(), uri -> {
                 if (uri != null) {
                     imageUri = uri;
-                    imgCaptured.setImageURI(imageUri);
-                    btnOk.setVisibility(View.VISIBLE);
-                    Log.d("UploadImageFragment", "Image selected from gallery with URI: " + imageUri);
+                    processImage(imageUri);
                 } else {
                     Toast.makeText(getContext(), "No image selected", Toast.LENGTH_SHORT).show();
                 }
@@ -72,15 +73,24 @@ public class UploadImageFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_upload_image, container, false);
 
+        // Initialize ViewModel and BackgroundRemovalService
         closetViewModel = new ViewModelProvider(requireActivity()).get(ClosetViewModel.class);
+        flaskNetwork = new FlaskNetwork();
 
+        // Initialize views
         btnPhoto = rootView.findViewById(R.id.btn_photo);
         btnOk = rootView.findViewById(R.id.btnOk);
         btnGallery = rootView.findViewById(R.id.btn_gallery);
         imgCaptured = rootView.findViewById(R.id.imgCaptured);
+        progressBar = rootView.findViewById(R.id.progressBar);
+
+        // Initially hide progress bar and OK button
+        progressBar.setVisibility(View.GONE);
+        btnOk.setVisibility(View.GONE);
 
         btnPhoto.setOnClickListener(v -> {
-            if (ContextCompat.checkSelfPermission(getContext(), android.Manifest.permission.CAMERA) == android.content.pm.PackageManager.PERMISSION_GRANTED) {
+            if (ContextCompat.checkSelfPermission(getContext(), android.Manifest.permission.CAMERA)
+                    == android.content.pm.PackageManager.PERMISSION_GRANTED) {
                 openCamera();
             } else {
                 requestPermissionLauncher.launch(android.Manifest.permission.CAMERA);
@@ -88,7 +98,7 @@ public class UploadImageFragment extends Fragment {
         });
 
         btnGallery.setOnClickListener(v -> {
-            galleryActivityResultLauncher.launch("img/");
+            galleryActivityResultLauncher.launch("image/*");
         });
 
         btnOk.setOnClickListener(v -> {
@@ -104,14 +114,66 @@ public class UploadImageFragment extends Fragment {
                     case "footwear":
                         closetViewModel.addFootwearItem(newClothingItem);
                         break;
-                    default:
-                        break;
                 }
             }
             getActivity().getSupportFragmentManager().popBackStack();
         });
 
         return rootView;
+    }
+
+    private void processImage(Uri uri) {
+        if (getContext() == null) return;
+
+        // Show processing state
+        progressBar.setVisibility(View.VISIBLE);
+        btnOk.setVisibility(View.GONE);
+        btnPhoto.setEnabled(false);
+        btnGallery.setEnabled(false);
+
+        flaskNetwork.removeBackground(
+                getContext(),
+                uri,
+                new FlaskNetwork.OnBackgroundRemovalListener() {
+                    @Override
+                    public void onProcessing() {
+                        requireActivity().runOnUiThread(() -> {
+                            progressBar.setVisibility(View.VISIBLE);
+                        });
+                    }
+
+                    @Override
+                    public void onSuccess(File processedImage) {
+                        requireActivity().runOnUiThread(() -> {
+                            // Update image URI to processed image
+                            imageUri = FileProvider.getUriForFile(
+                                    getContext(),
+                                    "vn.edu.usth.swaro.fileprovider",
+                                    processedImage
+                            );
+
+                            // Update UI
+                            imgCaptured.setImageURI(imageUri);
+                            progressBar.setVisibility(View.GONE);
+                            btnOk.setVisibility(View.VISIBLE);
+                            btnPhoto.setEnabled(true);
+                            btnGallery.setEnabled(true);
+
+                            Log.d("UploadImageFragment", "Background removed successfully: " + imageUri);
+                        });
+                    }
+
+                    @Override
+                    public void onError(String message) {
+                        requireActivity().runOnUiThread(() -> {
+                            progressBar.setVisibility(View.GONE);
+                            btnPhoto.setEnabled(true);
+                            btnGallery.setEnabled(true);
+                            Toast.makeText(getContext(), "Error: " + message, Toast.LENGTH_SHORT).show();
+                        });
+                    }
+                }
+        );
     }
 
     private void openCamera() {
