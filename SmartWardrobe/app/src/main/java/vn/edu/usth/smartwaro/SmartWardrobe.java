@@ -19,7 +19,6 @@ import java.util.Objects;
 import vn.edu.usth.smartwaro.auth.LoginActivity;
 import vn.edu.usth.smartwaro.settings.SettingsActivity;
 import vn.edu.usth.smartwaro.fragment.WardrobeFragment;
-import vn.edu.usth.smartwaro.fragment.SocialFragment;
 import vn.edu.usth.smartwaro.fragment.MyClosetFragment;
 
 public class SmartWardrobe extends AppCompatActivity {
@@ -79,8 +78,6 @@ public class SmartWardrobe extends AppCompatActivity {
 
         if (itemId == R.id.wardrobe) {
             fragment = new WardrobeFragment();
-//        } else if (itemId == R.id.social) {
-//            fragment = new SocialFragment();
         } else if (itemId == R.id.my_closet) {
             fragment = new MyClosetFragment();
         }
@@ -95,6 +92,16 @@ public class SmartWardrobe extends AppCompatActivity {
             SharedPreferences.Editor editor = getSharedPreferences(PREFS_NAME, MODE_PRIVATE).edit();
             editor.putInt(KEY_SELECTED_TAB, itemId);
             editor.apply();
+        }
+    }
+
+    public void showFragment(Fragment fragment) {
+        if (fragment != null) {
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragment_container, fragment)
+                    .addToBackStack(null)
+                    .commit();
         }
     }
 

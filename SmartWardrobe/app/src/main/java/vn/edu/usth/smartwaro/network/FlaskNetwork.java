@@ -28,7 +28,7 @@ import vn.edu.usth.smartwaro.utils.FileUtils;
 
 public class FlaskNetwork {
     private static final String TAG = "FlaskNetwork";
-    public static final String BASE_URL = "http://192.168.55.212:5001";
+    public static final String BASE_URL = "http://192.168.91.85:5001";
     private final OkHttpClient client;
 
     public FlaskNetwork() {
@@ -47,6 +47,12 @@ public class FlaskNetwork {
 
     public interface OnImagesLoadedListener {
         void onSuccess(String[] imageUrls);
+        void onError(String message);
+    }
+
+    public interface OnImageSaveListener {
+        void onProcessing();
+        void onSuccess(String message);
         void onError(String message);
     }
 
@@ -92,7 +98,7 @@ public class FlaskNetwork {
                     ResponseBody responseBody = response.body();
                     if (responseBody == null) {
                         listener.onError("Empty response from server");
-                            return;
+                        return;
                     }
 
                     File outputFile = new File(context.getCacheDir(), "processed_" + System.currentTimeMillis() + ".png");
@@ -100,6 +106,57 @@ public class FlaskNetwork {
                         sink.writeAll(responseBody.source());
                     }
                     listener.onSuccess(outputFile);
+                }
+            } catch (IllegalStateException e) {
+                Log.e(TAG, "Authentication error", e);
+                listener.onError("Please log in to continue");
+            } catch (IOException e) {
+                Log.e(TAG, "Network error", e);
+                listener.onError("Network error: " + e.getMessage());
+            }
+        }).start();
+    }
+
+    public void saveImageToServer(Context context, Uri imageUri, OnImageSaveListener listener) {
+        new Thread(() -> {
+            try {
+                String userId = getCurrentUserId();
+                File imageFile = FileUtils.getFileFromUri(context, imageUri);
+                if (imageFile == null) {
+                    listener.onError("Failed to read image file");
+                    return;
+                }
+
+                RequestBody requestBody = new MultipartBody.Builder()
+                        .setType(MultipartBody.FORM)
+                        .addFormDataPart("image", imageFile.getName(),
+                                RequestBody.create(MediaType.parse("image/*"), imageFile))
+                        .addFormDataPart("user_id", userId)
+                        .build();
+
+                Request request = new Request.Builder()
+                        .url(BASE_URL + "/save-image")
+                        .post(requestBody)
+                        .build();
+
+                listener.onProcessing();
+
+                try (Response response = client.newCall(request).execute()) {
+                    if (!response.isSuccessful()) {
+                        String errorBody = response.body() != null ? response.body().string() : "No error details";
+                        Log.e(TAG, "Server error: " + response.code() + ", Body: " + errorBody);
+                        listener.onError("Server error: " + response.code() + "\n" + errorBody);
+                        return;
+                    }
+
+                    ResponseBody responseBody = response.body();
+                    if (responseBody != null) {
+                        String responseString = responseBody.string();
+                        Log.d(TAG, "Save image response: " + responseString);
+                        listener.onSuccess("Image saved successfully!");
+                    } else {
+                        listener.onError("Empty response from server");
+                    }
                 }
             } catch (IllegalStateException e) {
                 Log.e(TAG, "Authentication error", e);

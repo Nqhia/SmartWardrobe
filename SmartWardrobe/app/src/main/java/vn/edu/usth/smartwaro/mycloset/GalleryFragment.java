@@ -8,8 +8,9 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -20,28 +21,33 @@ import vn.edu.usth.smartwaro.R;
 import vn.edu.usth.smartwaro.network.FlaskNetwork;
 
 public class GalleryFragment extends Fragment {
+
     private static final String TAG = "GalleryFragment";
 
     private RecyclerView recyclerView;
     private GalleryAdapter adapter;
     private ProgressBar progressBar;
-    private ClosetViewModel closetViewModel;
     private FlaskNetwork flaskNetwork;
 
+    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_gallery, container, false);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View rootView = inflater.inflate(R.layout.fragment_gallery, container, false);
 
-        recyclerView = view.findViewById(R.id.gallery_recycler_view);
-        progressBar = view.findViewById(R.id.gallery_progress_bar);
+        // Initialize views
+        recyclerView = rootView.findViewById(R.id.gallery_recycler_view);
+        progressBar = rootView.findViewById(R.id.gallery_progress_bar);
 
-        closetViewModel = new ViewModelProvider(requireActivity()).get(ClosetViewModel.class);
+        // Initialize FlaskNetwork
         flaskNetwork = new FlaskNetwork();
 
+        // Setup RecyclerView
         setupRecyclerView();
-        loadImages();
 
-        return view;
+        // Load images from server
+        loadImagesFromServer();
+
+        return rootView;
     }
 
     private void setupRecyclerView() {
@@ -50,73 +56,49 @@ public class GalleryFragment extends Fragment {
         recyclerView.setAdapter(adapter);
 
         adapter.setOnImageClickListener(image -> {
-            if (image != null && image.getOriginalFilename() != null) {
-                Toast.makeText(requireContext(),
-                        "Selected: " + image.getOriginalFilename(),
-                        Toast.LENGTH_SHORT).show();
-                // Handle image selection
-                handleImageSelection(image);
-            }
+            Toast.makeText(requireContext(), "Selected: " + image.getOriginalFilename(), Toast.LENGTH_SHORT).show();
+            Log.d(TAG, "Selected image URL: " + image.getUrl());
         });
     }
 
-    private void handleImageSelection(GalleryImage image) {
-        // TODO: Implement image selection handling
-        Log.d(TAG, "Selected image: " + image.getUrl());
-    }
-
-    private void loadImages() {
+    private void loadImagesFromServer() {
         progressBar.setVisibility(View.VISIBLE);
+        Log.d(TAG, "Fetching images from server...");
 
         flaskNetwork.getUserImages(requireContext(), new FlaskNetwork.OnImagesLoadedListener() {
             @Override
             public void onSuccess(String[] imageUrls) {
-                if (!isAdded()) {
-                    return;
-                }
+                if (!isAdded()) return;
 
                 requireActivity().runOnUiThread(() -> {
-                    try {
-                        List<GalleryImage> galleryImages = new ArrayList<>();
-                        for (String url : imageUrls) {
-                            if (url != null && !url.isEmpty()) {
-                                String filename = extractFilename(url);
-                                galleryImages.add(new GalleryImage(
-                                        filename,
-                                        filename,
-                                        "", // TODO: Add proper date handling
-                                        url
-                                ));
-                            }
+                    Log.d(TAG, "Images loaded: " + imageUrls.length);
+                    List<GalleryImage> galleryImages = new ArrayList<>();
+                    for (String url : imageUrls) {
+                        if (url != null && !url.isEmpty()) {
+                            Log.d(TAG, "Adding image URL: " + url);
+                            String filename = extractFilename(url);
+                            galleryImages.add(new GalleryImage(filename, filename, "", url));
                         }
-                        adapter.setImages(galleryImages);
-                    } catch (Exception e) {
-                        Log.e(TAG, "Error processing images", e);
-                        Toast.makeText(requireContext(),
-                                "Error processing images",
-                                Toast.LENGTH_SHORT).show();
-                    } finally {
-                        progressBar.setVisibility(View.GONE);
                     }
+
+                    adapter.setImages(galleryImages);
+                    progressBar.setVisibility(View.GONE);
                 });
             }
 
             @Override
             public void onError(String message) {
-                if (!isAdded()) {
-                    return;
-                }
+                if (!isAdded()) return;
 
                 requireActivity().runOnUiThread(() -> {
                     Log.e(TAG, "Error loading images: " + message);
-                    Toast.makeText(requireContext(),
-                            "Error loading images: " + message,
-                            Toast.LENGTH_SHORT).show();
+                    Toast.makeText(requireContext(), "Error loading images: " + message, Toast.LENGTH_SHORT).show();
                     progressBar.setVisibility(View.GONE);
                 });
             }
         });
     }
+
 
     private String extractFilename(String url) {
         try {

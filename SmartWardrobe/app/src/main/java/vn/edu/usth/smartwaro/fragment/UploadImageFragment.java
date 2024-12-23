@@ -1,4 +1,3 @@
-// UploadImageFragment.java
 package vn.edu.usth.smartwaro.fragment;
 
 import android.content.Intent;
@@ -10,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -19,26 +17,19 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 
 import java.io.File;
 import java.io.IOException;
 
 import vn.edu.usth.smartwaro.R;
-import vn.edu.usth.smartwaro.mycloset.ClothingItem;
-import vn.edu.usth.smartwaro.mycloset.ClosetViewModel;
 import vn.edu.usth.smartwaro.network.FlaskNetwork;
 
 public class UploadImageFragment extends Fragment {
 
     private Button btnPhoto;
-    private Button btnOk;
     private Button btnGallery;
-    private ImageView imgCaptured;
     private ProgressBar progressBar;
     private Uri imageUri;
-    private ClosetViewModel closetViewModel;
-    private String selectedCategory;
     private FlaskNetwork flaskNetwork;
 
     private final ActivityResultLauncher<String> requestPermissionLauncher = registerForActivityResult(
@@ -73,20 +64,16 @@ public class UploadImageFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_upload_image, container, false);
 
-        // Initialize ViewModel and BackgroundRemovalService
-        closetViewModel = new ViewModelProvider(requireActivity()).get(ClosetViewModel.class);
+        // Initialize BackgroundRemovalService
         flaskNetwork = new FlaskNetwork();
 
         // Initialize views
         btnPhoto = rootView.findViewById(R.id.btn_photo);
-        btnOk = rootView.findViewById(R.id.btnOk);
         btnGallery = rootView.findViewById(R.id.btn_gallery);
-        imgCaptured = rootView.findViewById(R.id.imgCaptured);
         progressBar = rootView.findViewById(R.id.progressBar);
 
-        // Initially hide progress bar and OK button
+        // Initially hide progress bar
         progressBar.setVisibility(View.GONE);
-        btnOk.setVisibility(View.GONE);
 
         btnPhoto.setOnClickListener(v -> {
             if (ContextCompat.checkSelfPermission(getContext(), android.Manifest.permission.CAMERA)
@@ -101,24 +88,6 @@ public class UploadImageFragment extends Fragment {
             galleryActivityResultLauncher.launch("image/*");
         });
 
-        btnOk.setOnClickListener(v -> {
-            ClothingItem newClothingItem = new ClothingItem("New Clothing Item", imageUri);
-            if (selectedCategory != null) {
-                switch (selectedCategory) {
-                    case "upperBody":
-                        closetViewModel.addUpperBodyItem(newClothingItem);
-                        break;
-                    case "lowerBody":
-                        closetViewModel.addLowerBodyItem(newClothingItem);
-                        break;
-                    case "footwear":
-                        closetViewModel.addFootwearItem(newClothingItem);
-                        break;
-                }
-            }
-            getActivity().getSupportFragmentManager().popBackStack();
-        });
-
         return rootView;
     }
 
@@ -127,7 +96,6 @@ public class UploadImageFragment extends Fragment {
 
         // Show processing state
         progressBar.setVisibility(View.VISIBLE);
-        btnOk.setVisibility(View.GONE);
         btnPhoto.setEnabled(false);
         btnGallery.setEnabled(false);
 
@@ -152,12 +120,14 @@ public class UploadImageFragment extends Fragment {
                                     processedImage
                             );
 
-                            // Update UI
-                            imgCaptured.setImageURI(imageUri);
-                            progressBar.setVisibility(View.GONE);
-                            btnOk.setVisibility(View.VISIBLE);
-                            btnPhoto.setEnabled(true);
-                            btnGallery.setEnabled(true);
+                            // Navigate to ImageViewFragment to display the image
+                            AddImageViewFragment addImageViewFragment = AddImageViewFragment.newInstance(imageUri);
+
+                            requireActivity().getSupportFragmentManager()
+                                    .beginTransaction()
+                                    .replace(R.id.fragment_container, addImageViewFragment)
+                                    .addToBackStack(null)
+                                    .commit();
 
                             Log.d("UploadImageFragment", "Background removed successfully: " + imageUri);
                         });
@@ -200,9 +170,5 @@ public class UploadImageFragment extends Fragment {
         }
 
         return null;
-    }
-
-    public void setSelectedCategory(String category) {
-        this.selectedCategory = category;
     }
 }
