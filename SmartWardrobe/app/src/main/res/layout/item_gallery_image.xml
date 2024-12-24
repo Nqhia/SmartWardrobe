@@ -10,13 +10,14 @@
     <ImageView
         android:id="@+id/gallery_image"
         android:layout_width="match_parent"
-        android:layout_height="120dp"
-        android:scaleType="centerCrop" />
+        android:layout_height="300dp"
+        android:scaleType="fitCenter" />
     <View
         android:id="@+id/check_overlay"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/selected_overlay"
-        android:visibility="gone" />
+        android:visibility="gone"
+        />
 
 </androidx.cardview.widget.CardView>
