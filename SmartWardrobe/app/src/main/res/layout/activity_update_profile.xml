@@ -5,46 +5,54 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="16dp"
-    android:background="#F5F5F5">
+    android:background="@color/background_app_pastel">
 
-    <androidx.cardview.widget.CardView
+    <TextView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        app:cardCornerRadius="8dp"
-        app:cardElevation="4dp">
+        android:layout_height="50dp"
+        android:text="Profile"
+        android:textSize="28sp"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:layout_marginBottom="10dp"/>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="16dp">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:gravity="center">
 
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/avatarImageView"
-                android:layout_width="120dp"
-                android:layout_height="120dp"
-                android:layout_gravity="center_horizontal"
-                android:src="@drawable/placeholder_avatar"
-                app:civ_border_width="2dp"
-                app:civ_border_color="#3F51B5"/>
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/avatarImageView"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:src="@drawable/account" />
 
-            <Button
-                android:id="@+id/changeAvatarButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="8dp"
-                android:text="Change Avatar"
-                android:backgroundTint="#3F51B5"/>
+        <Button
+            android:id="@+id/changeAvatarButton"
+            android:layout_width="50dp"
+            android:layout_height="60dp"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:drawableRight="@drawable/baseline_photo_camera_24"
+            app:cornerRadius="25dp"
+            android:backgroundTint="@color/white"
+            android:layout_marginTop="30dp"
+            android:layout_gravity="center"
+            android:layout_marginLeft="-55dp"
+            />
 
-        </LinearLayout>
-    </androidx.cardview.widget.CardView>
+    </LinearLayout>
+
 
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="16dp"
+        app:boxBackgroundMode="filled"
+        app:boxBackgroundColor="#333333"
+        app:boxStrokeColor="@android:color/black"
+        app:hintTextColor="@android:color/black"
+        app:boxStrokeWidth="1dp"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
         <com.google.android.material.textfield.TextInputEditText
@@ -52,13 +60,23 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Username"
-            android:inputType="text"/>
+            android:textColor="@android:color/black"
+            android:textColorHint="#888888"
+            android:inputType="textEmailAddress"
+            android:background="@android:color/transparent"
+            android:paddingTop="16dp"
+            android:paddingBottom="16dp"/>
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="16dp"
+        app:boxBackgroundMode="filled"
+        app:boxBackgroundColor="#333333"
+        app:boxStrokeColor="@android:color/black"
+        app:hintTextColor="@android:color/black"
+        app:boxStrokeWidth="1dp"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
         <com.google.android.material.textfield.TextInputEditText
@@ -66,17 +84,24 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Email"
+            android:textColor="@android:color/black"
+            android:textColorHint="#888888"
             android:inputType="textEmailAddress"
-            android:enabled="false"/>
+            android:background="@android:color/transparent"
+            android:paddingTop="16dp"
+            android:paddingBottom="16dp"/>
     </com.google.android.material.textfield.TextInputLayout>
 
     <Button
         android:id="@+id/saveButton"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
         android:text="Save Changes"
-        android:backgroundTint="#4CAF50"/>
+        android:layout_gravity="center"
+        android:textColor="@color/black"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        app:strokeColor="@color/background_app"
+        app:cornerRadius="40dp" />
 
     <ProgressBar
         android:id="@+id/progressBar"

@@ -1,67 +1,74 @@
 package vn.edu.usth.smartwaro.wardrobe;
 
 import android.os.Bundle;
+
+import androidx.fragment.app.Fragment;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-
-import androidx.fragment.app.Fragment;
+import android.widget.ScrollView;
 
 import vn.edu.usth.smartwaro.R;
 
 
 public class FemaleFragment extends Fragment {
 
-    private ImageView modelFemale, topBlazer, topCar, topTank, topSweater, topMock, botJean, botLegging, botSkirt, fullblazer, tanklegging,
-            tankjean, tankskirt, mocklegging, mockjean, mockskirt, swlegging, swjean, swskirt, carlegging, carjean, carskirt,
-            tubepurple, tubeblack, tubered, dresspurple, dressblack, dresswhite ;
+    private ImageView modelFemale, topFemale, botFemale, tubedress, footwareFemale;
     private ImageButton buttonmodelFemale, buttontopBlazer, buttontopCar, buttontopTank, buttontopSweater, buttontopMock,
-            buttonbotJean, buttonbotLegging, buttonbotSkirt, buttonfullblazer, buttontanklegging, buttontankjean, buttontankskirt,
-            buttonmocklegging, buttonmockjean, buttonmockskirt, buttonswlegging, buttonswjean, buttonswskirt,
-            buttoncarlegging,buttoncarjean, buttoncarskirt,
-            buttontubepurple, buttontubeblack, buttontubered, buttondresspurple, buttondressblack, buttondresswhite;
+            buttonbotJean, buttonbotLegging, buttonbotSkirt,
+            buttontubepurple, buttontubeblack, buttontubered, buttonloafer, buttonheels, buttonChangeSkinColor;
+    private ScrollView primaryScrollView;
+
+    private int[] shirtImages = {
+            R.drawable.top_blazer,
+            R.drawable.top_cardigan,
+            R.drawable.top_tanktop,
+            R.drawable.top_sweater_turtleneck,
+            R.drawable.top_tshirt_mockneck,
+
+    };
+
+    private int[] pantsImages = {
+            R.drawable.bot_jean,
+            R.drawable.bot_legging,
+            R.drawable.bot_skirt
+    };
+
+    private int[] dressImages = {
+            R.drawable.tube_purple,
+            R.drawable.dress_tube,
+            R.drawable.dress_red
+
+    };
+
+    private int[] footwareImages = {
+            R.drawable.loafer,
+            R.drawable.heels
+    };
+
+
+    private int currentShirtIndex = 0;
+    private int currentPantsIndex = 0;
+    private int currentDressIndex = 0;
+    private int currentFootwareIndex = 0;
+    private int currentModelSkinIndex = 0;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_female, container, false);
 
-        // Tham chiếu các ImageView
         modelFemale = view.findViewById(R.id.model_female);
-        topBlazer = view.findViewById(R.id.top_blazer);
-        topCar = view.findViewById(R.id.top_cardigan);
-        topTank = view.findViewById(R.id.top_tanktop);
-        topSweater = view.findViewById(R.id.top_sweater_turtleneck);
-        topMock = view.findViewById(R.id.top_tshirt_mockneck);
-        botJean = view.findViewById(R.id.bot_jean);
-        botLegging = view.findViewById(R.id.bot_legging);
-        botSkirt = view.findViewById(R.id.bot_skirt);
-        fullblazer = view.findViewById(R.id.full_blazer);
-        tanklegging =view.findViewById(R.id.full_tanktop);
-        tankjean = view.findViewById(R.id.tanktop_jeans);
-        tankskirt =view.findViewById(R.id.tanktop_skirt);
-        mocklegging =view.findViewById(R.id.tshirt_mockneck_legging);
-        mockjean = view.findViewById(R.id.full_tshirt_mockneck);
-        mockskirt =view.findViewById(R.id.tshirt_mockneck_skirt);
-        swlegging =view.findViewById(R.id.sweater_legging);
-        swjean = view.findViewById(R.id.sweater_jeans);
-        swskirt =view.findViewById(R.id.sweater_skirt);
-        mocklegging =view.findViewById(R.id.tshirt_mockneck_legging);
-        mockjean = view.findViewById(R.id.full_tshirt_mockneck);
-        mockskirt =view.findViewById(R.id.tshirt_mockneck_skirt);
-        carlegging =view.findViewById(R.id.cardigan_legging);
-        carjean = view.findViewById(R.id.cardigan_jeans);
-        carskirt =view.findViewById(R.id.cardigan_skirt);
-        tubepurple =view.findViewById(R.id.tube_purple);
-        tubeblack = view.findViewById(R.id.dress_tube);
-        tubered =view.findViewById(R.id.dress_red);
-        dresspurple =view.findViewById(R.id.top_dress);
-        dressblack = view.findViewById(R.id.dress_black);
-        dresswhite =view.findViewById(R.id.dress_white);
+        topFemale = view.findViewById(R.id.top_female);
+        botFemale = view.findViewById(R.id.bot_female);
+        tubedress = view.findViewById(R.id.tube_dress);
+        footwareFemale = view.findViewById(R.id.female_footwear);
 
-        // Tham chiếu các nút
-        buttonmodelFemale = view.findViewById(R.id.female_icon);
+        //buttonmodelFemale = view.findViewById(R.id.female_icon);
         buttontopBlazer = view.findViewById(R.id.top_blazer_icon);
         buttontopCar = view.findViewById(R.id.top_cardigan_icon);
         buttontopTank = view.findViewById(R.id.top_tanktop_icon);
@@ -70,102 +77,189 @@ public class FemaleFragment extends Fragment {
         buttonbotJean = view.findViewById(R.id.bot_jeans_icon);
         buttonbotLegging = view.findViewById(R.id.bot_legging_icon);
         buttonbotSkirt = view.findViewById(R.id.bot_skirt_icon);
-        buttonfullblazer = view.findViewById(R.id.full_blazer_icon);
-        buttontanklegging = view.findViewById(R.id.tanktop_legging_icon);
-        buttontankjean = view.findViewById(R.id.tanktop_jeans_icon);
-        buttontankskirt = view.findViewById(R.id.tanktop_skirt_icon);
-        buttonmocklegging = view.findViewById(R.id.mockneck_legging_icon);
-        buttonmockjean = view.findViewById(R.id.mockneck_jeans_icon);
-        buttonmockskirt = view.findViewById(R.id.mockneck_skirt_icon);
-        buttonswlegging = view.findViewById(R.id.sweater_legging_icon);
-        buttonswjean = view.findViewById(R.id.sweater_jeans_icon);
-        buttonswskirt = view.findViewById(R.id.sweater_skirt_icon);
-        buttoncarlegging = view.findViewById(R.id.cardigan_legging_icon);
-        buttoncarjean = view.findViewById(R.id.cardigan_jeans_icon);
-        buttoncarskirt = view.findViewById(R.id.cardigan_skirt_icon);
         buttontubepurple = view.findViewById(R.id.tube_purple_icon);
         buttontubeblack = view.findViewById(R.id.black_tube_icon);
         buttontubered = view.findViewById(R.id.tube_red_icon);
-        buttondresspurple = view.findViewById(R.id.dress_purple_icon);
-        buttondressblack = view.findViewById(R.id.black_dress_icon);
-        buttondresswhite = view.findViewById(R.id.dress_white_icon);
+        buttonloafer = view.findViewById(R.id.female_loafer_icon);
+        buttonheels = view.findViewById(R.id.female_heels_icon);
+        buttonChangeSkinColor = view.findViewById(R.id.buttonChangeSkinColor);
+
+        primaryScrollView = view.findViewById(R.id.primary_scroll_view);
+
+        int[] overlayIds = {
+                R.id.overlay_scroll_view_tops,
+                R.id.overlay_scroll_view_bot,
+                R.id.overlay_scroll_view_skirt,
+                R.id.overlay_scroll_view_dress,
+                R.id.overlay_scroll_view_footware,
+                R.id.overlay_scroll_view_skin_tone
+        };
+
+        for (int overlayId : overlayIds) {
+            ScrollView overlayScrollView = view.findViewById(overlayId);
+            Button closeOverlayButton = overlayScrollView.findViewById(R.id.close_overlay_button);
+
+            closeOverlayButton.setOnClickListener(v -> {
+                overlayScrollView.setVisibility(View.GONE);
+                primaryScrollView.setVisibility(View.VISIBLE);
+            });
+        }
+
+        view.findViewById(R.id.type_top_female).setOnClickListener(v -> toggleOverlay(view, R.id.overlay_scroll_view_tops));
+        view.findViewById(R.id.type_bot_female).setOnClickListener(v -> toggleOverlay(view, R.id.overlay_scroll_view_bot));
+        view.findViewById(R.id.type_skirt_female).setOnClickListener(v -> toggleOverlay(view, R.id.overlay_scroll_view_skirt));
+        view.findViewById(R.id.type_dress_female).setOnClickListener(v -> toggleOverlay(view, R.id.overlay_scroll_view_dress));
+        view.findViewById(R.id.type_footware_female).setOnClickListener(v -> toggleOverlay(view, R.id.overlay_scroll_view_footware));
+        view.findViewById(R.id.type_skin_female).setOnClickListener(v -> toggleOverlay(view, R.id.overlay_scroll_view_skin_tone));
 
 
-        // Xử lý sự kiện nút bấm
-        buttonmodelFemale.setOnClickListener(v -> showOutfit(modelFemale));
-        buttontopBlazer.setOnClickListener(v -> showOutfit(topBlazer));
-        buttontopCar.setOnClickListener(v -> showOutfit(topCar));
-        buttontopTank.setOnClickListener(v -> showOutfit(topTank));
-        buttontopSweater.setOnClickListener(v -> showOutfit(topSweater));
-        buttontopMock.setOnClickListener(v -> showOutfit(topMock));
-        buttonbotJean.setOnClickListener(v -> showOutfit(botJean));
-        buttonbotLegging.setOnClickListener(v -> showOutfit(botLegging));
-        buttonbotSkirt.setOnClickListener(v -> showOutfit(botSkirt));
-        buttonfullblazer.setOnClickListener(v -> showOutfit(fullblazer));
-        buttontanklegging.setOnClickListener(v -> showOutfit(tanklegging));
-        buttontankjean.setOnClickListener(v -> showOutfit(tankjean));
-        buttontankskirt.setOnClickListener(v -> showOutfit(tankskirt));
+        modelFemale.setImageResource(R.drawable.female);
 
-        buttonmocklegging.setOnClickListener(v -> showOutfit(mocklegging));
-        buttonmockjean.setOnClickListener(v -> showOutfit(mockjean));
-        buttonmockskirt.setOnClickListener(v -> showOutfit(mockskirt));
+//        buttonmodelFemale.setOnClickListener(v -> {
+//            modelFemale.setImageResource(R.drawable.female);
+//
+//            topFemale.setVisibility(View.GONE);
+//            botFemale.setVisibility(View.GONE);
+//            tubedress.setVisibility(View.GONE);
+//            footwareFemale.setVisibility(View.GONE);
+//        });
 
-        buttonswlegging.setOnClickListener(v -> showOutfit(swlegging));
-        buttonswjean.setOnClickListener(v -> showOutfit(swjean));
-        buttonswskirt.setOnClickListener(v -> showOutfit(swskirt));
+        //Áo
+        buttontopBlazer.setOnClickListener(v -> {
+            currentShirtIndex = 0;
+            topFemale.setImageResource(shirtImages[currentShirtIndex]);
+            topFemale.setVisibility(View.VISIBLE);
+            tubedress.setVisibility(View.GONE);
 
-        buttoncarlegging.setOnClickListener(v -> showOutfit(carlegging));
-        buttoncarjean.setOnClickListener(v -> showOutfit(carjean));
-        buttoncarskirt.setOnClickListener(v -> showOutfit(carskirt));
+        });
+        buttontopCar.setOnClickListener(v -> {
+            currentShirtIndex = 1;
+            topFemale.setImageResource(shirtImages[currentShirtIndex]);
+            topFemale.setVisibility(View.VISIBLE);
+            tubedress.setVisibility(View.GONE);
 
-        buttontubepurple.setOnClickListener(v -> showOutfit(tubepurple));
-        buttontubeblack.setOnClickListener(v -> showOutfit(tubeblack));
-        buttontubered.setOnClickListener(v -> showOutfit(tubered));
+        });
+        buttontopTank.setOnClickListener(v -> {
+            currentShirtIndex = 2;
+            topFemale.setImageResource(shirtImages[currentShirtIndex]);
+            topFemale.setVisibility(View.VISIBLE);
+            tubedress.setVisibility(View.GONE);
 
-        buttondresspurple.setOnClickListener(v -> showOutfit(dresspurple));
-        buttondressblack.setOnClickListener(v -> showOutfit(dressblack));
-        buttondresswhite.setOnClickListener(v -> showOutfit(dresswhite));
+        });
+        buttontopSweater.setOnClickListener(v -> {
+            currentShirtIndex = 3;
+            topFemale.setImageResource(shirtImages[currentShirtIndex]);
+            topFemale.setVisibility(View.VISIBLE);
+            tubedress.setVisibility(View.GONE);
 
+        });
+        buttontopMock.setOnClickListener(v -> {
+            currentShirtIndex = 4;
+            topFemale.setImageResource(shirtImages[currentShirtIndex]);
+            topFemale.setVisibility(View.VISIBLE);
+            tubedress.setVisibility(View.GONE);
 
+        });
+
+        //Quần
+        buttonbotJean.setOnClickListener(v -> {
+            currentPantsIndex = 0;
+            botFemale.setImageResource(pantsImages[currentPantsIndex]);
+            botFemale.setVisibility(View.VISIBLE);
+            tubedress.setVisibility(View.GONE);
+
+        });
+        buttonbotLegging.setOnClickListener(v -> {
+            currentPantsIndex = 1;
+            botFemale.setImageResource(pantsImages[currentPantsIndex]);
+            botFemale.setVisibility(View.VISIBLE);
+            tubedress.setVisibility(View.GONE);
+
+        });
+        buttonbotSkirt.setOnClickListener(v -> {
+            currentPantsIndex = 2;
+            botFemale.setImageResource(pantsImages[currentPantsIndex]);
+            botFemale.setVisibility(View.VISIBLE);
+            tubedress.setVisibility(View.GONE);
+        });
+
+        //Váy
+        buttontubepurple.setOnClickListener(v -> {
+            currentDressIndex = 0;
+            tubedress.setImageResource(dressImages[currentDressIndex]);
+            tubedress.setVisibility(View.VISIBLE);
+            topFemale.setVisibility(View.GONE);
+            botFemale.setVisibility(View.GONE);
+        });
+        buttontubeblack.setOnClickListener(v -> {
+            currentDressIndex = 1;
+            tubedress.setImageResource(dressImages[currentDressIndex]);
+            tubedress.setVisibility(View.VISIBLE);
+            topFemale.setVisibility(View.GONE);
+            botFemale.setVisibility(View.GONE);
+        });
+        buttontubered.setOnClickListener(v -> {
+            currentDressIndex = 2;
+            tubedress.setImageResource(dressImages[currentDressIndex]);
+            tubedress.setVisibility(View.VISIBLE);
+            topFemale.setVisibility(View.GONE);
+            botFemale.setVisibility(View.GONE);
+        });
+
+        //Giày
+        buttonloafer.setOnClickListener(v -> {
+            currentFootwareIndex = 0;
+            footwareFemale.setImageResource(footwareImages[currentFootwareIndex]);
+            footwareFemale.setVisibility(View.VISIBLE);
+        });
+
+        buttonheels.setOnClickListener(v -> {
+            currentFootwareIndex = 1;
+            footwareFemale.setImageResource(footwareImages[currentFootwareIndex]);
+            footwareFemale.setVisibility(View.VISIBLE);
+        });
+
+        buttonChangeSkinColor.setOnClickListener(v -> {
+            currentModelSkinIndex = (currentModelSkinIndex + 1) % 7;
+            switch (currentModelSkinIndex) {
+                case 0:
+                    modelFemale.setImageResource(R.drawable.female);
+                    break;
+                case 1:
+                    modelFemale.setImageResource(R.drawable.female_white_skin);
+                    break;
+                case 2:
+                    modelFemale.setImageResource(R.drawable.female_nude_skin);
+                    break;
+                case 3:
+                    modelFemale.setImageResource(R.drawable.female_yellow_skin);
+                    break;
+                case 4:
+                    modelFemale.setImageResource(R.drawable.female_brown_skin);
+                    break;
+                case 5:
+                    modelFemale.setImageResource(R.drawable.female_dark_skin);
+                    break;
+                case 6:
+                    modelFemale.setImageResource(R.drawable.female_black_skin);
+                    break;
+            }
+        });
 
         return view;
     }
 
-    private void showOutfit(ImageView selectedOutfit) {
-        // Đặt tất cả các ImageView về trạng thái "gone"
-        modelFemale.setVisibility(View.VISIBLE);
-        topBlazer.setVisibility(View.GONE);
-        topCar.setVisibility(View.GONE);
-        topTank.setVisibility(View.GONE);
-        topSweater.setVisibility(View.GONE);
-        topMock.setVisibility(View.GONE);
-        botLegging.setVisibility(View.GONE);
-        botJean.setVisibility(View.GONE);
-        botSkirt.setVisibility(View.GONE);
-        fullblazer.setVisibility(View.GONE);
-        tanklegging.setVisibility(View.GONE);
-        tankjean.setVisibility(View.GONE);
-        tankskirt.setVisibility(View.GONE);
-        mocklegging.setVisibility(View.GONE);
-        mockjean.setVisibility(View.GONE);
-        mockskirt.setVisibility(View.GONE);
-        swskirt.setVisibility(View.GONE);
-        swjean.setVisibility(View.GONE);
-        swlegging.setVisibility(View.GONE);
-        carskirt.setVisibility(View.GONE);
-        carjean.setVisibility(View.GONE);
-        carlegging.setVisibility(View.GONE);
-        tubered.setVisibility(View.GONE);
-        tubeblack.setVisibility(View.GONE);
-        tubepurple.setVisibility(View.GONE);
-        dresswhite.setVisibility(View.GONE);
-        dressblack.setVisibility(View.GONE);
-        dresspurple.setVisibility(View.GONE);
-
-
-
-        // Hiển thị ImageView được chọn
-        selectedOutfit.setVisibility(View.VISIBLE);
-        //modelFemale.setVisibility(View.GONE); // Ẩn model cơ bản khi chọn outfit
+    private void toggleOverlay(View view, int overlayId) {
+        primaryScrollView.setVisibility(View.GONE);
+        for (int id : new int[]{
+                R.id.overlay_scroll_view_tops,
+                R.id.overlay_scroll_view_bot,
+                R.id.overlay_scroll_view_skirt,
+                R.id.overlay_scroll_view_dress,
+                R.id.overlay_scroll_view_footware,
+                R.id.overlay_scroll_view_skin_tone}) {
+            view.findViewById(id).setVisibility(id == overlayId ? View.VISIBLE : View.GONE);
+        }
     }
+
 }

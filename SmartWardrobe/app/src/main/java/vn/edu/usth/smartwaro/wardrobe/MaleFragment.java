@@ -1,29 +1,23 @@
 package vn.edu.usth.smartwaro.wardrobe;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-
 import androidx.fragment.app.Fragment;
 
 import vn.edu.usth.smartwaro.R;
 
 public class MaleFragment extends Fragment {
 
-    private ImageView modelMale, topTanktop, topPolo, topSw, topBlazerMale, topBreast, botJeanMale, botPant,
-            tankjeanmale, tankpant,
-            polojeanmale, polopant,
-            swjeanmale, swpant,
-            blazermale, breastmale;
+    private ImageView modelMale, topTanktop, topPolo, topSw, topBlazerMale, topBreast, botJeanMale, botPant;
     private ImageButton buttonmodelMale, buttontopTanktop, buttontopPolo, buttontopSw, buttontopBlazerMale, buttontopBreast,
-    buttonbotJeanMale, buttonbotPant,
-    buttontankjeanmale, buttontankpant,
-    buttonpolojeanmale, buttonpolopant,
-    buttonswjeanmale, buttonswpant,
-    buttonblazermale, buttonbreastmale;
+            buttonbotJeanMale, buttonbotPant;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_male, container, false);
@@ -39,17 +33,6 @@ public class MaleFragment extends Fragment {
         botJeanMale = view.findViewById(R.id.bot_jean_male);
         botPant = view.findViewById(R.id.bot_pant);
 
-        tankjeanmale = view.findViewById(R.id.tank_jean);
-        tankpant = view.findViewById(R.id.tank_pant);
-
-        polojeanmale =view.findViewById(R.id.polo_jean);
-        polopant = view.findViewById(R.id.polo_pant);
-
-        swjeanmale =view.findViewById(R.id.sweater_jean_male);
-        swpant =view.findViewById(R.id.sweater_pant);
-
-        blazermale = view.findViewById(R.id.male_blazer);
-        breastmale =view.findViewById(R.id.male_breast);
 
         // Tham chiếu các nút
         buttonmodelMale = view.findViewById(R.id.male_model_icon);
@@ -63,17 +46,7 @@ public class MaleFragment extends Fragment {
         buttonbotJeanMale = view.findViewById(R.id.bot_jean_male_icon);
         buttonbotPant = view.findViewById(R.id.bot_pant_icon);
 
-        buttontankjeanmale = view.findViewById(R.id.tank_jean_male_icon);
-        buttontankpant = view.findViewById(R.id.tank_pant_icon);
 
-        buttonpolojeanmale =view.findViewById(R.id.polo_jean_icon);
-        buttonpolopant = view.findViewById(R.id.polo_pant_icon);
-
-        buttonswjeanmale =view.findViewById(R.id.sweater_jean_male_icon);
-        buttonswpant =view.findViewById(R.id.sweater_pant_icon);
-
-        buttonblazermale = view.findViewById(R.id.male_blazer_icon);
-        buttonbreastmale =view.findViewById(R.id.male_breast_icon);
 
 
         // Xử lý sự kiện nút bấm
@@ -87,17 +60,7 @@ public class MaleFragment extends Fragment {
         buttonbotJeanMale.setOnClickListener(v -> showOutfit(botJeanMale));
         buttonbotPant.setOnClickListener(v -> showOutfit(botPant));
 
-        buttontankjeanmale.setOnClickListener(v -> showOutfit(tankjeanmale));
-        buttontankpant.setOnClickListener(v -> showOutfit(tankpant));
 
-        buttonpolojeanmale.setOnClickListener(v -> showOutfit(polojeanmale));
-        buttonpolopant.setOnClickListener(v -> showOutfit(polopant));
-
-        buttonswjeanmale.setOnClickListener(v -> showOutfit(swjeanmale));
-        buttonswpant.setOnClickListener(v -> showOutfit(swpant));
-
-        buttonblazermale.setOnClickListener(v -> showOutfit(blazermale));
-        buttonbreastmale.setOnClickListener(v -> showOutfit(breastmale));
 
         return view;
     }
@@ -114,14 +77,6 @@ public class MaleFragment extends Fragment {
         botJeanMale.setVisibility(View.GONE);
         botPant.setVisibility(View.GONE);
 
-        tankjeanmale.setVisibility(View.GONE);
-        tankpant.setVisibility(View.GONE);
-        polojeanmale.setVisibility(View.GONE);
-        polopant.setVisibility(View.GONE);
-        swjeanmale.setVisibility(View.GONE);
-        swpant.setVisibility(View.GONE);
-        blazermale.setVisibility(View.GONE);
-        breastmale.setVisibility(View.GONE);
 
 
         // Hiển thị ImageView được chọn

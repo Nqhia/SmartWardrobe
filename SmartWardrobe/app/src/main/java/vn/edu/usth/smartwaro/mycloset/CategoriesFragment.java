@@ -31,12 +31,11 @@ public class CategoriesFragment extends Fragment {
 
     private void setupRecyclerView() {
         List<CategoryItem> categories = Arrays.asList(
-                new CategoryItem("Tops", R.drawable.ic_category_tops),
-                new CategoryItem("Bottoms", R.drawable.ic_category_bottoms),
-                new CategoryItem("Dresses", R.drawable.ic_category_dresses),
-                new CategoryItem("Outerwear", R.drawable.ic_category_outerwear),
-                new CategoryItem("Shoes", R.drawable.ic_category_shoes),
-                new CategoryItem("Accessories", R.drawable.ic_category_accessories)
+                new CategoryItem("Tops", R.drawable.top_category),
+                new CategoryItem("Bottoms", R.drawable.trousers_category),
+                new CategoryItem("Dresses", R.drawable.skirt_category),
+                new CategoryItem("Outerwear", R.drawable.dress_category),
+                new CategoryItem("Shoes", R.drawable.heels_category)
         );
 
         adapter = new CategoryAdapter(requireContext(), categories);
