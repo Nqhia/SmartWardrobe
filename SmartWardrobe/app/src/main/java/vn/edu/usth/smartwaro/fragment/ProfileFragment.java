@@ -22,7 +22,7 @@ import java.util.Map;
 import de.hdodenhof.circleimageview.CircleImageView;
 import vn.edu.usth.smartwaro.R;
 import vn.edu.usth.smartwaro.auth.UpdateProfileActivity;
-import vn.edu.usth.smartwaro.data.firebase.FirebaseService;
+import vn.edu.usth.smartwaro.network.FirebaseService;
 
 public class ProfileFragment extends Fragment {
     private TextView usernameTextView;

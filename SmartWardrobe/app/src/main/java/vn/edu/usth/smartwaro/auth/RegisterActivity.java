@@ -21,7 +21,7 @@ import java.util.Map;
 import vn.edu.usth.smartwaro.R;
 //import vn.edu.usth.smartwaro.activity.MainActivity;
 import vn.edu.usth.smartwaro.SmartWardrobe;
-import vn.edu.usth.smartwaro.data.firebase.FirebaseService;
+import vn.edu.usth.smartwaro.network.FirebaseService;
 
 public class RegisterActivity extends AppCompatActivity {
     private EditText userName, emailField, passwordField, confirmPasswordField;

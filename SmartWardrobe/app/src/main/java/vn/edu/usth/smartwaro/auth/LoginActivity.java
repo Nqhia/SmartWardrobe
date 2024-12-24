@@ -11,7 +11,6 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -20,7 +19,7 @@ import com.google.firebase.auth.FirebaseUser;
 import vn.edu.usth.smartwaro.R;
 //import vn.edu.usth.smartwaro.activity.MainActivity;
 import vn.edu.usth.smartwaro.SmartWardrobe;
-import vn.edu.usth.smartwaro.data.firebase.FirebaseService;
+import vn.edu.usth.smartwaro.network.FirebaseService;
 
 public class LoginActivity extends AppCompatActivity {
     private EditText emailField, passwordField;

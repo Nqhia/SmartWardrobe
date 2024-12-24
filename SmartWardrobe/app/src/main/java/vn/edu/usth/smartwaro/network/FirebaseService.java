@@ -1,4 +1,4 @@
-package vn.edu.usth.smartwaro.data.firebase;
+package vn.edu.usth.smartwaro.network;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;

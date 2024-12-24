@@ -23,8 +23,7 @@ import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import vn.edu.usth.smartwaro.R;
-import vn.edu.usth.smartwaro.data.firebase.FirebaseService;
-import vn.edu.usth.smartwaro.auth.AuthUtils;
+import vn.edu.usth.smartwaro.network.FirebaseService;
 
 public class UpdateProfileActivity extends AppCompatActivity {
     private TextInputEditText usernameEditText, emailEditText;
