@@ -1,4 +1,3 @@
-// UploadImageFragment.java
 package vn.edu.usth.smartwaro.fragment;
 
 import android.content.Intent;
@@ -10,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -29,12 +27,9 @@ import vn.edu.usth.smartwaro.network.FlaskNetwork;
 public class UploadImageFragment extends Fragment {
 
     private Button btnPhoto;
-    private Button btnOk;
     private Button btnGallery;
-    private ImageView imgCaptured;
     private ProgressBar progressBar;
     private Uri imageUri;
-    private String selectedCategory;
     private FlaskNetwork flaskNetwork;
 
     private final ActivityResultLauncher<String> requestPermissionLauncher = registerForActivityResult(
@@ -69,16 +64,16 @@ public class UploadImageFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_upload_image, container, false);
 
+        // Initialize BackgroundRemovalService
         flaskNetwork = new FlaskNetwork();
 
+        // Initialize views
         btnPhoto = rootView.findViewById(R.id.btn_photo);
-        btnOk = rootView.findViewById(R.id.btnOk);
         btnGallery = rootView.findViewById(R.id.btn_gallery);
-        imgCaptured = rootView.findViewById(R.id.imgCaptured);
         progressBar = rootView.findViewById(R.id.progressBar);
 
+        // Initially hide progress bar
         progressBar.setVisibility(View.GONE);
-        btnOk.setVisibility(View.GONE);
 
         btnPhoto.setOnClickListener(v -> {
             if (ContextCompat.checkSelfPermission(getContext(), android.Manifest.permission.CAMERA)
@@ -101,7 +96,6 @@ public class UploadImageFragment extends Fragment {
 
         // Show processing state
         progressBar.setVisibility(View.VISIBLE);
-        btnOk.setVisibility(View.GONE);
         btnPhoto.setEnabled(false);
         btnGallery.setEnabled(false);
 
@@ -126,12 +120,14 @@ public class UploadImageFragment extends Fragment {
                                     processedImage
                             );
 
-                            // Update UI
-                            imgCaptured.setImageURI(imageUri);
-                            progressBar.setVisibility(View.GONE);
-                            btnOk.setVisibility(View.VISIBLE);
-                            btnPhoto.setEnabled(true);
-                            btnGallery.setEnabled(true);
+                            // Navigate to ImageViewFragment to display the image
+                            AddImageViewFragment addImageViewFragment = AddImageViewFragment.newInstance(imageUri);
+
+                            requireActivity().getSupportFragmentManager()
+                                    .beginTransaction()
+                                    .replace(R.id.fragment_container, addImageViewFragment)
+                                    .addToBackStack(null)
+                                    .commit();
 
                             Log.d("UploadImageFragment", "Background removed successfully: " + imageUri);
                         });
@@ -174,9 +170,5 @@ public class UploadImageFragment extends Fragment {
         }
 
         return null;
-    }
-
-    public void setSelectedCategory(String category) {
-        this.selectedCategory = category;
     }
 }

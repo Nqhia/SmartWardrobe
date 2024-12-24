@@ -90,7 +90,7 @@ def save_image():
         # Validate user ID
         user_id = request.form.get('user_id')
         if not user_id or not is_valid_firebase_uid(user_id):
-            return jsonify({'error': 'Invalid user ID'}), 400
+            return jsonify({'error': 'Invalid user I9D'}), 400
 
         # Validate image file
         if 'image' not in request.files:
@@ -99,6 +99,7 @@ def save_image():
         file = request.files['image']
         if file.filename == '':
             return jsonify({'error': 'No selected file'}), 400
+
 
         if file and allowed_file(file.filename):
             try:
