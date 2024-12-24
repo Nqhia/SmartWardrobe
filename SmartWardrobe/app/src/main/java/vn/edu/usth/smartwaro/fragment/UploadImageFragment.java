@@ -19,14 +19,11 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 
 import java.io.File;
 import java.io.IOException;
 
 import vn.edu.usth.smartwaro.R;
-import vn.edu.usth.smartwaro.mycloset.ClothingItem;
-import vn.edu.usth.smartwaro.mycloset.ClosetViewModel;
 import vn.edu.usth.smartwaro.network.FlaskNetwork;
 
 public class UploadImageFragment extends Fragment {
@@ -37,7 +34,6 @@ public class UploadImageFragment extends Fragment {
     private ImageView imgCaptured;
     private ProgressBar progressBar;
     private Uri imageUri;
-    private ClosetViewModel closetViewModel;
     private String selectedCategory;
     private FlaskNetwork flaskNetwork;
 
@@ -73,18 +69,14 @@ public class UploadImageFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_upload_image, container, false);
 
-        // Initialize ViewModel and BackgroundRemovalService
-        closetViewModel = new ViewModelProvider(requireActivity()).get(ClosetViewModel.class);
         flaskNetwork = new FlaskNetwork();
 
-        // Initialize views
         btnPhoto = rootView.findViewById(R.id.btn_photo);
         btnOk = rootView.findViewById(R.id.btnOk);
         btnGallery = rootView.findViewById(R.id.btn_gallery);
         imgCaptured = rootView.findViewById(R.id.imgCaptured);
         progressBar = rootView.findViewById(R.id.progressBar);
 
-        // Initially hide progress bar and OK button
         progressBar.setVisibility(View.GONE);
         btnOk.setVisibility(View.GONE);
 
@@ -99,24 +91,6 @@ public class UploadImageFragment extends Fragment {
 
         btnGallery.setOnClickListener(v -> {
             galleryActivityResultLauncher.launch("image/*");
-        });
-
-        btnOk.setOnClickListener(v -> {
-            ClothingItem newClothingItem = new ClothingItem("New Clothing Item", imageUri);
-            if (selectedCategory != null) {
-                switch (selectedCategory) {
-                    case "upperBody":
-                        closetViewModel.addUpperBodyItem(newClothingItem);
-                        break;
-                    case "lowerBody":
-                        closetViewModel.addLowerBodyItem(newClothingItem);
-                        break;
-                    case "footwear":
-                        closetViewModel.addFootwearItem(newClothingItem);
-                        break;
-                }
-            }
-            getActivity().getSupportFragmentManager().popBackStack();
         });
 
         return rootView;

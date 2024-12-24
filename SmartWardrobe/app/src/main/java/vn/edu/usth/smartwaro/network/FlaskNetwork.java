@@ -9,9 +9,11 @@ import com.google.firebase.auth.FirebaseUser;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.HttpUrl;
@@ -28,7 +30,7 @@ import vn.edu.usth.smartwaro.utils.FileUtils;
 
 public class FlaskNetwork {
     private static final String TAG = "FlaskNetwork";
-    public static final String BASE_URL = "http://192.168.55.212:5001";
+    public static final String BASE_URL = "http://192.168.91.85:5001";
     private final OkHttpClient client;
 
     public FlaskNetwork() {
@@ -149,6 +151,74 @@ public class FlaskNetwork {
             } catch (IOException e) {
                 Log.e(TAG, "Network error", e);
                 listener.onError("Network error: " + e.getMessage());
+            }
+        }).start();
+    }
+
+    public interface OnDeleteImagesListener {
+        void onSuccess(String[] deletedFiles, String[] failedFiles);
+        void onError(String message);
+    }
+
+    public void deleteImages(String[] filenames, OnDeleteImagesListener listener) {
+        new Thread(() -> {
+            try {
+                String userId = getCurrentUserId();
+
+                // Create JSON request body
+                JSONObject jsonBody = new JSONObject();
+                jsonBody.put("user_id", userId);
+                jsonBody.put("filenames", new JSONArray(Arrays.asList(filenames)));
+
+                RequestBody requestBody = RequestBody.create(
+                        MediaType.parse("application/json"),
+                        jsonBody.toString()
+                );
+
+                Request request = new Request.Builder()
+                        .url(BASE_URL + "/delete-images")
+                        .post(requestBody)
+                        .build();
+
+                try (Response response = client.newCall(request).execute()) {
+                    if (!response.isSuccessful()) {
+                        String errorBody = response.body() != null ? response.body().string() : "No error details";
+                        Log.e(TAG, "Server error: " + response.code() + ", Body: " + errorBody);
+                        listener.onError("Server error: " + response.code() + "\n" + errorBody);
+                        return;
+                    }
+
+                    ResponseBody responseBody = response.body();
+                    if (responseBody == null) {
+                        listener.onError("Empty response from server");
+                        return;
+                    }
+
+                    String jsonResponse = responseBody.string();
+                    JSONObject responseJson = new JSONObject(jsonResponse);
+
+                    JSONArray deletedFilesArray = responseJson.getJSONArray("deleted_files");
+                    JSONArray failedFilesArray = responseJson.getJSONArray("failed_files");
+
+                    String[] deletedFiles = new String[deletedFilesArray.length()];
+                    String[] failedFiles = new String[failedFilesArray.length()];
+
+                    for (int i = 0; i < deletedFilesArray.length(); i++) {
+                        deletedFiles[i] = deletedFilesArray.getString(i);
+                    }
+
+                    for (int i = 0; i < failedFilesArray.length(); i++) {
+                        failedFiles[i] = failedFilesArray.getString(i);
+                    }
+
+                    listener.onSuccess(deletedFiles, failedFiles);
+                }
+            } catch (IllegalStateException e) {
+                Log.e(TAG, "Authentication error", e);
+                listener.onError("Please log in to continue");
+            } catch (IOException | JSONException e) {
+                Log.e(TAG, "Network or parsing error", e);
+                listener.onError("Error: " + e.getMessage());
             }
         }).start();
     }

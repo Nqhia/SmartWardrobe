@@ -1,23 +1,48 @@
 package vn.edu.usth.smartwaro.mycloset;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-public class GalleryImage {
+public class GalleryImage implements Parcelable {
     private final String filename;
     private final String originalFilename;
     private final String uploadDate;
     private final String url;
+    private boolean isSelected;
 
     public GalleryImage(@NonNull String filename,
                         @NonNull String originalFilename,
                         @Nullable String uploadDate,
                         @NonNull String url) {
-        this.filename = filename != null ? filename : "";
-        this.originalFilename = originalFilename != null ? originalFilename : "";
+        this.filename = filename;
+        this.originalFilename = originalFilename;
         this.uploadDate = uploadDate != null ? uploadDate : "";
-        this.url = url != null ? url : "";
+        this.url = url;
+        this.isSelected = false;
     }
+
+    protected GalleryImage(Parcel in) {
+        filename = in.readString();
+        originalFilename = in.readString();
+        uploadDate = in.readString();
+        url = in.readString();
+        isSelected = in.readByte() != 0;
+    }
+
+    public static final Creator<GalleryImage> CREATOR = new Creator<GalleryImage>() {
+        @Override
+        public GalleryImage createFromParcel(Parcel in) {
+            return new GalleryImage(in);
+        }
+
+        @Override
+        public GalleryImage[] newArray(int size) {
+            return new GalleryImage[size];
+        }
+    };
 
     @NonNull
     public String getFilename() { return filename; }
@@ -30,6 +55,24 @@ public class GalleryImage {
 
     @NonNull
     public String getUrl() { return url; }
+
+    public boolean isSelected() { return isSelected; }
+
+    public void setSelected(boolean selected) { isSelected = selected; }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(@NonNull Parcel dest, int flags) {
+        dest.writeString(filename);
+        dest.writeString(originalFilename);
+        dest.writeString(uploadDate);
+        dest.writeString(url);
+        dest.writeByte((byte) (isSelected ? 1 : 0));
+    }
 
     @Override
     public String toString() {
