@@ -3,7 +3,7 @@ services:
     name: smartwardrobe-server
     runtime: python
     buildCommand: pip install -r Server/requirements.txt
-    startCommand: gunicorn Server.server:app
+    startCommand: cd Server && gunicorn server:app
     envVars:
       - key: PYTHON_VERSION
-        value: 3.9
+        value: 3.9.12
