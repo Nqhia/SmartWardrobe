@@ -5,10 +5,6 @@
         android:icon="@drawable/body"
         android:title="Stylist" />
     <item
-        android:id="@+id/social"
-        android:icon="@drawable/baseline_chat_24"
-        android:title="social" />
-    <item
         android:id="@+id/my_closet"
         android:icon="@drawable/clothes_hanger"
         android:title="Closet" />

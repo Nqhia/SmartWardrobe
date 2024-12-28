@@ -28,6 +28,7 @@
             android:gravity="center"/>
 
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/usernameLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
@@ -52,6 +53,7 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/emailLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
@@ -76,6 +78,7 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/passwordLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
@@ -101,6 +104,7 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/confirmPasswordLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
@@ -144,7 +148,7 @@
             android:textColor="@color/black"/>
 
         <TextView
-            android:id="@+id/loginRedirectText"
+            android:id="@+id/loginLink"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Already have an account? Login"
@@ -152,5 +156,6 @@
             android:gravity="center"
             android:layout_marginTop="16dp"
             android:padding="8dp"/>
+
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -2,7 +2,9 @@
 agp = "8.5.2"
 desugar_jdk_libs = "2.1.4"
 firebaseBom = "33.7.0"
+firebaseBomVersion = "32.7.0"
 firebaseStorage = "21.0.1"
+googleServices = "4.4.2"
 junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
@@ -15,17 +17,25 @@ firebaseMessaging = "24.1.0"
 firebaseDatabase = "21.0.0"
 firebaseAuth = "23.1.0"
 firebaseFirestore = "25.1.1"
+multidex = "2.0.1"
 okhttp = "4.10.0"
+playServicesBase = "18.5.0"
 retrofit = "2.9.0"
 glide = "4.16.0"
 circle-imageview = "3.1.0"
+roundedimageview = "2.3.0"
 
 
 [libraries]
 converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "retrofit" }
 desugar_jdk_libs = { module = "com.android.tools:desugar_jdk_libs", version.ref = "desugar_jdk_libs" }
+firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
+firebase-bom-v3270 = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBomVersion" }
 firebase-storage = { module = "com.google.firebase:firebase-storage", version.ref = "firebaseStorage" }
+google-firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
+google-firebase-messaging = { module = "com.google.firebase:firebase-messaging" }
+google-services = { module = "com.google.gms:google-services", version.ref = "googleServices" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
@@ -38,11 +48,14 @@ firebase-messaging = { group = "com.google.firebase", name = "firebase-messaging
 firebase-database = { group = "com.google.firebase", name = "firebase-database", version.ref = "firebaseDatabase" }
 firebase-auth = { group = "com.google.firebase", name = "firebase-auth", version.ref = "firebaseAuth" }
 firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore", version.ref = "firebaseFirestore" }
+multidex = { module = "androidx.multidex:multidex", version.ref = "multidex" }
 okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
+play-services-base = { module = "com.google.android.gms:play-services-base", version.ref = "playServicesBase" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }
 glide-compiler = { module = "com.github.bumptech.glide:compiler", version.ref = "glide" }
 circle-imageview = { module = "de.hdodenhof:circleimageview", version.ref = "circle-imageview" }
+roundedimageview = { module = "com.makeramen:roundedimageview", version.ref = "roundedimageview" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

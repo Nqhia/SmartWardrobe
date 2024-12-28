@@ -6,6 +6,9 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="com.google.android.gms.permission.AD_ID"/>
 
     <uses-feature
         android:name="android.hardware.camera"
@@ -21,6 +24,9 @@
         android:theme="@style/Theme.SmartWaro"
         android:networkSecurityConfig="@xml/network_security_config"
         tools:targetApi="31">
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
         <activity
             android:name=".WelcomeActivity"
             android:exported="true">
@@ -29,11 +35,17 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".auth.RegisterActivity" />
-        <activity android:name=".auth.LoginActivity" />
-        <activity android:name=".auth.LogoutActivity"/>
+        <activity android:name=".auth.ui.RegisterActivity" />
+        <activity android:name=".auth.ui.LoginActivity" />
         <activity android:name=".auth.UpdateProfileActivity"/>
         <activity android:name=".settings.SettingsActivity"/>
+        <activity android:name=".chat.Chat_1Activity"
+            android:exported="false"/>
+        <activity android:name=".chat.ChatActivity"
+            android:exported="false"/>
+        <activity android:name=".chat.UsersActivity"
+            android:exported="false"/>
+
         <activity
             android:name=".SmartWardrobe"
             android:theme="@style/AppTheme"/>

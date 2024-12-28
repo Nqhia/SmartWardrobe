@@ -13,38 +13,44 @@ import androidx.fragment.app.Fragment;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.Objects;
 
-import vn.edu.usth.smartwaro.auth.LoginActivity;
+import vn.edu.usth.smartwaro.auth.ui.LoginActivity;
+import vn.edu.usth.smartwaro.chat.ChatActivity;
+import vn.edu.usth.smartwaro.utils.PreferenceManager;
 import vn.edu.usth.smartwaro.settings.SettingsActivity;
 import vn.edu.usth.smartwaro.fragment.WardrobeFragment;
-import vn.edu.usth.smartwaro.fragment.SocialFragment;
 import vn.edu.usth.smartwaro.fragment.MyClosetFragment;
 
 public class SmartWardrobe extends AppCompatActivity {
     private static final String PREFS_NAME = "MyAppPrefs";
     private static final String KEY_SELECTED_TAB = "selected_tab";
-
+    private static final String LOGIN_STATUS_KEY = "IsLoggedIn";
     private int selectedTab;
     private BottomNavigationView bottomNavigationView;
     private Toolbar toolbar;
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        // Check if user is logged in
-        if (FirebaseAuth.getInstance().getCurrentUser() == null) {
-            Intent intent = new Intent(this, LoginActivity.class);
-            startActivity(intent);
-            finish();
-        }
-    }
+    private FirebaseAuth firebaseAuth;
+    private FirebaseAuth.AuthStateListener authStateListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Initialize Firebase Auth
+        firebaseAuth = FirebaseAuth.getInstance();
+
+        // Check if user is logged in
+        if (firebaseAuth.getCurrentUser() == null) {
+            redirectToLogin();
+            return;  // Important: stop the execution of onCreate
+        }
+
         setContentView(R.layout.activity_smartwardrobe);
+
+        // Setup auth state listener
+        setupAuthStateListener();
 
         // Setup toolbar
         toolbar = findViewById(R.id.toolbar);
@@ -54,12 +60,42 @@ public class SmartWardrobe extends AppCompatActivity {
         // Setup bottom navigation
         setupBottomNavigation();
 
-        if (savedInstanceState == null) {
-            switchFragment(R.id.wardrobe); // Default tab
-        }
+        // Load saved tab or default
+        SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        selectedTab = prefs.getInt(KEY_SELECTED_TAB, R.id.wardrobe);
 
-        // Set initial fragment
-        switchFragment(selectedTab);
+        if (savedInstanceState == null) {
+            switchFragment(selectedTab);
+        }
+    }
+    @Override
+    protected void onStart() {
+        super.onStart();
+        firebaseAuth.addAuthStateListener(authStateListener);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (authStateListener != null) {
+            firebaseAuth.removeAuthStateListener(authStateListener);
+        }
+    }
+
+    private void setupAuthStateListener() {
+        authStateListener = firebaseAuth -> {
+            FirebaseUser user = firebaseAuth.getCurrentUser();
+            if (user == null) {
+                redirectToLogin();
+            }
+        };
+    }
+
+    private void redirectToLogin() {
+        Intent intent = new Intent(this, LoginActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        finish();
     }
 
     private void setupBottomNavigation() {
@@ -79,9 +115,7 @@ public class SmartWardrobe extends AppCompatActivity {
 
         if (itemId == R.id.wardrobe) {
             fragment = new WardrobeFragment();
-//        } else if (itemId == R.id.social) {
-//            fragment = new SocialFragment();
-        } else if (itemId == R.id.my_closet) {
+       } else if (itemId == R.id.my_closet) {
             fragment = new MyClosetFragment();
         }
 
@@ -108,6 +142,11 @@ public class SmartWardrobe extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int itemId = item.getItemId();
 
+        if (itemId == R.id.chatbox) {
+            Intent intent = new Intent(SmartWardrobe.this, ChatActivity.class);
+            startActivity(intent);
+            return true;
+        }
         if (itemId == R.id.setting_button) {
             startActivity(new Intent(this, SettingsActivity.class));
             return true;
@@ -120,19 +159,25 @@ public class SmartWardrobe extends AppCompatActivity {
     }
 
     private void logoutUser() {
-        FirebaseAuth.getInstance().signOut();
+        try {
+            // Đăng xuất Firebase
+            FirebaseAuth.getInstance().signOut();
 
-        // Clear selected tab preference
-        SharedPreferences.Editor editor = getSharedPreferences(PREFS_NAME, MODE_PRIVATE).edit();
-        editor.remove(KEY_SELECTED_TAB);
-        editor.apply();
+            // Clear all preferences
+            PreferenceManager preferenceManager = new PreferenceManager(getApplicationContext());
+            preferenceManager.clear(); // Xóa tất cả preferences
 
-        // Redirect to login
-        Intent intent = new Intent(this, LoginActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(intent);
-        finish();
+            // Redirect to login
+            Intent intent = new Intent(this, LoginActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+            finish();
 
-        Toast.makeText(this, "Logged out successfully", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Logged out successfully", Toast.LENGTH_SHORT).show();
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(this, "Logout failed", Toast.LENGTH_SHORT).show();
+        }
     }
+
 }

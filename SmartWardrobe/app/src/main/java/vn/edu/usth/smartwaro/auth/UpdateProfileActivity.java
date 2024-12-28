@@ -23,8 +23,9 @@ import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import vn.edu.usth.smartwaro.R;
+import vn.edu.usth.smartwaro.auth.utils.AuthenticationManager;
 import vn.edu.usth.smartwaro.network.FirebaseService;
-
+import vn.edu.usth.smartwaro.auth.utils.ValidationUtils;
 public class UpdateProfileActivity extends AppCompatActivity {
     private TextInputEditText usernameEditText, emailEditText;
     private CircleImageView avatarImageView;
@@ -103,7 +104,7 @@ public class UpdateProfileActivity extends AppCompatActivity {
         String newUsername = usernameEditText.getText().toString().trim();
 
         // Validate username
-        if (!AuthUtils.isValidUsername(newUsername)) {
+        if (!ValidationUtils.isValidUsername(newUsername)) {
             Toast.makeText(this, "Invalid username. Must be 3-20 characters.", Toast.LENGTH_SHORT).show();
             return;
         }

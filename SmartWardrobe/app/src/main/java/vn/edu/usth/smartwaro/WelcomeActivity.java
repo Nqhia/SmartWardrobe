@@ -1,8 +1,6 @@
 package vn.edu.usth.smartwaro;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,12 +17,16 @@ import androidx.viewpager2.widget.ViewPager2;
 import java.util.ArrayList;
 import java.util.List;
 
-import vn.edu.usth.smartwaro.auth.RegisterActivity;
+import vn.edu.usth.smartwaro.auth.ui.LoginActivity;
+import vn.edu.usth.smartwaro.auth.ui.RegisterActivity;
+import vn.edu.usth.smartwaro.databinding.ActivityWelcomeBinding;
+import vn.edu.usth.smartwaro.utils.Constants;
+import vn.edu.usth.smartwaro.utils.PreferenceManager;
 
 public class WelcomeActivity extends AppCompatActivity {
 
-    private static final String PREFS_NAME = "MyAppPrefs";
-    private static final String FIRST_LAUNCH_KEY = "is_first_launch";
+    private ActivityWelcomeBinding binding;
+    private PreferenceManager preferenceManager;
     private ViewPager2 viewPager;
     private Button btnStart;
     private WelcomeAdapter welcomeAdapter;
@@ -32,11 +34,23 @@ public class WelcomeActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        preferenceManager = new PreferenceManager(getApplicationContext());
 
-        if (!isFirstLaunch()) {
-            goToMainActivity();
+
+        // Check if user is already logged in
+        if (preferenceManager.getBoolean(Constants.KEY_IS_SIGNED_IN)) {
+            navigateToMain();
             return;
         }
+
+        // Check if first launch
+        if (!isFirstLaunch()) {
+            navigateToLogin();
+            return;
+        }
+
+        binding = ActivityWelcomeBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
         setContentView(R.layout.activity_welcome);
 
@@ -66,7 +80,6 @@ public class WelcomeActivity extends AppCompatActivity {
         btnStart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setFirstLaunchFlag(false);
                 Intent intent = new Intent(WelcomeActivity.this, RegisterActivity.class);
                 startActivity(intent);
                 finish();
@@ -74,7 +87,7 @@ public class WelcomeActivity extends AppCompatActivity {
         });
     }
 
-    // Welcome Page Model
+
     public static class WelcomePage {
         private int imageResourceId;
         private String title;
@@ -99,7 +112,6 @@ public class WelcomeActivity extends AppCompatActivity {
         }
     }
 
-    // Welcome Adapter
     public class WelcomeAdapter extends RecyclerView.Adapter<WelcomeAdapter.WelcomeViewHolder> {
         private List<WelcomePage> pages;
 
@@ -142,21 +154,32 @@ public class WelcomeActivity extends AppCompatActivity {
         }
     }
 
+
     private boolean isFirstLaunch() {
-        SharedPreferences prefs = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-        return prefs.getBoolean(FIRST_LAUNCH_KEY, true);
+        boolean isFirst = !preferenceManager.getBoolean(Constants.FIRST_LAUNCH_KEY);
+        if (isFirst) {
+            preferenceManager.putBoolean(Constants.FIRST_LAUNCH_KEY, true);
+        }
+        return isFirst;
     }
 
-    private void setFirstLaunchFlag(boolean isFirstLaunch) {
-        SharedPreferences prefs = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = prefs.edit();
-        editor.putBoolean(FIRST_LAUNCH_KEY, isFirstLaunch);
-        editor.apply();
-    }
 
-    private void goToMainActivity() {
-        Intent intent = new Intent(this, SmartWardrobe.class);
+    private void navigateToMain() {
+        Intent intent = new Intent(getApplicationContext(), SmartWardrobe.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
         finish();
+    }
+
+    private void navigateToLogin() {
+        Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        finish();
+    }
+
+    private void navigateToRegister() {
+        Intent intent = new Intent(getApplicationContext(), RegisterActivity.class);
+        startActivity(intent);
     }
 }

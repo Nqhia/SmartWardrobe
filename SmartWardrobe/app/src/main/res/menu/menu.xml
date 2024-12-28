@@ -11,4 +11,9 @@
         android:title="Logout"
         android:icon="@drawable/baseline_logout_24"
         app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/chatbox"
+        android:title="Chat"
+        android:icon="@drawable/ic_chat"
+        app:showAsAction="ifRoom" />
 </menu>

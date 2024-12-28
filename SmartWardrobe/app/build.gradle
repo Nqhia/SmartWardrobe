@@ -27,6 +27,9 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+    buildFeatures {
+        viewBinding true
+    }
 }
 
 dependencies {
@@ -53,6 +56,14 @@ dependencies {
     implementation libs.glide
     annotationProcessor libs.glide.compiler
     implementation libs.circle.imageview
+    implementation libs.firebase.analytics
+    implementation libs.multidex
+    implementation(libs.roundedimageview)
+    implementation(libs.google.services)
+    implementation platform(libs.firebase.bom.v3270)
+    implementation libs.google.firebase.messaging
+    implementation libs.google.firebase.analytics
+    implementation libs.play.services.base
 
 }
 
