@@ -2,9 +2,9 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/background_app_pastel"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/background_app_pastel">
+    android:layout_height="match_parent">
 
     <LinearLayout
         android:layout_width="0dp"
@@ -21,6 +21,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Create Account"
+            android:fontFamily="@font/agbalumo_regular"
             android:textColor="@android:color/black"
             android:textSize="28sp"
             android:textStyle="bold"
@@ -28,7 +29,6 @@
             android:gravity="center"/>
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/usernameLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
@@ -53,7 +53,6 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/emailLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
@@ -78,7 +77,6 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/passwordLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
@@ -104,7 +102,6 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/confirmPasswordLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
@@ -141,9 +138,9 @@
             android:id="@+id/registerButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:backgroundTint="@color/background_app"
             android:text="Register"
             android:layout_marginTop="16dp"
-            app:backgroundTint="@color/background_app"
             app:cornerRadius="30dp"
             android:textColor="@color/black"/>
 
@@ -152,10 +149,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Already have an account? Login"
+            android:fontFamily="@font/proximanova_regular"
             android:textColor="@android:color/black"
             android:gravity="center"
             android:layout_marginTop="16dp"
             android:padding="8dp"/>
-
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

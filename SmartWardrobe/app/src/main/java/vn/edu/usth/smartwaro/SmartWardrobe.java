@@ -23,6 +23,8 @@ import vn.edu.usth.smartwaro.utils.PreferenceManager;
 import vn.edu.usth.smartwaro.settings.SettingsActivity;
 import vn.edu.usth.smartwaro.fragment.WardrobeFragment;
 import vn.edu.usth.smartwaro.fragment.MyClosetFragment;
+import vn.edu.usth.smartwaro.fragment.ProfileFragment;
+import vn.edu.usth.smartwaro.fragment.CalendarFragment;
 
 public class SmartWardrobe extends AppCompatActivity {
     private static final String PREFS_NAME = "MyAppPrefs";
@@ -38,7 +40,6 @@ public class SmartWardrobe extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Initialize Firebase Auth
         firebaseAuth = FirebaseAuth.getInstance();
 
         // Check if user is logged in
@@ -62,7 +63,7 @@ public class SmartWardrobe extends AppCompatActivity {
 
         // Load saved tab or default
         SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
-        selectedTab = prefs.getInt(KEY_SELECTED_TAB, R.id.wardrobe);
+        selectedTab = prefs.getInt(KEY_SELECTED_TAB, R.id.stylist);
 
         if (savedInstanceState == null) {
             switchFragment(selectedTab);
@@ -101,22 +102,35 @@ public class SmartWardrobe extends AppCompatActivity {
     private void setupBottomNavigation() {
         bottomNavigationView = findViewById(R.id.bottom_nav);
         bottomNavigationView.setOnItemSelectedListener(item -> {
-            selectedTab = item.getItemId();
-            switchFragment(selectedTab);
+            int itemId = item.getItemId();
+            switchFragment(itemId);
+
+            // Save selected tab
+            SharedPreferences.Editor editor = getSharedPreferences(PREFS_NAME, MODE_PRIVATE).edit();
+            editor.putInt(KEY_SELECTED_TAB, itemId);
+            editor.apply();
+
             return true;
         });
-
-        // Set the initially selected tab
-        bottomNavigationView.setSelectedItemId(selectedTab);
     }
 
     private void switchFragment(int itemId) {
+        if (itemId == R.id.social) {
+            Intent intent = new Intent(this, ChatActivity.class);
+            startActivity(intent);
+            return;
+        }
+
         Fragment fragment = null;
 
-        if (itemId == R.id.wardrobe) {
+        if (itemId == R.id.stylist) {
             fragment = new WardrobeFragment();
-       } else if (itemId == R.id.my_closet) {
+        } else if (itemId == R.id.my_closet) {
             fragment = new MyClosetFragment();
+        } else if (itemId == R.id.profile) {
+            fragment = new ProfileFragment();
+        } else if (itemId == R.id.calendar) {
+            fragment = new CalendarFragment();
         }
 
         if (fragment != null) {
@@ -142,42 +156,14 @@ public class SmartWardrobe extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int itemId = item.getItemId();
 
-        if (itemId == R.id.chatbox) {
-            Intent intent = new Intent(SmartWardrobe.this, ChatActivity.class);
-            startActivity(intent);
-            return true;
-        }
         if (itemId == R.id.setting_button) {
             startActivity(new Intent(this, SettingsActivity.class));
-            return true;
-        } else if (itemId == R.id.logout_button) {
-            logoutUser();
             return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
 
-    private void logoutUser() {
-        try {
-            // Đăng xuất Firebase
-            FirebaseAuth.getInstance().signOut();
 
-            // Clear all preferences
-            PreferenceManager preferenceManager = new PreferenceManager(getApplicationContext());
-            preferenceManager.clear(); // Xóa tất cả preferences
-
-            // Redirect to login
-            Intent intent = new Intent(this, LoginActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(intent);
-            finish();
-
-            Toast.makeText(this, "Logged out successfully", Toast.LENGTH_SHORT).show();
-        } catch (Exception e) {
-            e.printStackTrace();
-            Toast.makeText(this, "Logout failed", Toast.LENGTH_SHORT).show();
-        }
-    }
 
 }

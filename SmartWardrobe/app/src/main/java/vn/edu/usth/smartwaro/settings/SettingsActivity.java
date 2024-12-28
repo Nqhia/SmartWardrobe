@@ -1,74 +1,58 @@
 package vn.edu.usth.smartwaro.settings;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 
-import vn.edu.usth.smartwaro.fragment.ProfileFragment;
+import com.google.firebase.auth.FirebaseAuth;
+
 import vn.edu.usth.smartwaro.R;
+import vn.edu.usth.smartwaro.auth.ui.LoginActivity;
+import vn.edu.usth.smartwaro.utils.PreferenceManager;
 
 public class SettingsActivity extends AppCompatActivity {
-    ImageButton themeButton, profileButton;
-    ImageButton backButton;
-
+    ImageButton themeButton, logoutButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setting);
 
-       // themeButton = findViewById(R.id.theme_button);
-        profileButton = findViewById(R.id.profile_button);
-//        backButton = findViewById(R.id.close_setting_button);
-//
-//        backButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Intent intent = new Intent(SettingActivity.this, MainActivity.class);
-//                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-//                startActivity(intent);
-//                finish();
-//            }
-//        });
+        themeButton = findViewById(R.id.theme_button);
 
+        logoutButton = findViewById(R.id.logoutButton);
 
-//        themeButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                loadThemeFragment();
-//            }
-//        });
-
-        profileButton.setOnClickListener(new View.OnClickListener() {
+        logoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                loadProfileFragment();
+            public void onClick(View v) {
+                logoutUser();
             }
         });
     }
 
+    private void logoutUser() {
+        try {
+            // Đăng xuất Firebase
+            FirebaseAuth.getInstance().signOut();
 
-//    public void loadThemeFragment() {
-//
-//        Fragment themeFragment = new ThemeFragment();
-//        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-//        transaction.replace(R.id.setting_container, themeFragment);
-//        transaction.addToBackStack(null);
-//        transaction.commit();
-//    }
+            // Clear all preferences
+            PreferenceManager preferenceManager = new PreferenceManager(getApplicationContext());
+            preferenceManager.clear(); // Xóa tất cả preferences
 
-    public void loadProfileFragment() {
+            // Redirect to login
+            Intent intent = new Intent(this, LoginActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+            finish();
 
-
-        Fragment profileFragment = new ProfileFragment();
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.setting_container, profileFragment);
-        transaction.addToBackStack(null);
-        transaction.commit();
+            Toast.makeText(this, "Logged out successfully", Toast.LENGTH_SHORT).show();
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(this, "Logout failed", Toast.LENGTH_SHORT).show();
+        }
     }
-
 }

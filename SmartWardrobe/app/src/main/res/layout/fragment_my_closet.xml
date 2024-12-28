@@ -27,11 +27,16 @@
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabAddItem"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="50dp"
+        android:layout_height="60dp"
         android:layout_gravity="bottom|end"
         android:layout_margin="16dp"
-        android:src="@drawable/ic_add"
-        app:fabSize="normal" />
+        app:cornerRadius="50dp"
+        android:text="+"
+        android:textColor="@color/black"
+        android:textSize="28sp"
+        android:fontFamily="@font/proximanova_extrabold"
+        android:backgroundTint="@color/background_app"
+        app:rippleColor="@android:color/transparent" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

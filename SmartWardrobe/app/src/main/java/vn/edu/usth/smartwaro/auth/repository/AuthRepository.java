@@ -8,6 +8,7 @@ import com.google.firebase.Timestamp;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import vn.edu.usth.smartwaro.utils.Constants;
 import vn.edu.usth.smartwaro.auth.AuthCallback;
@@ -26,7 +27,7 @@ public class AuthRepository {
         firebaseAuth.signInWithEmailAndPassword(email, password)
                 .addOnSuccessListener(authResult -> {
                     // After successful auth, get user data from Firestore
-                    getUserData(authResult.getUser().getUid(), callback);
+                    getUserData(Objects.requireNonNull(authResult.getUser()).getUid(), callback);
 
                     // Update last login time
                     updateLastLogin(authResult.getUser().getUid());

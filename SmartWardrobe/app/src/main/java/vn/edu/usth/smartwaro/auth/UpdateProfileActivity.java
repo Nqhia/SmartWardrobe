@@ -146,12 +146,10 @@ public class UpdateProfileActivity extends AppCompatActivity {
         if (requestCode == REQUEST_CODE_PICK_IMAGE && resultCode == RESULT_OK && data != null) {
             selectedImageUri = data.getData();
             if (selectedImageUri != null) {
-                // Update avatar image
+
                 Glide.with(this)
                         .load(selectedImageUri)
                         .into(avatarImageView);
-
-                // Upload avatar
                 uploadAvatar();
             }
         }

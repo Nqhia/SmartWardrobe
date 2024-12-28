@@ -6,14 +6,5 @@
         android:title="setting"
         app:showAsAction="ifRoom"
     />
-    <item
-        android:id="@+id/logout_button"
-        android:title="Logout"
-        android:icon="@drawable/baseline_logout_24"
-        app:showAsAction="ifRoom" />
-    <item
-        android:id="@+id/chatbox"
-        android:title="Chat"
-        android:icon="@drawable/ic_chat"
-        app:showAsAction="ifRoom" />
+
 </menu>

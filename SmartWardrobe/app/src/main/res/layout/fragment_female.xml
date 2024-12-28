@@ -1,741 +1,412 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@drawable/fittingroom"
-    android:orientation="horizontal">
+    android:background="@drawable/royal_bg">
 
-    <FrameLayout
-        android:id="@+id/model_container"
-        android:layout_width="0dp"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="2">
+        android:orientation="horizontal">
 
-        <ImageView
-            android:id="@+id/model_female"
-            android:layout_width="match_parent"
+        <FrameLayout
+            android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:scaleType="centerCrop"
-            android:src="@drawable/female"
-            android:visibility="visible" />
+            android:layout_weight="1">
+        </FrameLayout>
 
-        <ImageView
-            android:id="@+id/top_blazer"
-            android:layout_width="match_parent"
+        <!-- View model -->
+        <FrameLayout
+            android:id="@+id/model_container"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:scaleType="centerCrop"
-            android:src="@drawable/top_blazer"
-            android:visibility="gone" />
+            android:layout_weight="3">
 
-        <ImageView
-            android:id="@+id/top_cardigan"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="centerCrop"
-            android:src="@drawable/top_cardigan"
-            android:visibility="gone" />
-        <ImageView
-            android:id="@+id/top_tanktop"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="centerCrop"
-            android:src="@drawable/top_tanktop"
-            android:visibility="gone" />
-        <ImageView
-            android:id="@+id/top_sweater_turtleneck"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="centerCrop"
-            android:src="@drawable/top_sweater_turtleneck"
-            android:visibility="gone" />
-        <ImageView
-            android:id="@+id/top_tshirt_mockneck"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="centerCrop"
-            android:src="@drawable/top_tshirt_mockneck"
-            android:visibility="gone" />
-        <ImageView
-            android:id="@+id/bot_jean"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="centerCrop"
-            android:src="@drawable/bot_jean"
-            android:visibility="gone" />
-        <ImageView
-            android:id="@+id/bot_legging"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="centerCrop"
-            android:src="@drawable/bot_legging"
-            android:visibility="gone" />
-        <ImageView
-            android:id="@+id/bot_skirt"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="centerCrop"
-            android:src="@drawable/bot_skirt"
-            android:visibility="gone" />
-        <ImageView
-            android:id="@+id/full_blazer"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="centerCrop"
-            android:src="@drawable/full_blazer"
-            android:visibility="gone" />
-        <ImageView
-            android:id="@+id/full_tanktop"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="centerCrop"
-            android:src="@drawable/full_tanktop"
-            android:visibility="gone" />
-        <ImageView
-            android:id="@+id/tanktop_jeans"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="centerCrop"
-            android:src="@drawable/tanktop_jeans"
-            android:visibility="gone" />
-        <ImageView
-            android:id="@+id/tanktop_skirt"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="centerCrop"
-            android:src="@drawable/tanktop_skirt"
-            android:visibility="gone" />
-        <ImageView
-            android:id="@+id/tshirt_mockneck_legging"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="centerCrop"
-            android:src="@drawable/tshirt_mockneck_legging"
-            android:visibility="gone" />
-        <ImageView
-            android:id="@+id/full_tshirt_mockneck"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="centerCrop"
-            android:src="@drawable/full_tshirt_mockneck"
-            android:visibility="gone" />
-        <ImageView
-            android:id="@+id/tshirt_mockneck_skirt"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="centerCrop"
-            android:src="@drawable/tshirt_mockneck_skirt"
-            android:visibility="gone" />
-        <ImageView
-            android:id="@+id/sweater_legging"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="centerCrop"
-            android:src="@drawable/sweater_legging"
-            android:visibility="gone" />
-        <ImageView
-            android:id="@+id/sweater_jeans"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="centerCrop"
-            android:src="@drawable/sweater_jeans"
-            android:visibility="gone" />
-        <ImageView
-            android:id="@+id/sweater_skirt"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="centerCrop"
-            android:src="@drawable/sweater_skirt"
-            android:visibility="gone" />
-        <ImageView
-            android:id="@+id/cardigan_legging"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="centerCrop"
-            android:src="@drawable/cardigan_legging"
-            android:visibility="gone" />
-        <ImageView
-            android:id="@+id/cardigan_jeans"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="centerCrop"
-            android:src="@drawable/cardigan_jeans"
-            android:visibility="gone" />
-        <ImageView
-            android:id="@+id/cardigan_skirt"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="centerCrop"
-            android:src="@drawable/cardigan_skirt"
-            android:visibility="gone" />
-        <ImageView
-            android:id="@+id/tube_purple"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="centerCrop"
-            android:src="@drawable/tube_purple"
-            android:visibility="gone" />
-        <ImageView
-            android:id="@+id/dress_tube"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="centerCrop"
-            android:src="@drawable/dress_tube"
-            android:visibility="gone" />
-        <ImageView
-            android:id="@+id/dress_red"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="centerCrop"
-            android:src="@drawable/dress_red"
-            android:visibility="gone" />
-        <ImageView
-            android:id="@+id/top_dress"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="centerCrop"
-            android:src="@drawable/top_dress"
-            android:visibility="gone" />
-        <ImageView
-            android:id="@+id/dress_black"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="centerCrop"
-            android:src="@drawable/dress_black"
-            android:visibility="gone" />
-        <ImageView
-            android:id="@+id/dress_white"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="centerCrop"
-            android:src="@drawable/dress_white"
-            android:visibility="gone" />
+            <ImageView
+                android:id="@+id/model_female"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/female"
+                android:scaleType="centerCrop"
+                android:visibility="visible" />
 
-    </FrameLayout>
+            <ImageView
+                android:id="@+id/bot_female"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:visibility="gone" />
 
+            <ImageView
+                android:id="@+id/top_female"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:visibility="gone" />
 
-    <ScrollView
-        android:id="@+id/scroll_view"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:padding="8dp">
+            <ImageView
+                android:id="@+id/tube_dress"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:visibility="gone" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+            <ImageView
+                android:id="@+id/female_footwear"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:visibility="gone" />
+        </FrameLayout>
 
-            <!-- Card 1 -->
-            <androidx.cardview.widget.CardView
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_gravity="center"
-                android:layout_marginBottom="10dp"
-                android:backgroundTint="@color/white"
-                app:cardCornerRadius="8dp"
-                app:cardElevation="4dp">
+        <!-- Choose items view -->
+        <FrameLayout
+            android:id="@+id/right_container"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
 
-                <ImageButton
-                    android:id="@+id/female_icon"
+            <!-- Type view -->
+            <ScrollView
+                android:id="@+id/primary_scroll_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="8dp">
+
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@null"
-                    android:scaleType="centerInside"
-                    android:src="@drawable/female_icon" />
-            </androidx.cardview.widget.CardView>
+                    android:gravity="end"
+                    android:orientation="vertical">
 
-            <!-- Card 2 -->
-            <androidx.cardview.widget.CardView
-                android:layout_width="100dp"
-                android:layout_height="100dp"
+
+                        <Button
+                            android:id="@+id/type_top_female"
+                            android:layout_width="50dp"
+                            android:layout_height="60dp"
+                            app:cornerRadius="30dp"
+                            android:backgroundTint="@color/white"
+                            android:drawableRight="@drawable/top_category"
+                            android:layout_margin="5dp" />
+
+                    <Button
+                        android:layout_width="50dp"
+                        android:layout_height="60dp"
+                        app:cornerRadius="30dp"
+                        android:backgroundTint="@color/white"
+                        android:drawableRight="@drawable/coat"
+                        android:layout_margin="5dp" />
+
+                        <Button
+                            android:id="@+id/type_bot_female"
+                            android:layout_width="50dp"
+                            android:layout_height="60dp"
+                            app:cornerRadius="30dp"
+                            android:backgroundTint="@color/white"
+                            android:drawableRight="@drawable/trousers_category"
+                            android:layout_margin="5dp" />
+
+                        <Button
+                            android:id="@+id/type_skirt_female"
+                            android:layout_width="50dp"
+                            android:layout_height="60dp"
+                            app:cornerRadius="30dp"
+                            android:backgroundTint="@color/white"
+                            android:drawableRight="@drawable/skirt_category"
+                            android:layout_margin="5dp" />
+
+                        <Button
+                            android:id="@+id/type_dress_female"
+                            android:layout_width="50dp"
+                            android:layout_height="60dp"
+                            app:cornerRadius="30dp"
+                            android:backgroundTint="@color/white"
+                            android:drawableRight="@drawable/dress_category"
+                            android:layout_margin="5dp" />
+
+                        <Button
+                            android:id="@+id/type_footware_female"
+                            android:layout_width="50dp"
+                            android:layout_height="60dp"
+                            app:cornerRadius="30dp"
+                            android:backgroundTint="@color/white"
+                            android:drawableRight="@drawable/heels_category"
+                            android:layout_margin="5dp" />
+
+                        <Button
+                            android:id="@+id/type_skin_female"
+                            android:layout_width="50dp"
+                            android:layout_height="60dp"
+                            app:cornerRadius="30dp"
+                            android:backgroundTint="@color/white"
+                            android:drawableRight="@drawable/skin_category"
+                            android:layout_margin="5dp" />
+
+                    <Button
+                        android:layout_width="50dp"
+                        android:layout_height="60dp"
+                        app:cornerRadius="30dp"
+                        android:backgroundTint="@color/white"
+                        android:drawableRight="@drawable/hair"
+                        android:layout_margin="5dp" />
+
+                    <Button
+                        android:layout_width="50dp"
+                        android:layout_height="60dp"
+                        app:cornerRadius="30dp"
+                        android:backgroundTint="@color/white"
+                        android:drawableRight="@drawable/lipstick"
+                        android:layout_margin="5dp" />
+
+                    <Button
+                        android:layout_width="50dp"
+                        android:layout_height="60dp"
+                        app:cornerRadius="30dp"
+                        android:backgroundTint="@color/white"
+                        android:drawableRight="@drawable/necklace"
+                        android:layout_margin="5dp" />
+
+                </LinearLayout>
+            </ScrollView>
+
+            <!-- View áo -->
+            <ScrollView
+                android:id="@+id/overlay_scroll_view_tops"
+                android:layout_width="match_parent"
                 android:layout_gravity="center"
-                android:layout_marginBottom="10dp"
-                android:backgroundTint="@color/white"
-                app:cardCornerRadius="8dp"
-                app:cardElevation="4dp">
+                android:layout_height="600dp"
+                android:background="@drawable/rounded_background"
+                android:visibility="gone">
 
-                <ImageButton
-                    android:id="@+id/top_blazer_icon"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@null"
-                    android:scaleType="centerInside"
-                    android:src="@drawable/top_blazer_icon" />
-            </androidx.cardview.widget.CardView>
+                    android:orientation="vertical"
+                    android:padding="8dp">
 
-            <!-- Card 3 -->
-            <androidx.cardview.widget.CardView
-                android:layout_width="100dp"
-                android:layout_height="100dp"
+
+                        <ImageButton
+                            android:id="@+id/top_blazer_icon"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@color/white"
+                            android:scaleType="centerInside"
+                            android:src="@drawable/top_blazer_icon" />
+
+
+                        <ImageButton
+                            android:id="@+id/top_cardigan_icon"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@null"
+                            android:scaleType="centerInside"
+                            android:src="@drawable/top_cardigan_icon" />
+
+
+
+
+                        <ImageButton
+                            android:id="@+id/top_tanktop_icon"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@null"
+                            android:scaleType="centerInside"
+                            android:src="@drawable/top_tanktop_icon" />
+
+                        <ImageButton
+                            android:id="@+id/top_sweater_icon"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@null"
+                            android:scaleType="centerInside"
+                            android:src="@drawable/top_sweater_icon" />
+
+
+                        <ImageButton
+                            android:id="@+id/top_mockneck_icon"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@null"
+                            android:scaleType="centerInside"
+                            android:src="@drawable/top_mockneck_icon" />
+
+                </LinearLayout>
+            </ScrollView>
+
+            <!-- View quần -->
+            <ScrollView
+                android:id="@+id/overlay_scroll_view_bot"
+                android:layout_width="match_parent"
+                android:layout_height="600dp"
                 android:layout_gravity="center"
-                android:layout_marginBottom="10dp"
-                android:backgroundTint="@color/white"
-                app:cardCornerRadius="8dp"
-                app:cardElevation="4dp">
+                android:background="@drawable/rounded_background"
+                android:visibility="gone">
 
-                <ImageButton
-                    android:id="@+id/top_cardigan_icon"
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@null"
-                    android:scaleType="centerInside"
-                    android:src="@drawable/top_cardigan_icon" />
-            </androidx.cardview.widget.CardView>
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
 
-            <!-- Card 4 -->
-            <androidx.cardview.widget.CardView
-                android:layout_width="100dp"
-                android:layout_height="100dp"
+                        <ImageButton
+                            android:id="@+id/bot_jeans_icon"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@null"
+                            android:scaleType="centerInside"
+                            android:src="@drawable/bot_jeans_icon" />
+
+
+                        <ImageButton
+                            android:id="@+id/bot_legging_icon"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@null"
+                            android:scaleType="centerInside"
+                            android:src="@drawable/bot_legging_icon" />
+
+
+                </LinearLayout>
+            </ScrollView>
+
+            <!-- View chân váy -->
+            <ScrollView
+                android:id="@+id/overlay_scroll_view_skirt"
+                android:layout_width="match_parent"
                 android:layout_gravity="center"
-                android:layout_marginBottom="10dp"
-                android:backgroundTint="@color/white"
-                app:cardCornerRadius="8dp"
-                app:cardElevation="4dp">
+                android:layout_height="600dp"
+                android:visibility="gone"
+                android:background="@drawable/rounded_background"
+                >
 
-                <ImageButton
-                    android:id="@+id/top_tanktop_icon"
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@null"
-                    android:scaleType="centerInside"
-                    android:src="@drawable/top_tanktop_icon" />
-            </androidx.cardview.widget.CardView>
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
 
-            <!-- Card 5 -->
-            <androidx.cardview.widget.CardView
-                android:layout_width="100dp"
-                android:layout_height="100dp"
+                        <ImageButton
+                            android:id="@+id/bot_skirt_icon"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@null"
+                            android:scaleType="centerInside"
+                            android:src="@drawable/bot_skirt_icon" />
+
+                </LinearLayout>
+            </ScrollView>
+
+            <!-- View váy -->
+            <ScrollView
+                android:id="@+id/overlay_scroll_view_dress"
+                android:layout_width="match_parent"
                 android:layout_gravity="center"
-                android:layout_marginBottom="10dp"
-                android:backgroundTint="@color/white"
-                app:cardCornerRadius="8dp"
-                app:cardElevation="4dp">
+                android:layout_height="600dp"
+                android:visibility="gone"
+                android:background="@drawable/rounded_background"
+                >
 
-                <ImageButton
-                    android:id="@+id/top_sweater_icon"
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@null"
-                    android:scaleType="centerInside"
-                    android:src="@drawable/top_sweater_icon" />
-            </androidx.cardview.widget.CardView>
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
 
-            <!-- Card 6 -->
-            <androidx.cardview.widget.CardView
-                android:layout_width="100dp"
-                android:layout_height="100dp"
+                        <ImageButton
+                            android:id="@+id/tube_purple_icon"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@null"
+                            android:scaleType="centerInside"
+                            android:src="@drawable/tube_purple_icon" />
+
+
+                        <ImageButton
+                            android:id="@+id/black_tube_icon"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@null"
+                            android:scaleType="centerInside"
+                            android:src="@drawable/black_tube_icon" />
+
+
+                        <ImageButton
+                            android:id="@+id/tube_red_icon"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@null"
+                            android:scaleType="centerInside"
+                            android:src="@drawable/tube_red_icon" />
+
+
+
+                </LinearLayout>
+            </ScrollView>
+
+            <!-- View giày -->
+            <ScrollView
+                android:id="@+id/overlay_scroll_view_footware"
+                android:layout_width="match_parent"
+                android:layout_height="600dp"
                 android:layout_gravity="center"
-                android:layout_marginBottom="10dp"
-                android:backgroundTint="@color/white"
-                app:cardCornerRadius="8dp"
-                app:cardElevation="4dp">
+                android:visibility="gone"
+                android:background="@drawable/rounded_background"
+                >
 
-                <ImageButton
-                    android:id="@+id/top_mockneck_icon"
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@null"
-                    android:scaleType="centerInside"
-                    android:src="@drawable/top_mockneck_icon" />
-            </androidx.cardview.widget.CardView>
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
 
-            <androidx.cardview.widget.CardView
-                android:layout_width="100dp"
-                android:layout_height="100dp"
+                        <ImageButton
+                            android:id="@+id/female_loafer_icon"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@null"
+                            android:scaleType="centerInside"
+                            android:src="@drawable/female_loafer_icon" />
+
+                        <ImageButton
+                            android:id="@+id/female_heels_icon"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@null"
+                            android:scaleType="centerInside"
+                            android:src="@drawable/female_heels_icon" />
+
+                </LinearLayout>
+            </ScrollView>
+
+            <!-- View tone da -->
+            <ScrollView
+                android:id="@+id/overlay_scroll_view_skin_tone"
+                android:layout_width="match_parent"
+                android:layout_height="600dp"
                 android:layout_gravity="center"
-                android:layout_marginBottom="10dp"
-                android:backgroundTint="@color/white"
-                app:cardCornerRadius="8dp"
-                app:cardElevation="4dp">
+                android:visibility="gone"
+                android:background="@color/white">
 
-                <ImageButton
-                    android:id="@+id/bot_jeans_icon"
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@null"
-                    android:scaleType="centerInside"
-                    android:src="@drawable/bot_jeans_icon" />
-            </androidx.cardview.widget.CardView>
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
 
-            <androidx.cardview.widget.CardView
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_gravity="center"
-                android:layout_marginBottom="10dp"
-                android:backgroundTint="@color/white"
-                app:cardCornerRadius="8dp"
-                app:cardElevation="4dp">
+                        <ImageButton
+                            android:id="@+id/buttonChangeSkinColor"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@null"
+                            android:scaleType="centerInside"
+                            android:src="@drawable/skintone" />
 
-                <ImageButton
-                    android:id="@+id/bot_legging_icon"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@null"
-                    android:scaleType="centerInside"
-                    android:src="@drawable/bot_legging_icon" />
-            </androidx.cardview.widget.CardView>
+                </LinearLayout>
+            </ScrollView>
 
-            <androidx.cardview.widget.CardView
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_gravity="center"
-                android:layout_marginBottom="10dp"
-                android:backgroundTint="@color/white"
-                app:cardCornerRadius="8dp"
-                app:cardElevation="4dp">
 
-                <ImageButton
-                    android:id="@+id/bot_skirt_icon"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@null"
-                    android:scaleType="centerInside"
-                    android:src="@drawable/bot_skirt_icon" />
-            </androidx.cardview.widget.CardView>
 
-            <androidx.cardview.widget.CardView
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_gravity="center"
-                android:layout_marginBottom="10dp"
-                android:backgroundTint="@color/white"
-                app:cardCornerRadius="8dp"
-                app:cardElevation="4dp">
-
-                <ImageButton
-                    android:id="@+id/full_blazer_icon"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@null"
-                    android:scaleType="centerInside"
-                    android:src="@drawable/full_blazer_icon" />
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_gravity="center"
-                android:layout_marginBottom="10dp"
-                android:backgroundTint="@color/white"
-                app:cardCornerRadius="8dp"
-                app:cardElevation="4dp">
-
-                <ImageButton
-                    android:id="@+id/tanktop_legging_icon"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@null"
-                    android:scaleType="centerInside"
-                    android:src="@drawable/tanktop_legging_icon" />
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_gravity="center"
-                android:layout_marginBottom="10dp"
-                android:backgroundTint="@color/white"
-                app:cardCornerRadius="8dp"
-                app:cardElevation="4dp">
-
-                <ImageButton
-                    android:id="@+id/tanktop_jeans_icon"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@null"
-                    android:scaleType="centerInside"
-                    android:src="@drawable/tanktop_jeans_icon" />
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_gravity="center"
-                android:layout_marginBottom="10dp"
-                android:backgroundTint="@color/white"
-                app:cardCornerRadius="8dp"
-                app:cardElevation="4dp">
-
-                <ImageButton
-                    android:id="@+id/tanktop_skirt_icon"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@null"
-                    android:scaleType="centerInside"
-                    android:src="@drawable/tanktop_skirt_icon" />
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_gravity="center"
-                android:layout_marginBottom="10dp"
-                android:backgroundTint="@color/white"
-                app:cardCornerRadius="8dp"
-                app:cardElevation="4dp">
-
-                <ImageButton
-                    android:id="@+id/mockneck_legging_icon"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@null"
-                    android:scaleType="centerInside"
-                    android:src="@drawable/mockneck_legging_icon" />
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_gravity="center"
-                android:layout_marginBottom="10dp"
-                android:backgroundTint="@color/white"
-                app:cardCornerRadius="8dp"
-                app:cardElevation="4dp">
-
-                <ImageButton
-                    android:id="@+id/mockneck_jeans_icon"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@null"
-                    android:scaleType="centerInside"
-                    android:src="@drawable/mockneck_jeans_icon" />
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_gravity="center"
-                android:layout_marginBottom="10dp"
-                android:backgroundTint="@color/white"
-                app:cardCornerRadius="8dp"
-                app:cardElevation="4dp">
-
-                <ImageButton
-                    android:id="@+id/mockneck_skirt_icon"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@null"
-                    android:scaleType="centerInside"
-                    android:src="@drawable/mockneck_skirt_icon" />
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_gravity="center"
-                android:layout_marginBottom="10dp"
-                android:backgroundTint="@color/white"
-                app:cardCornerRadius="8dp"
-                app:cardElevation="4dp">
-
-                <ImageButton
-                    android:id="@+id/sweater_legging_icon"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@null"
-                    android:scaleType="centerInside"
-                    android:src="@drawable/sweater_legging_icon" />
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_gravity="center"
-                android:layout_marginBottom="10dp"
-                android:backgroundTint="@color/white"
-                app:cardCornerRadius="8dp"
-                app:cardElevation="4dp">
-
-                <ImageButton
-                    android:id="@+id/sweater_jeans_icon"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@null"
-                    android:scaleType="centerInside"
-                    android:src="@drawable/sweater_jeans_icon" />
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_gravity="center"
-                android:layout_marginBottom="10dp"
-                android:backgroundTint="@color/white"
-                app:cardCornerRadius="8dp"
-                app:cardElevation="4dp">
-
-                <ImageButton
-                    android:id="@+id/sweater_skirt_icon"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@null"
-                    android:scaleType="centerInside"
-                    android:src="@drawable/sweater_skirt_icon" />
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_gravity="center"
-                android:layout_marginBottom="10dp"
-                android:backgroundTint="@color/white"
-                app:cardCornerRadius="8dp"
-                app:cardElevation="4dp">
-
-                <ImageButton
-                    android:id="@+id/cardigan_legging_icon"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@null"
-                    android:scaleType="centerInside"
-                    android:src="@drawable/cardigan_legging_icon" />
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_gravity="center"
-                android:layout_marginBottom="10dp"
-                android:backgroundTint="@color/white"
-                app:cardCornerRadius="8dp"
-                app:cardElevation="4dp">
-
-                <ImageButton
-                    android:id="@+id/cardigan_jeans_icon"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@null"
-                    android:scaleType="centerInside"
-                    android:src="@drawable/cardigan_jeans_icon" />
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_gravity="center"
-                android:layout_marginBottom="10dp"
-                android:backgroundTint="@color/white"
-                app:cardCornerRadius="8dp"
-                app:cardElevation="4dp">
-
-                <ImageButton
-                    android:id="@+id/cardigan_skirt_icon"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@null"
-                    android:scaleType="centerInside"
-                    android:src="@drawable/cardigan_skirt_icon" />
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_gravity="center"
-                android:layout_marginBottom="10dp"
-                android:backgroundTint="@color/white"
-                app:cardCornerRadius="8dp"
-                app:cardElevation="4dp">
-
-                <ImageButton
-                    android:id="@+id/tube_purple_icon"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@null"
-                    android:scaleType="centerInside"
-                    android:src="@drawable/tube_purple_icon" />
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_gravity="center"
-                android:layout_marginBottom="10dp"
-                android:backgroundTint="@color/white"
-                app:cardCornerRadius="8dp"
-                app:cardElevation="4dp">
-
-                <ImageButton
-                    android:id="@+id/black_tube_icon"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@null"
-                    android:scaleType="centerInside"
-                    android:src="@drawable/black_tube_icon" />
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_gravity="center"
-                android:layout_marginBottom="10dp"
-                android:backgroundTint="@color/white"
-                app:cardCornerRadius="8dp"
-                app:cardElevation="4dp">
-
-                <ImageButton
-                    android:id="@+id/tube_red_icon"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@null"
-                    android:scaleType="centerInside"
-                    android:src="@drawable/tube_red_icon" />
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_gravity="center"
-                android:layout_marginBottom="10dp"
-                android:backgroundTint="@color/white"
-                app:cardCornerRadius="8dp"
-                app:cardElevation="4dp">
-
-                <ImageButton
-                    android:id="@+id/dress_purple_icon"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@null"
-                    android:scaleType="centerInside"
-                    android:src="@drawable/dress_purple_icon" />
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_gravity="center"
-                android:layout_marginBottom="10dp"
-                android:backgroundTint="@color/white"
-                app:cardCornerRadius="8dp"
-                app:cardElevation="4dp">
-
-                <ImageButton
-                    android:id="@+id/black_dress_icon"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@null"
-                    android:scaleType="centerInside"
-                    android:src="@drawable/black_dress_icon" />
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_gravity="center"
-                android:layout_marginBottom="10dp"
-                android:backgroundTint="@color/white"
-                app:cardCornerRadius="8dp"
-                app:cardElevation="4dp">
-
-                <ImageButton
-                    android:id="@+id/dress_white_icon"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@null"
-                    android:scaleType="centerInside"
-                    android:src="@drawable/dress_white_icon" />
-            </androidx.cardview.widget.CardView>
-        </LinearLayout>
-    </ScrollView>
-
-</LinearLayout>
+        </FrameLayout>
+    </LinearLayout>
+</FrameLayout>

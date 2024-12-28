@@ -2,9 +2,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp"
-    android:orientation="vertical"
-    style="@style/Screen">
+    android:orientation="vertical">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
@@ -41,7 +39,7 @@
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="7dp"
         android:background="@color/white"
-        app:itemIconTint="@color/bottom_nav_icon_color"
+        app:itemIconTint="@color/bot_nav_color"
         app:itemTextColor="@color/black"
         app:menu="@menu/menu_bottom" />
 

@@ -16,6 +16,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Add new item"
+            android:fontFamily="@font/agbalumo_regular"
             android:textStyle="bold"
             android:textAlignment="center"
             android:textSize="24sp"
@@ -61,10 +62,10 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="90dp"
                     android:text="Choose Photo"
+                    android:fontFamily="@font/agbalumo_regular"
                     android:textAlignment="center"
                     android:textColor="@color/black"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
+                    android:textSize="16sp" />
             </RelativeLayout>
         </androidx.cardview.widget.CardView>
 
@@ -102,7 +103,7 @@
                     android:textAlignment="center"
                     android:textColor="@color/black"
                     android:textSize="16sp"
-                    android:textStyle="bold" />
+                    android:fontFamily="@font/agbalumo_regular" />
             </RelativeLayout>
         </androidx.cardview.widget.CardView>
 

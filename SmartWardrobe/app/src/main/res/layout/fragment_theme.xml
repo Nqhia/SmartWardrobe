@@ -1,0 +1,50 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <RadioGroup
+        android:id="@+id/theme_radio_group"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <RadioButton
+            android:id="@+id/theme_light"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Light" />
+
+        <RadioButton
+            android:id="@+id/theme_dark"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Dark" />
+
+        <RadioButton
+            android:id="@+id/theme_classicLight"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Classic Light" />
+
+        <RadioButton
+            android:id="@+id/theme_classicDark"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Classic Dark" />
+
+        <RadioButton
+            android:id="@+id/theme_pearlDark"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Pearl Dark" />
+    </RadioGroup>
+
+    <Button
+        android:id="@+id/apply_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Apply Theme"
+        android:textColor="?attr/textFillColor"
+        android:layout_marginTop="16dp" />
+</LinearLayout>
