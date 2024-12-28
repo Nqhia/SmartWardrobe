@@ -6,17 +6,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:animateLayoutChanges="true"
-    android:background="@color/primary"
+    android:background="@color/background_app"
     tools:context=".chat.UsersActivity">
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/imageBack"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
         android:layout_marginStart="16dp"
         android:layout_marginLeft="16dp"
         android:layout_marginTop="12dp"
-        android:background="@color/icon_background"
+        android:background="@color/background_app"
         android:src="@drawable/ic_back"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -27,8 +27,8 @@
         android:layout_height="wrap_content"
         android:text="@string/select_user"
         android:textColor="@color/white"
-        android:textSize="14sp"
-        android:textStyle="bold"
+        android:textSize="18sp"
+        android:fontFamily="@font/proximanova_bold"
         app:layout_constraintBottom_toBottomOf="@id/imageBack"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -64,7 +64,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:textColor="@color/error"
+            android:textColor="@color/unselected_color"
             android:textSize="12sp"
             android:visibility="gone"/>
     </FrameLayout>

@@ -10,60 +10,76 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
+        android:orientation="vertical"
         android:layout_gravity="center_vertical">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:padding="8dp">
-
-                <ImageView
-                    android:id="@+id/male_model"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="500dp"
-                    android:layout_marginLeft="50dp"
-                    android:src="@drawable/male"
-                    android:scaleType="centerCrop" />
-
-                <ImageView
-                    android:id="@+id/female_model"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="500dp"
-                    android:layout_marginRight="50dp"
-                    android:src="@drawable/model_start_mode_female"
-                    android:scaleType="centerCrop" />
-
-            </LinearLayout>
-
-
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="8dp">
 
             <LinearLayout
+                android:layout_width="70dp"
+                android:layout_height="match_parent" />
+
+            <!-- Male Model -->
+            <ImageView
+                android:id="@+id/male_model"
                 android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="500dp"
+                android:src="@drawable/model_start_mode_male"
+                android:scaleType="centerCrop"
+                android:translationX="-50dp"
+                android:visibility="invisible" />
+
+            <!-- Female Model -->
+            <ImageView
+                android:id="@+id/female_model"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="500dp"
+                android:layout_marginRight="70dp"
+                android:src="@drawable/model_start_mode_female"
+                android:scaleType="centerCrop"
+                android:translationX="50dp"
+                android:visibility="invisible" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="-75dp"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/button_male"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="8dp">
+                android:layout_marginTop="10dp"
+                app:cornerRadius="50dp"
+                android:fontFamily="@font/agbalumo_regular"
+                android:text="Style me"
+                android:translationY="-50dp"
+                android:visibility="invisible"
+                android:textAllCaps="false"
+                android:backgroundTint="#1ACCCCCC" />
 
-                <ImageButton
-                    android:id="@+id/button_male"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:src="@drawable/check"
-                    android:backgroundTint="@android:color/transparent" />
-
-                <ImageButton
-                    android:id="@+id/button_female"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:src="@drawable/check"
-                    android:backgroundTint="@android:color/transparent" />
-
-            </LinearLayout>
-
+            <Button
+                android:id="@+id/button_female"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                app:cornerRadius="50dp"
+                android:layout_marginLeft="200dp"
+                android:fontFamily="@font/agbalumo_regular"
+                android:translationY="-50dp"
+                android:visibility="visible"
+                android:text="Style me"
+                android:textAllCaps="false"
+                android:backgroundTint="#1ACCCCCC" />
+        </LinearLayout>
     </LinearLayout>
 </FrameLayout>

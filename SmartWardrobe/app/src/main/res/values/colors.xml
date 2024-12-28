@@ -23,8 +23,14 @@
     <color name="selected_color">#dc4e41</color>
     <color name="unselected_color">#808080</color>
 
-    <color name="background_app">#FF3366</color>
-    <color name="background_app_pastel">#ffe4e1</color>
+    <color name="background_app">#D15FEE</color>
+    <color name="background_app_pastel">#FFF0F5</color>
+
+    <!-- Add these missing colors -->
+    <color name="purple_500">#6200EE</color>
+    <color name="purple_700">#3700B3</color>
+    <color name="teal_200">#03DAC5</color>
+    <color name="teal_700">#018786</color>
 
     <color name="primary">#1C2E46</color>
     <color name="primary_dark">#142232</color>
@@ -34,8 +40,5 @@
     <color name="icon_background">#20FFFFFF</color>
     <color name="error">#B00020</color>
     <color name="received_message_background">#090D16</color>
-    <color name="purple_500">#6200EE</color>
-    <color name="purple_700">#3700B3</color>
-    <color name="teal_200">#03DAC5</color>
-    <color name="teal_700">#018786</color>
+
 </resources>

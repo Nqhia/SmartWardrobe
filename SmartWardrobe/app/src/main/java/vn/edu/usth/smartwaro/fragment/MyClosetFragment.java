@@ -17,7 +17,7 @@ import vn.edu.usth.smartwaro.mycloset.ClosetAdapter;
 public class MyClosetFragment extends Fragment {
     private ViewPager2 viewPager;
     private TabLayout tabLayout;
-    private FloatingActionButton fabAddItem;
+    private Button fabAddItem;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

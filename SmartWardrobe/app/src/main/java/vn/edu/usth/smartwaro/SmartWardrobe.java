@@ -123,12 +123,12 @@ public class SmartWardrobe extends AppCompatActivity {
 
         Fragment fragment = null;
 
-        if (itemId == R.id.stylist) {
-            fragment = new WardrobeFragment();
+        if (itemId == R.id.profile) {
+            fragment = new ProfileFragment();
         } else if (itemId == R.id.my_closet) {
             fragment = new MyClosetFragment();
-        } else if (itemId == R.id.profile) {
-            fragment = new ProfileFragment();
+        } else if (itemId == R.id.stylist) {
+            fragment = new WardrobeFragment();
         } else if (itemId == R.id.calendar) {
             fragment = new CalendarFragment();
         }
