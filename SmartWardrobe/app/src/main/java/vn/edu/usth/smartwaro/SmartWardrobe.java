@@ -5,7 +5,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -19,12 +18,11 @@ import java.util.Objects;
 
 import vn.edu.usth.smartwaro.auth.ui.LoginActivity;
 import vn.edu.usth.smartwaro.chat.ChatActivity;
-import vn.edu.usth.smartwaro.utils.PreferenceManager;
 import vn.edu.usth.smartwaro.settings.SettingsActivity;
 import vn.edu.usth.smartwaro.fragment.WardrobeFragment;
 import vn.edu.usth.smartwaro.fragment.MyClosetFragment;
 import vn.edu.usth.smartwaro.fragment.ProfileFragment;
-import vn.edu.usth.smartwaro.fragment.CalendarFragment;
+import vn.edu.usth.smartwaro.weather.WeatherFragment;
 
 public class SmartWardrobe extends AppCompatActivity {
     private static final String PREFS_NAME = "MyAppPrefs";
@@ -129,8 +127,8 @@ public class SmartWardrobe extends AppCompatActivity {
             fragment = new MyClosetFragment();
         } else if (itemId == R.id.stylist) {
             fragment = new WardrobeFragment();
-        } else if (itemId == R.id.calendar) {
-            fragment = new CalendarFragment();
+        } else if (itemId == R.id.weather) {
+            fragment = new WeatherFragment();
         }
 
         if (fragment != null) {

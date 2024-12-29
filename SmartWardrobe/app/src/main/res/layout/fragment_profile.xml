@@ -43,7 +43,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:weightSum="4"
-            android:gravity="center"
             android:orientation="horizontal">
 
             <LinearLayout
@@ -51,7 +50,8 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:gravity="center"
-                android:layout_weight="1">
+                android:layout_weight="1"
+                android:layout_marginTop="15dp">
 
                 <de.hdodenhof.circleimageview.CircleImageView
                     android:id="@+id/avatarImageView"
@@ -67,70 +67,33 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:orientation="vertical"
+                android:layout_marginStart="100dp"
+                android:layout_marginTop="30dp"
                 android:layout_weight="1">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/proximanova_bold"
-                    android:textColor="@color/black"
-                    android:textStyle="bold"
-                    android:text="10" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/proximanova_bold"
-                    android:textColor="@color/black"
-                    android:text="friends" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:orientation="vertical"
-                android:layout_weight="1">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/proximanova_bold"
+                    android:text="10"
                     android:textStyle="bold"
                     android:textColor="@color/black"
-                    android:text="23" />
+                    android:textSize="20dp"
+                    android:fontFamily="@font/proximanova_regular"/>
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                <Button
+                    android:id="@+id/friendsButton"
+                    android:layout_width="100dp"
+                    android:layout_height="50dp"
+                    android:text="Friends"
                     android:fontFamily="@font/proximanova_bold"
-                    android:textColor="@color/black"
-                    android:text="garments" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:orientation="vertical"
-                android:layout_weight="1">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/proximanova_bold"
-                    android:textColor="@color/black"
                     android:textStyle="bold"
-                    android:text="14" />
+                    android:textAllCaps="false"
+                    android:backgroundTint="@color/black"
+                    app:cornerRadius="40dp"
+                    android:textColor="@color/white"
+                    android:layout_marginLeft="6dp"
+                    android:layout_marginRight="6dp" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/proximanova_bold"
-                    android:textColor="@color/black"
-                    android:text="posts" />
 
             </LinearLayout>
 
@@ -148,6 +111,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/proximanova_bold"
                 android:textSize="16sp"
+                android:text="Username"
                 android:textColor="@color/black"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
