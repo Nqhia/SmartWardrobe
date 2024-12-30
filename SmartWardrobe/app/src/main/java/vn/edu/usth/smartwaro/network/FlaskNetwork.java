@@ -14,7 +14,10 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.ArrayList;
+
 
 import okhttp3.HttpUrl;
 import okhttp3.MediaType;
@@ -30,15 +33,27 @@ import vn.edu.usth.smartwaro.utils.FileUtils;
 
 public class FlaskNetwork {
     private static final String TAG = "FlaskNetwork";
-    public static final String BASE_URL = "http://192.168.91.113:5001";
+    public static final String BASE_URL = "http://192.168.91.101:5000";
     private final OkHttpClient client;
+    public static final String CATEGORY_UNCATEGORIZED = "uncategorized";
+    public static final String CATEGORY_LONG_SLEEVES = "long sleeves";
+    public static final String CATEGORY_SHORT_SLEEVES = "short sleeves";
+    public static final String CATEGORY_LONG_LEGGINGS = "long leggings";
+    public static final String CATEGORY_SHORT_LEGGINGS = "short leggings";
 
-    public FlaskNetwork() {
-        client = new OkHttpClient.Builder()
-                .connectTimeout(30, TimeUnit.SECONDS)
-                .writeTimeout(30, TimeUnit.SECONDS)
-                .readTimeout(30, TimeUnit.SECONDS)
-                .build();
+    public interface OnCategoryOperationListener {
+        void onSuccess(String message);
+        void onError(String message);
+    }
+
+    public interface OnMoveImageListener {
+        void onSuccess(String newCategory);
+        void onError(String message);
+    }
+
+    public interface OnCategoriesLoadedListener {
+        void onSuccess(List<String> categories);
+        void onError(String message);
     }
 
     public interface OnBackgroundRemovalListener {
@@ -58,6 +73,20 @@ public class FlaskNetwork {
         void onError(String message);
     }
 
+    public interface OnDeleteImagesListener {
+        void onSuccess(String[] deletedFiles, String[] failedFiles);
+        void onError(String message);
+    }
+
+    public FlaskNetwork() {
+        client = new OkHttpClient.Builder()
+                .connectTimeout(30, TimeUnit.SECONDS)
+                .writeTimeout(30, TimeUnit.SECONDS)
+                .readTimeout(30, TimeUnit.SECONDS)
+                .build();
+    }
+
+
     private String getCurrentUserId() {
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         if (currentUser == null) {
@@ -65,6 +94,7 @@ public class FlaskNetwork {
         }
         return currentUser.getUid();
     }
+
 
     public void removeBackground(Context context, Uri imageUri, OnBackgroundRemovalListener listener) {
         new Thread(() -> {
@@ -119,7 +149,7 @@ public class FlaskNetwork {
         }).start();
     }
 
-    public void saveImageToServer(Context context, Uri imageUri, OnImageSaveListener listener) {
+    public void saveImageToServer(Context context, Uri imageUri, String category, OnImageSaveListener listener) {
         new Thread(() -> {
             try {
                 String userId = getCurrentUserId();
@@ -134,6 +164,7 @@ public class FlaskNetwork {
                         .addFormDataPart("image", imageFile.getName(),
                                 RequestBody.create(MediaType.parse("image/*"), imageFile))
                         .addFormDataPart("user_id", userId)
+                        .addFormDataPart("category", category)
                         .build();
 
                 Request request = new Request.Builder()
@@ -146,76 +177,61 @@ public class FlaskNetwork {
                 try (Response response = client.newCall(request).execute()) {
                     if (!response.isSuccessful()) {
                         String errorBody = response.body() != null ? response.body().string() : "No error details";
-                        Log.e(TAG, "Server error: " + response.code() + ", Body: " + errorBody);
                         listener.onError("Server error: " + response.code() + "\n" + errorBody);
                         return;
                     }
 
-                    ResponseBody responseBody = response.body();
-                    if (responseBody != null) {
-                        String responseString = responseBody.string();
-                        Log.d(TAG, "Save image response: " + responseString);
-                        listener.onSuccess("Image saved successfully!");
-                    } else {
-                        listener.onError("Empty response from server");
-                    }
+                    JSONObject jsonResponse = new JSONObject(response.body().string());
+                    listener.onSuccess(jsonResponse.getString("message"));
                 }
-            } catch (IllegalStateException e) {
-                Log.e(TAG, "Authentication error", e);
-                listener.onError("Please log in to continue");
-            } catch (IOException e) {
-                Log.e(TAG, "Network error", e);
-                listener.onError("Network error: " + e.getMessage());
+            } catch (Exception e) {
+                Log.e(TAG, "Failed to save image", e);
+                listener.onError("Failed to save image: " + e.getMessage());
             }
         }).start();
     }
 
-    public void getUserImages(Context context, OnImagesLoadedListener listener) {
+    public void getUserImages(String category, OnImagesLoadedListener listener) {
         new Thread(() -> {
             try {
                 String userId = getCurrentUserId();
-                HttpUrl url = HttpUrl.parse(BASE_URL + "/get-user-images")
+
+                HttpUrl.Builder urlBuilder = HttpUrl.parse(BASE_URL + "/get-user-images")
                         .newBuilder()
-                        .addQueryParameter("user_id", userId)
-                        .build();
+                        .addQueryParameter("user_id", userId);
+
+                if (category != null) {
+                    urlBuilder.addQueryParameter("category", category);
+                }
 
                 Request request = new Request.Builder()
-                        .url(url)
+                        .url(urlBuilder.build())
                         .build();
 
                 try (Response response = client.newCall(request).execute()) {
                     if (!response.isSuccessful()) {
                         String errorBody = response.body() != null ? response.body().string() : "No error details";
-                        Log.e(TAG, "Server error: " + response.code() + ", Body: " + errorBody);
                         listener.onError("Server error: " + response.code() + "\n" + errorBody);
                         return;
                     }
 
-                    ResponseBody responseBody = response.body();
-                    if (responseBody == null) {
-                        listener.onError("Empty response from server");
-                        return;
+                    String jsonResponse = response.body().string();
+                    JSONArray jsonArray = new JSONArray(jsonResponse);
+                    String[] urls = new String[jsonArray.length()];
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        JSONObject imageObject = jsonArray.getJSONObject(i);
+                        urls[i] = imageObject.getString("url");
                     }
-
-                    String jsonResponse = responseBody.string();
-                    Log.d(TAG, "Server response: " + jsonResponse);
-                    String[] imageUrls = parseImageUrlsFromResponse(jsonResponse);
-                    listener.onSuccess(imageUrls);
+                    listener.onSuccess(urls);
                 }
-            } catch (IllegalStateException e) {
-                Log.e(TAG, "Authentication error", e);
-                listener.onError("Please log in to continue");
-            } catch (IOException e) {
-                Log.e(TAG, "Network error", e);
-                listener.onError("Network error: " + e.getMessage());
+            } catch (Exception e) {
+                Log.e(TAG, "Failed to get images", e);
+                listener.onError("Failed to get images: " + e.getMessage());
             }
         }).start();
     }
 
-    public interface OnDeleteImagesListener {
-        void onSuccess(String[] deletedFiles, String[] failedFiles);
-        void onError(String message);
-    }
+
 
     public void deleteImages(String[] filenames, OnDeleteImagesListener listener) {
         new Thread(() -> {
@@ -280,18 +296,110 @@ public class FlaskNetwork {
         }).start();
     }
 
-    private String[] parseImageUrlsFromResponse(String response) {
-        try {
-            JSONArray jsonArray = new JSONArray(response);
-            String[] urls = new String[jsonArray.length()];
-            for (int i = 0; i < jsonArray.length(); i++) {
-                String url = jsonArray.getString(i);
-                urls[i] = url.startsWith("/") ? url : "/" + url;
+    public void getCategories(OnCategoriesLoadedListener listener) {
+        new Thread(() -> {
+            try {
+                String userId = getCurrentUserId();
+                HttpUrl url = HttpUrl.parse(BASE_URL + "/get-categories")
+                        .newBuilder()
+                        .addQueryParameter("user_id", userId)
+                        .build();
+
+                Request request = new Request.Builder()
+                        .url(url)
+                        .build();
+
+                try (Response response = client.newCall(request).execute()) {
+                    if (!response.isSuccessful()) {
+                        String errorBody = response.body() != null ? response.body().string() : "No error details";
+                        listener.onError("Server error: " + response.code() + "\n" + errorBody);
+                        return;
+                    }
+
+                    JSONObject jsonResponse = new JSONObject(response.body().string());
+                    JSONArray categoriesArray = jsonResponse.getJSONArray("categories");
+                    List<String> categories = new ArrayList<>();
+                    for (int i = 0; i < categoriesArray.length(); i++) {
+                        categories.add(categoriesArray.getString(i));
+                    }
+                    listener.onSuccess(categories);
+                }
+            } catch (Exception e) {
+                Log.e(TAG, "Failed to get categories", e);
+                listener.onError("Failed to get categories: " + e.getMessage());
             }
-            return urls;
-        } catch (JSONException e) {
-            Log.e(TAG, "Error parsing JSON response", e);
-            return new String[]{};
-        }
+        }).start();
     }
+
+    public void addCategory(String categoryName, OnCategoryOperationListener listener) {
+        new Thread(() -> {
+            try {
+                String userId = getCurrentUserId();
+                JSONObject jsonBody = new JSONObject()
+                        .put("user_id", userId)
+                        .put("category_name", categoryName);
+
+                RequestBody requestBody = RequestBody.create(
+                        MediaType.parse("application/json"),
+                        jsonBody.toString()
+                );
+
+                Request request = new Request.Builder()
+                        .url(BASE_URL + "/add-category")
+                        .post(requestBody)
+                        .build();
+
+                try (Response response = client.newCall(request).execute()) {
+                    if (!response.isSuccessful()) {
+                        String errorBody = response.body() != null ? response.body().string() : "No error details";
+                        listener.onError("Server error: " + response.code() + "\n" + errorBody);
+                        return;
+                    }
+
+                    JSONObject jsonResponse = new JSONObject(response.body().string());
+                    listener.onSuccess(jsonResponse.getString("message"));
+                }
+            } catch (Exception e) {
+                Log.e(TAG, "Failed to add category", e);
+                listener.onError("Failed to add category: " + e.getMessage());
+            }
+        }).start();
+    }
+
+    public void moveImage(String filename, String newCategory, OnMoveImageListener listener) {
+        new Thread(() -> {
+            try {
+                String userId = getCurrentUserId();
+                JSONObject jsonBody = new JSONObject()
+                        .put("user_id", userId)
+                        .put("filename", filename)
+                        .put("new_category", newCategory);
+
+                RequestBody requestBody = RequestBody.create(
+                        MediaType.parse("application/json"),
+                        jsonBody.toString()
+                );
+
+                Request request = new Request.Builder()
+                        .url(BASE_URL + "/move-image")
+                        .post(requestBody)
+                        .build();
+
+                try (Response response = client.newCall(request).execute()) {
+                    if (!response.isSuccessful()) {
+                        String errorBody = response.body() != null ? response.body().string() : "No error details";
+                        listener.onError("Server error: " + response.code() + "\n" + errorBody);
+                        return;
+                    }
+
+                    JSONObject jsonResponse = new JSONObject(response.body().string());
+                    listener.onSuccess(jsonResponse.getString("new_category"));
+                }
+            } catch (Exception e) {
+                Log.e(TAG, "Failed to move image", e);
+                listener.onError("Failed to move image: " + e.getMessage());
+            }
+        }).start();
+    }
+
 }

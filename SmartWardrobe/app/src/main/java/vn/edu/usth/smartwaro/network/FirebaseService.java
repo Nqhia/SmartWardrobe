@@ -50,12 +50,10 @@ public class FirebaseService {
         return storageReference;
     }
 
-    // Get specific database reference with path
     public DatabaseReference getDatabaseReference(String path) {
         return database.getReference(path);
     }
 
-    // Get specific storage reference with path
     public StorageReference getStorageReference(String path) {
         return storage.getReference(path);
     }

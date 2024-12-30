@@ -30,6 +30,10 @@ public class AddImageViewFragment extends Fragment {
     private Uri imageUri;
     private ClosetViewModel closetViewModel;
     private FlaskNetwork flaskNetwork;
+    private static final String DEFAULT_CATEGORY = "uncategorized";
+
+    private String category = DEFAULT_CATEGORY; // Add this field
+
 
     public static AddImageViewFragment newInstance(Uri imageUri) {
         AddImageViewFragment fragment = new AddImageViewFragment();
@@ -65,46 +69,54 @@ public class AddImageViewFragment extends Fragment {
             if (imageUri != null) {
                 progressBar.setVisibility(View.VISIBLE);
 
-                // Sử dụng FlaskNetwork để lưu ảnh lên server
-                flaskNetwork.saveImageToServer(requireContext(), imageUri, new FlaskNetwork.OnImageSaveListener() {
-                    @Override
-                    public void onProcessing() {
-                        requireActivity().runOnUiThread(() -> {
-                            Toast.makeText(getContext(), "Uploading image to server...", Toast.LENGTH_SHORT).show();
+                // Updated to use category parameter
+                flaskNetwork.saveImageToServer(
+                        requireContext(),
+                        imageUri,
+                        category, // Pass the category
+                        new FlaskNetwork.OnImageSaveListener() {
+                            @Override
+                            public void onProcessing() {
+                                requireActivity().runOnUiThread(() -> {
+                                    progressBar.setVisibility(View.VISIBLE);
+                                    Toast.makeText(getContext(), "Processing image...", Toast.LENGTH_SHORT).show();
+                                });
+                            }
+
+                            @Override
+                            public void onSuccess(String message) {
+                                requireActivity().runOnUiThread(() -> {
+                                    progressBar.setVisibility(View.GONE);
+                                    Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
+
+                                    // Create ClothingItem with category
+                                    ClothingItem newClothingItem = new ClothingItem(
+                                            "Uploaded Item",
+                                            imageUri,
+                                            category // Add category to ClothingItem
+                                    );
+                                    closetViewModel.addItem(newClothingItem);
+
+                                    // Navigate back
+                                    requireActivity().getSupportFragmentManager()
+                                            .beginTransaction()
+                                            .replace(R.id.fragment_container, new MyClosetFragment())
+                                            .commit();
+                                });
+                            }
+
+                            @Override
+                            public void onError(String message) {
+                                requireActivity().runOnUiThread(() -> {
+                                    progressBar.setVisibility(View.GONE);
+                                    Toast.makeText(getContext(), "Error: " + message, Toast.LENGTH_LONG).show();
+                                });
+                            }
                         });
-                    }
-
-                    @Override
-                    public void onSuccess(String message) {
-                        requireActivity().runOnUiThread(() -> {
-                            progressBar.setVisibility(View.GONE);
-                            Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
-
-                            // Sau khi lưu thành công, thêm ảnh vào ClosetViewModel
-                            ClothingItem newClothingItem = new ClothingItem("Uploaded Item", imageUri);
-                            closetViewModel.addItem(newClothingItem);
-
-                            // Quay lại MyClosetFragment
-                            requireActivity().getSupportFragmentManager()
-                                    .beginTransaction()
-                                    .replace(R.id.fragment_container, new MyClosetFragment())
-                                    .commit();
-                        });
-                    }
-
-                    @Override
-                    public void onError(String message) {
-                        requireActivity().runOnUiThread(() -> {
-                            progressBar.setVisibility(View.GONE);
-                            Toast.makeText(getContext(), "Error: " + message, Toast.LENGTH_SHORT).show();
-                        });
-                    }
-                });
             } else {
                 Toast.makeText(getContext(), "No image to upload", Toast.LENGTH_SHORT).show();
             }
         });
-
         // Handle Cancel button click
         btnCancel.setOnClickListener(v -> {
             // Navigate back to MyClosetFragment without saving

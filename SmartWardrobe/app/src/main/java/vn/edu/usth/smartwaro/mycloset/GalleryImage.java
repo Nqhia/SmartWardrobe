@@ -11,16 +11,19 @@ public class GalleryImage implements Parcelable {
     private final String originalFilename;
     private final String uploadDate;
     private final String url;
+    private final String category;    // Added category field
     private boolean isSelected;
 
     public GalleryImage(@NonNull String filename,
                         @NonNull String originalFilename,
                         @Nullable String uploadDate,
-                        @NonNull String url) {
+                        @NonNull String url,
+                        @Nullable String category) {    // Added category parameter
         this.filename = filename;
         this.originalFilename = originalFilename;
         this.uploadDate = uploadDate != null ? uploadDate : "";
         this.url = url;
+        this.category = category != null ? category : "";    // Default to empty string if null
         this.isSelected = false;
     }
 
@@ -29,6 +32,7 @@ public class GalleryImage implements Parcelable {
         originalFilename = in.readString();
         uploadDate = in.readString();
         url = in.readString();
+        category = in.readString();    // Read category from parcel
         isSelected = in.readByte() != 0;
     }
 
@@ -56,6 +60,9 @@ public class GalleryImage implements Parcelable {
     @NonNull
     public String getUrl() { return url; }
 
+    @NonNull
+    public String getCategory() { return category; }    // Added getter for category
+
     public boolean isSelected() { return isSelected; }
 
     public void setSelected(boolean selected) { isSelected = selected; }
@@ -71,6 +78,7 @@ public class GalleryImage implements Parcelable {
         dest.writeString(originalFilename);
         dest.writeString(uploadDate);
         dest.writeString(url);
+        dest.writeString(category);    // Write category to parcel
         dest.writeByte((byte) (isSelected ? 1 : 0));
     }
 
@@ -81,6 +89,7 @@ public class GalleryImage implements Parcelable {
                 ", originalFilename='" + originalFilename + '\'' +
                 ", uploadDate='" + uploadDate + '\'' +
                 ", url='" + url + '\'' +
+                ", category='" + category + '\'' +    // Added category to toString
                 '}';
     }
 }

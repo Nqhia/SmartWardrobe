@@ -1,0 +1,38 @@
+{
+    "user_id": "IvzLNF7DPpVh4P7iRvtRolDtbx42",
+    "images": {
+        "processed_20241230_190454_upload_1735560298649_processed_1735560297375.png": {
+            "category": "uncategorized",
+            "timestamp": "20241230_190454",
+            "original_filename": "upload_1735560298649_processed_1735560297375.png"
+        },
+        "processed_20241230_191457_upload_1735560902135_processed_1735560900305.png": {
+            "category": "uncategorized",
+            "timestamp": "20241230_191457",
+            "original_filename": "upload_1735560902135_processed_1735560900305.png"
+        },
+        "processed_20241230_191753_upload_1735561077671_processed_1735561075921.png": {
+            "category": "uncategorized",
+            "timestamp": "20241230_191753",
+            "original_filename": "upload_1735561077671_processed_1735561075921.png"
+        },
+        "processed_20241230_193414_upload_1735562058842_processed_1735562057017.png": {
+            "category": "uncategorized",
+            "timestamp": "20241230_193414",
+            "original_filename": "upload_1735562058842_processed_1735562057017.png"
+        }
+    },
+    "categories": {
+        "Long": [],
+        "bottoms": [],
+        "dresses": [],
+        "shoes": [],
+        "accessories": [],
+        "uncategorized": [
+            "processed_20241230_190454_upload_1735560298649_processed_1735560297375.png",
+            "processed_20241230_191457_upload_1735560902135_processed_1735560900305.png",
+            "processed_20241230_191753_upload_1735561077671_processed_1735561075921.png",
+            "processed_20241230_193414_upload_1735562058842_processed_1735562057017.png"
+        ]
+    }
+}

@@ -32,6 +32,7 @@ public class GalleryFragment extends Fragment implements GalleryAdapter.OnImageC
     private FlaskNetwork flaskNetwork;
     private MenuItem deleteMenuItem;
     private List<GalleryImage> galleryImages = new ArrayList<>();
+    private String currentCategory = null;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -73,7 +74,8 @@ public class GalleryFragment extends Fragment implements GalleryAdapter.OnImageC
     private void setupRecyclerView() {
         adapter = new GalleryAdapter(requireContext());
         adapter.setOnImageClickListener(this);
-        recyclerView.setLayoutManager(new GridLayoutManager(requireContext(), 3));
+        int spanCount = getResources().getConfiguration().screenWidthDp / 180;
+        recyclerView.setLayoutManager(new GridLayoutManager(requireContext(), Math.max(2, spanCount)));
         recyclerView.setAdapter(adapter);
     }
 
@@ -144,13 +146,12 @@ public class GalleryFragment extends Fragment implements GalleryAdapter.OnImageC
     private void loadImages() {
         progressBar.setVisibility(View.VISIBLE);
 
-        flaskNetwork.getUserImages(requireContext(), new FlaskNetwork.OnImagesLoadedListener() {
+        flaskNetwork.getUserImages((currentCategory == null || currentCategory.isEmpty()) ? null : currentCategory, new FlaskNetwork.OnImagesLoadedListener() {
             @Override
             public void onSuccess(String[] imageUrls) {
                 if (!isAdded()) {
                     return;
                 }
-
                 requireActivity().runOnUiThread(() -> {
                     try {
                         galleryImages.clear();
@@ -161,7 +162,8 @@ public class GalleryFragment extends Fragment implements GalleryAdapter.OnImageC
                                         filename,
                                         filename,
                                         "", // TODO: Add proper date handling
-                                        url
+                                        url,
+                                        currentCategory
                                 ));
                             }
                         }
