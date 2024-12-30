@@ -417,7 +417,7 @@ def get_categories():
         logger.error(f"Error getting categories: {str(e)}")
         return jsonify({'error': str(e)}), 500
 
-@app.route('/add-categories', methods=['POST'])
+@app.route('/add-category', methods=['POST'])
 def add_category():
     try:
         user_id = request.json.get('user_id')

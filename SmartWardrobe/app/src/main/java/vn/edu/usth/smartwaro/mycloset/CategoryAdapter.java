@@ -1,41 +1,51 @@
 package vn.edu.usth.smartwaro.mycloset;
 
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
+import android.widget.RadioButton;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
 import vn.edu.usth.smartwaro.R;
-import vn.edu.usth.smartwaro.mycloset.CategoriesFragment.CategoryItem;
 
-public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.CategoryViewHolder> {
-    private Context context;
-    private List<CategoryItem> categories;
+public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHolder> {
+    private List<String> categories;
+    private String selectedCategory;
+    private final OnCategorySelectedListener listener;
 
-    public CategoryAdapter(Context context, List<CategoryItem> categories) {
-        this.context = context;
+    public interface OnCategorySelectedListener {
+        void onCategorySelected(String category);
+    }
+
+    public CategoryAdapter(List<String> categories, String selectedCategory,
+                           OnCategorySelectedListener listener) {
         this.categories = categories;
-    }
-
-    @NonNull
-    @Override
-    public CategoryViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.item_category, parent, false);
-        return new CategoryViewHolder(view);
+        this.selectedCategory = selectedCategory;
+        this.listener = listener;
     }
 
     @Override
-    public void onBindViewHolder(@NonNull CategoryViewHolder holder, int position) {
-        CategoryItem category = categories.get(position);
-        holder.iconView.setImageResource(category.iconResId);
-        holder.nameView.setText(category.name);
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.item_category, parent, false);
+        return new ViewHolder(view);
+    }
+
+    @Override
+    public void onBindViewHolder(ViewHolder holder, int position) {
+        String category = categories.get(position);
+        holder.radioButton.setChecked(category.equals(selectedCategory));
+        holder.categoryName.setText(category);
+
+        holder.itemView.setOnClickListener(v -> {
+            selectedCategory = category;
+            listener.onCategorySelected(category);
+            notifyDataSetChanged();
+        });
     }
 
     @Override
@@ -43,14 +53,14 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
         return categories.size();
     }
 
-    static class CategoryViewHolder extends RecyclerView.ViewHolder {
-        ImageView iconView;
-        TextView nameView;
+    static class ViewHolder extends RecyclerView.ViewHolder {
+        RadioButton radioButton;
+        TextView categoryName;
 
-        CategoryViewHolder(View itemView) {
-            super(itemView);
-            iconView = itemView.findViewById(R.id.category_icon);
-            nameView = itemView.findViewById(R.id.category_name);
+        ViewHolder(View view) {
+            super(view);
+            radioButton = view.findViewById(R.id.radioButton);
+            categoryName = view.findViewById(R.id.categoryName);
         }
     }
 }

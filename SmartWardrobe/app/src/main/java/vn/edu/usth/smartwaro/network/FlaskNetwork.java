@@ -365,6 +365,48 @@ public class FlaskNetwork {
             }
         }).start();
     }
+    public void removeCategory(String categoryName, OnCategoryOperationListener listener) {
+        new Thread(() -> {
+            try {
+                String userId = getCurrentUserId();
+                JSONObject jsonBody = new JSONObject()
+                        .put("user_id", userId)
+                        .put("category_name", categoryName);
+
+                RequestBody requestBody = RequestBody.create(
+                        MediaType.parse("application/json"),
+                        jsonBody.toString()
+                );
+
+                Request request = new Request.Builder()
+                        .url(BASE_URL + "/remove-categories")
+                        .delete(requestBody)  // Using DELETE method as specified in server
+                        .build();
+
+                try (Response response = client.newCall(request).execute()) {
+                    if (!response.isSuccessful()) {
+                        String errorBody = response.body() != null ? response.body().string() : "No error details";
+                        listener.onError("Server error: " + response.code() + "\n" + errorBody);
+                        return;
+                    }
+
+                    JSONObject jsonResponse = new JSONObject(response.body().string());
+                    if (jsonResponse.has("message")) {
+                        listener.onSuccess(jsonResponse.getString("message"));
+                    } else if (jsonResponse.has("error")) {
+                        listener.onError(jsonResponse.getString("error"));
+                    }
+                }
+            } catch (IllegalStateException e) {
+                Log.e(TAG, "Authentication error", e);
+                listener.onError("Please log in to continue");
+            } catch (Exception e) {
+                Log.e(TAG, "Failed to remove category", e);
+                listener.onError("Failed to remove category: " + e.getMessage());
+            }
+        }).start();
+    }
+
 
     public void moveImage(String filename, String newCategory, OnMoveImageListener listener) {
         new Thread(() -> {

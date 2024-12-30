@@ -24,6 +24,7 @@ retrofit = "2.9.0"
 glide = "4.16.0"
 circle-imageview = "3.1.0"
 roundedimageview = "2.3.0"
+swiperefreshlayout = "1.1.0"
 
 
 [libraries]
@@ -56,6 +57,7 @@ glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }
 glide-compiler = { module = "com.github.bumptech.glide:compiler", version.ref = "glide" }
 circle-imageview = { module = "de.hdodenhof:circleimageview", version.ref = "circle-imageview" }
 roundedimageview = { module = "com.makeramen:roundedimageview", version.ref = "roundedimageview" }
+swiperefreshlayout = { group = "androidx.swiperefreshlayout", name = "swiperefreshlayout", version.ref = "swiperefreshlayout" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

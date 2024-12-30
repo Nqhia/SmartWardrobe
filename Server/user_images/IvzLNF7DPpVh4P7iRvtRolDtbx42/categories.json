@@ -1,11 +1,12 @@
 {
     "categories": [
+        "uncategorized",
         "long sleeves",
-        "sleeves",
-        "dresses",
-        "shoes",
-        "accessories",
-        "uncategorized"
+        "short sleeves",
+        "long leggings",
+        "short leggings"
     ],
-    "custom_categories": []
+    "custom_categories": [
+        "balo"
+    ]
 }
