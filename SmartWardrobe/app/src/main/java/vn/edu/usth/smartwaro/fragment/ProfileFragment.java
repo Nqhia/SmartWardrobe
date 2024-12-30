@@ -1,6 +1,5 @@
 package vn.edu.usth.smartwaro.fragment;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +10,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
@@ -21,7 +21,6 @@ import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import vn.edu.usth.smartwaro.R;
-import vn.edu.usth.smartwaro.auth.UpdateProfileActivity;
 import vn.edu.usth.smartwaro.network.FirebaseService;
 
 public class ProfileFragment extends Fragment {
@@ -29,6 +28,7 @@ public class ProfileFragment extends Fragment {
     private TextView emailTextView;
     private CircleImageView avatarImageView;
     private Button editProfileButton;
+    private Button friendsButton; // Add this button
     private ProgressBar progressBar;
 
     private FirebaseAuth firebaseAuth;
@@ -43,6 +43,7 @@ public class ProfileFragment extends Fragment {
         emailTextView = view.findViewById(R.id.emailTextView);
         avatarImageView = view.findViewById(R.id.avatarImageView);
         editProfileButton = view.findViewById(R.id.editProfileButton);
+        friendsButton = view.findViewById(R.id.friendsButton); // Initialize friends button
         progressBar = view.findViewById(R.id.progressBar);
 
         // Initialize Firebase services
@@ -51,9 +52,11 @@ public class ProfileFragment extends Fragment {
 
         // Set up edit profile button
         editProfileButton.setOnClickListener(v -> {
-            Intent intent = new Intent(getActivity(), UpdateProfileActivity.class);
-            startActivity(intent);
+            // Implement edit profile logic here
         });
+
+        // Navigate to FriendListFragment when friends button is clicked
+        friendsButton.setOnClickListener(v -> navigateToFriendListFragment());
 
         // Load the user profile data
         loadUserProfile();
@@ -94,5 +97,12 @@ public class ProfileFragment extends Fragment {
                         }
                     });
         }
+    }
+
+    private void navigateToFriendListFragment() {
+        FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+        transaction.replace(R.id.fragment_container, new FriendListFragment());
+        transaction.addToBackStack(null);
+        transaction.commit();
     }
 }

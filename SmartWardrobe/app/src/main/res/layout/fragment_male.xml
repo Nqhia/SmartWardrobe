@@ -11,6 +11,12 @@
         android:layout_height="match_parent"
         android:orientation="horizontal">
 
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+        </FrameLayout>
+
         <!-- View model -->
         <FrameLayout
             android:id="@+id/model_container"
@@ -54,82 +60,57 @@
             android:id="@+id/right_container"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="3">
+            android:layout_weight="1">
 
             <!-- Type view -->
             <ScrollView
                 android:id="@+id/male_type_scroll_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/white"
                 android:padding="8dp">
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="8dp">
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="end"
+                    android:orientation="vertical">
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Types"
-                        android:textColor="@color/black"
-                        android:fontFamily="@font/agbalumo_regular"
-                        android:layout_margin="5dp"
-                        android:textSize="16sp" />
+                    <Button
+                        android:id="@+id/type_top_male"
+                        android:layout_width="50dp"
+                        android:layout_height="60dp"
+                        app:cornerRadius="30dp"
+                        android:backgroundTint="@color/white"
+                        android:drawableRight="@drawable/top_category"
+                        android:layout_margin="5dp" />
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_horizontal"
-                        android:paddingBottom="8dp">
+                    <Button
+                        android:id="@+id/type_bot_male"
+                        android:layout_width="50dp"
+                        android:layout_height="60dp"
+                        app:cornerRadius="30dp"
+                        android:backgroundTint="@color/white"
+                        android:drawableRight="@drawable/trousers_category"
+                        android:layout_margin="5dp" />
 
-                        <Button
-                            android:id="@+id/type_top_male"
-                            android:layout_width="50dp"
-                            android:layout_height="60dp"
-                            app:cornerRadius="30dp"
-                            android:backgroundTint="@color/white"
-                            android:drawableRight="@drawable/top_category"
-                            android:layout_margin="5dp" />
+                    <Button
+                        android:id="@+id/type_footware_male"
+                        android:layout_width="50dp"
+                        android:layout_height="60dp"
+                        app:cornerRadius="30dp"
+                        android:backgroundTint="@color/white"
+                        android:drawableRight="@drawable/men_footware_category"
+                        android:layout_margin="5dp" />
 
-                        <Button
-                            android:id="@+id/type_bot_male"
-                            android:layout_width="50dp"
-                            android:layout_height="60dp"
-                            app:cornerRadius="30dp"
-                            android:backgroundTint="@color/white"
-                            android:drawableRight="@drawable/trousers_category"
-                            android:layout_margin="5dp" />
 
-                        <Button
-                            android:id="@+id/type_footware_male"
-                            android:layout_width="50dp"
-                            android:layout_height="60dp"
-                            app:cornerRadius="30dp"
-                            android:backgroundTint="@color/white"
-                            android:drawableRight="@drawable/men_footware_category"
-                            android:layout_margin="5dp" />
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:paddingBottom="8dp">
-
-                        <Button
-                            android:id="@+id/type_skin_male"
-                            android:layout_width="50dp"
-                            android:layout_height="60dp"
-                            app:cornerRadius="30dp"
-                            android:backgroundTint="@color/white"
-                            android:drawableRight="@drawable/skin_category"
-                            android:layout_margin="5dp" />
-                    </LinearLayout>
+                    <Button
+                        android:id="@+id/type_skin_male"
+                        android:layout_width="50dp"
+                        android:layout_height="60dp"
+                        app:cornerRadius="30dp"
+                        android:backgroundTint="@color/white"
+                        android:drawableRight="@drawable/skin_category"
+                        android:layout_margin="5dp" />
                 </LinearLayout>
             </ScrollView>
 
@@ -137,9 +118,10 @@
             <ScrollView
                 android:id="@+id/overlay_scroll_view_tops_male"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:layout_height="600dp"
                 android:visibility="gone"
-                android:background="@color/white">
+                android:background="@drawable/rounded_background">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -147,137 +129,53 @@
                     android:orientation="vertical"
                     android:padding="16dp">
 
-                    <LinearLayout
+                    <ImageButton
+                        android:id="@+id/male_model_icon"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="10dp"
-                        android:orientation="horizontal">
-                        <Button
-                            android:id="@+id/back_male_type"
-                            android:layout_width="24dp"
-                            android:layout_height="24dp"
-                            android:background="@android:color/transparent"
-                            android:drawableLeft="@drawable/baseline_arrow_back_ios_24"/>
+                        android:layout_height="match_parent"
+                        android:background="@null"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/male_model_icon" />
 
-                        <TextView
-                            android:paddingLeft="10dp"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textSize="18sp"
-                            android:fontFamily="@font/agbalumo_regular"
-                            android:layout_gravity="center"
-                            android:textColor="@color/black"
-                            android:text="Tops"/>
+                    <ImageButton
+                        android:id="@+id/top_tanktop_male_icon"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@null"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/top_tanktop_male_icon" />
 
-                    </LinearLayout>
+                    <ImageButton
+                        android:id="@+id/top_polo_icon"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@null"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/top_polo_icon" />
 
-                    <androidx.cardview.widget.CardView
-                        android:layout_width="100dp"
-                        android:layout_height="100dp"
-                        android:layout_gravity="center"
-                        android:layout_marginBottom="10dp"
-                        android:backgroundTint="@color/white"
-                        app:cardCornerRadius="8dp"
-                        app:cardElevation="4dp">
+                    <ImageButton
+                        android:id="@+id/top_sweater_male_icon"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@null"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/top_sweater_male_icon" />
 
-                        <ImageButton
-                            android:id="@+id/male_model_icon"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:background="@null"
-                            android:scaleType="centerInside"
-                            android:src="@drawable/male_model_icon" />
-                    </androidx.cardview.widget.CardView>
+                    <ImageButton
+                        android:id="@+id/top_blazer_male_icon"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@null"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/top_blazer_male_icon" />
 
-                    <androidx.cardview.widget.CardView
-                        android:layout_width="100dp"
-                        android:layout_height="100dp"
-                        android:layout_gravity="center"
-                        android:layout_marginBottom="10dp"
-                        android:backgroundTint="@color/white"
-                        app:cardCornerRadius="8dp"
-                        app:cardElevation="4dp">
-
-                        <ImageButton
-                            android:id="@+id/top_tanktop_male_icon"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:background="@null"
-                            android:scaleType="centerInside"
-                            android:src="@drawable/top_tanktop_male_icon" />
-                    </androidx.cardview.widget.CardView>
-
-                    <androidx.cardview.widget.CardView
-                        android:layout_width="100dp"
-                        android:layout_height="100dp"
-                        android:layout_gravity="center"
-                        android:layout_marginBottom="10dp"
-                        android:backgroundTint="@color/white"
-                        app:cardCornerRadius="8dp"
-                        app:cardElevation="4dp">
-
-                        <ImageButton
-                            android:id="@+id/top_polo_icon"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:background="@null"
-                            android:scaleType="centerInside"
-                            android:src="@drawable/top_polo_icon" />
-                    </androidx.cardview.widget.CardView>
-
-                    <androidx.cardview.widget.CardView
-                        android:layout_width="100dp"
-                        android:layout_height="100dp"
-                        android:layout_gravity="center"
-                        android:layout_marginBottom="10dp"
-                        android:backgroundTint="@color/white"
-                        app:cardCornerRadius="8dp"
-                        app:cardElevation="4dp">
-
-                        <ImageButton
-                            android:id="@+id/top_sweater_male_icon"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:background="@null"
-                            android:scaleType="centerInside"
-                            android:src="@drawable/top_sweater_male_icon" />
-                    </androidx.cardview.widget.CardView>
-
-                    <androidx.cardview.widget.CardView
-                        android:layout_width="100dp"
-                        android:layout_height="100dp"
-                        android:layout_gravity="center"
-                        android:layout_marginBottom="10dp"
-                        android:backgroundTint="@color/white"
-                        app:cardCornerRadius="8dp"
-                        app:cardElevation="4dp">
-
-                        <ImageButton
-                            android:id="@+id/top_blazer_male_icon"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:background="@null"
-                            android:scaleType="centerInside"
-                            android:src="@drawable/top_blazer_male_icon" />
-                    </androidx.cardview.widget.CardView>
-
-                    <androidx.cardview.widget.CardView
-                        android:layout_width="100dp"
-                        android:layout_height="100dp"
-                        android:layout_gravity="center"
-                        android:layout_marginBottom="10dp"
-                        android:backgroundTint="@color/white"
-                        app:cardCornerRadius="8dp"
-                        app:cardElevation="4dp">
-
-                        <ImageButton
-                            android:id="@+id/top_breast_icon"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:background="@null"
-                            android:scaleType="centerInside"
-                            android:src="@drawable/top_breast_icon" />
-                    </androidx.cardview.widget.CardView>
+                    <ImageButton
+                        android:id="@+id/top_breast_icon"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@null"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/top_breast_icon" />
 
                 </LinearLayout>
             </ScrollView>
@@ -286,9 +184,9 @@
             <ScrollView
                 android:id="@+id/overlay_scroll_view_bot_male"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:visibility="gone"
-                android:background="@color/white">
+                android:layout_gravity="center"
+                android:layout_height="600dp"
+                android:background="@drawable/rounded_background"                android:visibility="gone">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -296,65 +194,21 @@
                     android:orientation="vertical"
                     android:padding="16dp">
 
-                    <LinearLayout
+                    <ImageButton
+                        android:id="@+id/bot_jean_male_icon"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="10dp"
-                        android:orientation="horizontal">
-                        <Button
-                            android:id="@+id/back_male_type_bot"
-                            android:layout_width="24dp"
-                            android:layout_height="24dp"
-                            android:background="@android:color/transparent"
-                            android:drawableLeft="@drawable/baseline_arrow_back_ios_24"/>
+                        android:layout_height="match_parent"
+                        android:background="@null"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/bot_jean_male_icon" />
 
-                        <TextView
-                            android:paddingLeft="10dp"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textSize="18sp"
-                            android:fontFamily="@font/agbalumo_regular"
-                            android:layout_gravity="center"
-                            android:textColor="@color/black"
-                            android:text="Pants"/>
-
-                    </LinearLayout>
-
-                    <androidx.cardview.widget.CardView
-                        android:layout_width="100dp"
-                        android:layout_height="100dp"
-                        android:layout_gravity="center"
-                        android:layout_marginBottom="10dp"
-                        android:backgroundTint="@color/white"
-                        app:cardCornerRadius="8dp"
-                        app:cardElevation="4dp">
-
-                        <ImageButton
-                            android:id="@+id/bot_jean_male_icon"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:background="@null"
-                            android:scaleType="centerInside"
-                            android:src="@drawable/bot_jean_male_icon" />
-                    </androidx.cardview.widget.CardView>
-
-                    <androidx.cardview.widget.CardView
-                        android:layout_width="100dp"
-                        android:layout_height="100dp"
-                        android:layout_gravity="center"
-                        android:layout_marginBottom="10dp"
-                        android:backgroundTint="@color/white"
-                        app:cardCornerRadius="8dp"
-                        app:cardElevation="4dp">
-
-                        <ImageButton
-                            android:id="@+id/bot_pant_icon"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:background="@null"
-                            android:scaleType="centerInside"
-                            android:src="@drawable/bot_pant_icon" />
-                    </androidx.cardview.widget.CardView>
+                    <ImageButton
+                        android:id="@+id/bot_pant_icon"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@null"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/bot_pant_icon" />
 
                 </LinearLayout>
             </ScrollView>
@@ -363,9 +217,10 @@
             <ScrollView
                 android:id="@+id/overlay_scroll_view_footware_male"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
                 android:visibility="gone"
-                android:background="@color/white">
+                android:layout_gravity="center"
+                android:layout_height="600dp"
+                android:background="@drawable/rounded_background">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -373,47 +228,13 @@
                     android:orientation="vertical"
                     android:padding="16dp">
 
-                    <LinearLayout
+                    <ImageButton
+                        android:id="@+id/male_loafer_icon"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="10dp"
-                        android:orientation="horizontal">
-                        <Button
-                            android:id="@+id/back_male_type_footware"
-                            android:layout_width="24dp"
-                            android:layout_height="24dp"
-                            android:background="@android:color/transparent"
-                            android:drawableLeft="@drawable/baseline_arrow_back_ios_24"/>
-
-                        <TextView
-                            android:paddingLeft="10dp"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textSize="18sp"
-                            android:fontFamily="@font/agbalumo_regular"
-                            android:layout_gravity="center"
-                            android:textColor="@color/black"
-                            android:text="Footware"/>
-
-                    </LinearLayout>
-
-                    <androidx.cardview.widget.CardView
-                        android:layout_width="100dp"
-                        android:layout_height="100dp"
-                        android:layout_gravity="center"
-                        android:layout_marginBottom="10dp"
-                        android:backgroundTint="@color/white"
-                        app:cardCornerRadius="8dp"
-                        app:cardElevation="4dp">
-
-                        <ImageButton
-                            android:id="@+id/male_loafer_icon"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:background="@null"
-                            android:scaleType="centerInside"
-                            android:src="@drawable/female_loafer_icon" />
-                    </androidx.cardview.widget.CardView>
+                        android:layout_height="match_parent"
+                        android:background="@null"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/female_loafer_icon" />
 
                 </LinearLayout>
             </ScrollView>
@@ -422,9 +243,10 @@
             <ScrollView
                 android:id="@+id/overlay_scroll_view_skin_tone_male"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
                 android:visibility="gone"
-                android:background="@color/white">
+                android:layout_gravity="center"
+                android:layout_height="600dp"
+                android:background="@drawable/rounded_background"                >
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -432,47 +254,13 @@
                     android:orientation="vertical"
                     android:padding="16dp">
 
-                    <LinearLayout
+                    <ImageButton
+                        android:id="@+id/buttonChangeSkinColorMale"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="10dp"
-                        android:orientation="horizontal">
-                        <Button
-                            android:id="@+id/back_male_type_skin"
-                            android:layout_width="24dp"
-                            android:layout_height="24dp"
-                            android:background="@android:color/transparent"
-                            android:drawableLeft="@drawable/baseline_arrow_back_ios_24"/>
-
-                        <TextView
-                            android:paddingLeft="10dp"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textSize="18sp"
-                            android:fontFamily="@font/agbalumo_regular"
-                            android:layout_gravity="center"
-                            android:textColor="@color/black"
-                            android:text="Skintone"/>
-
-                    </LinearLayout>
-
-                    <androidx.cardview.widget.CardView
-                        android:layout_width="100dp"
-                        android:layout_height="100dp"
-                        android:layout_gravity="center"
-                        android:layout_marginBottom="10dp"
-                        android:backgroundTint="@color/white"
-                        app:cardCornerRadius="8dp"
-                        app:cardElevation="4dp">
-
-                        <ImageButton
-                            android:id="@+id/buttonChangeSkinColorMale"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:background="@null"
-                            android:scaleType="centerInside"
-                            android:src="@drawable/skintone" />
-                    </androidx.cardview.widget.CardView>
+                        android:layout_height="match_parent"
+                        android:background="@null"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/skintone" />
 
                 </LinearLayout>
             </ScrollView>
@@ -481,3 +269,4 @@
     </LinearLayout>
 </FrameLayout>
 
+    
