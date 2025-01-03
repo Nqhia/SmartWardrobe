@@ -6,6 +6,7 @@ import android.view.ViewGroup;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
@@ -13,7 +14,7 @@ import java.util.List;
 import vn.edu.usth.smartwaro.R;
 
 public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHolder> {
-    private List<String> categories;
+    private final List<String> categories;
     private String selectedCategory;
     private final OnCategorySelectedListener listener;
 
@@ -28,23 +29,49 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
         this.listener = listener;
     }
 
+    @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_category, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         String category = categories.get(position);
-        holder.radioButton.setChecked(category.equals(selectedCategory));
         holder.categoryName.setText(category);
+        holder.radioButton.setChecked(category.equals(selectedCategory));
 
+        // Set click listener for the item
         holder.itemView.setOnClickListener(v -> {
-            selectedCategory = category;
-            listener.onCategorySelected(category);
-            notifyDataSetChanged();
+            // Update the selected category
+            if (!category.equals(selectedCategory)) {
+                String previousCategory = selectedCategory;
+                selectedCategory = category;
+
+                // Notify listener about the change
+                listener.onCategorySelected(category);
+
+                // Update the UI for the previous and current selections
+                notifyItemChanged(categories.indexOf(previousCategory));
+                notifyItemChanged(position);
+            }
+        });
+
+        // Optional: Set click listener for RadioButton (if needed)
+        holder.radioButton.setOnClickListener(v -> {
+            if (!category.equals(selectedCategory)) {
+                String previousCategory = selectedCategory;
+                selectedCategory = category;
+
+                // Notify listener about the change
+                listener.onCategorySelected(category);
+
+                // Update the UI for the previous and current selections
+                notifyItemChanged(categories.indexOf(previousCategory));
+                notifyItemChanged(position);
+            }
         });
     }
 

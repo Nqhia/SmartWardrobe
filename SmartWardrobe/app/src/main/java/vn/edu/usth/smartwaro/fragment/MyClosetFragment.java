@@ -48,7 +48,16 @@ public class MyClosetFragment extends Fragment {
                     tab.setText("Gallery");
                     break;
                 case 1:
-                    tab.setText("Categories");
+                    tab.setText("Short Sleeves");
+                    break;
+                case 2:
+                    tab.setText("Long Sleeves");
+                    break;
+                case 3:
+                    tab.setText("Short Leggings");
+                    break;
+                case 4:
+                    tab.setText("Long Leggings");
                     break;
             }
         }).attach();
