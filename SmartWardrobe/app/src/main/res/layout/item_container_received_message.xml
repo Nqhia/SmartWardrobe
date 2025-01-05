@@ -35,6 +35,18 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintWidth_percent="0.75"/>
 
+    <ImageView
+        android:id="@+id/imageMessage"
+        android:layout_width="150dp"
+        android:layout_height="400dp"
+        android:layout_marginHorizontal="8dp"
+        android:scaleType="fitCenter"
+        android:adjustViewBounds="true"
+        android:visibility="gone"
+        android:background="@drawable/background_chat_image"
+        app:layout_constraintStart_toStartOf="@id/textMessage"
+        app:layout_constraintTop_toBottomOf="@id/textMessage"/>
+
     <TextView
         android:id="@+id/textDateTime"
         android:layout_width="0dp"
@@ -43,6 +55,6 @@
         android:textColor="@color/black"
         android:textSize="8sp"
         app:layout_constraintStart_toStartOf="@id/textMessage"
-        app:layout_constraintTop_toBottomOf="@id/textMessage"/>
+        app:layout_constraintTop_toBottomOf="@id/imageMessage"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

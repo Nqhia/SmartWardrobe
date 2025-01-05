@@ -39,11 +39,11 @@
         <activity android:name=".auth.ui.LoginActivity" />
         <activity android:name=".auth.UpdateProfileActivity"/>
         <activity android:name=".settings.SettingsActivity"/>
-        <activity android:name=".chat.Chat_1Activity"
-            android:exported="false"/>
         <activity android:name=".chat.ChatActivity"
             android:exported="false"/>
         <activity android:name=".chat.UsersActivity"
+            android:exported="false"/>
+        <activity android:name=".chat.FriendRequest"
             android:exported="false"/>
 
         <activity

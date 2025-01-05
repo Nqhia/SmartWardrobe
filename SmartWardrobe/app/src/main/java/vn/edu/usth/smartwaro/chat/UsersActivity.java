@@ -1,213 +1,116 @@
 package vn.edu.usth.smartwaro.chat;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.SearchView;
 
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 
-import vn.edu.usth.smartwaro.auth.model.FriendRequest;
+import vn.edu.usth.smartwaro.R;
 import vn.edu.usth.smartwaro.auth.model.UserModel;
-import vn.edu.usth.smartwaro.databinding.ActivityUsersBinding;
+import vn.edu.usth.smartwaro.databinding.ActivityChatBinding;
 import vn.edu.usth.smartwaro.utils.Constants;
 import vn.edu.usth.smartwaro.utils.PreferenceManager;
 
-public class UsersActivity extends AppCompatActivity {
+public class UsersActivity extends AppCompatActivity implements UserListener{
 
-    private ActivityUsersBinding binding;
+    private ActivityChatBinding binding;
     private PreferenceManager preferenceManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = ActivityUsersBinding.inflate(getLayoutInflater());
+        binding = ActivityChatBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         preferenceManager = new PreferenceManager(getApplicationContext());
+        loadUserDetails();
         setListeners();
-        loadFriendRequests();
+        loadFriends();
     }
 
-    private void setListeners() {
-        binding.imageBack.setOnClickListener(v -> onBackPressed());
-        binding.searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                searchUser(query); // Tìm kiếm khi người dùng nhấn Enter
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                return false; // Không cần xử lý
-            }
-        });
+    private void setListeners(){
+        binding.imageSignOut.setOnClickListener(v -> onBackPressed());
+        binding.fabNewChat.setOnClickListener(v ->
+                startActivity(new Intent(getApplicationContext(), FriendRequest.class)));
     }
 
-    private void loadFriendRequests() {
+    private void loadUserDetails() {
+        binding.textName.setText(preferenceManager.getString(Constants.KEY_NAME));
+        binding.imageProfile.setImageResource(R.drawable.ic_profile_default);
+    }
+
+
+    private void showErrorMessage(String s) {
+        binding.textErrorMessage.setText("No user available");
+        binding.textErrorMessage.setVisibility(View.VISIBLE);
+        binding.usersRecyclerView.setVisibility(View.GONE);
+    }
+
+    private void loading(Boolean isLoading) {
+        binding.progressBar.setVisibility(isLoading ? View.VISIBLE : View.INVISIBLE);
+    }
+
+    @Override
+    public void onUserClicked(UserModel user) {
+        if (user == null) return;
+
+        Intent intent = new Intent(getApplicationContext(), ChatActivity.class);
+        // Sửa cách truyền user object
+        intent.putExtra(Constants.KEY_USER, user); // Đảm bảo UserModel implements Serializable
+        startActivity(intent);
+        finish();
+    }
+
+    private void loadFriends() {
+        loading(true); // Hiển thị ProgressBar
         FirebaseFirestore database = FirebaseFirestore.getInstance();
         String currentUserId = preferenceManager.getString(Constants.KEY_USER_ID);
 
-        database.collection(Constants.KEY_COLLECTION_FRIEND_REQUESTS)
-                .whereEqualTo(Constants.KEY_RECEIVER_ID, currentUserId)
-                .whereEqualTo(Constants.KEY_STATUS, Constants.STATUS_PENDING)
-                .get()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful() && task.getResult() != null) {
-                        List<FriendRequest> requests = new ArrayList<>();
-                        for (QueryDocumentSnapshot snapshot : task.getResult()) {
-                            FriendRequest request = snapshot.toObject(FriendRequest.class);
-                            request.setId(snapshot.getId());
-                            requests.add(request);
-                        }
-                        showFriendRequests(requests); // Hiển thị danh sách lời mời
-                    }
-                });
-    }
-
-    private void showFriendRequests(List<FriendRequest> requests) {
-        FriendRequestAdapter adapter = new FriendRequestAdapter(requests, new FriendRequestListener() {
-            @Override
-            public void onAcceptClicked(FriendRequest request) {
-                acceptFriendRequest(request);
-            }
-
-            @Override
-            public void onRejectClicked(FriendRequest request) {
-                rejectFriendRequest(request);
-            }
-        });
-        binding.usersRecyclerView.setAdapter(adapter);
-        binding.usersRecyclerView.setVisibility(View.VISIBLE);
-    }
-
-    private void acceptFriendRequest(FriendRequest request) {
-        FirebaseFirestore database = FirebaseFirestore.getInstance();
-
-        // Thêm vào danh sách bạn bè
-        HashMap<String, Object> friend1 = new HashMap<>();
-        friend1.put("userId", request.getReceiverId());
-        friend1.put("friendId", request.getSenderId());
-        friend1.put(Constants.KEY_TIMESTAMP, new Date());
-
-        HashMap<String, Object> friend2 = new HashMap<>();
-        friend2.put("userId", request.getSenderId());
-        friend2.put("friendId", request.getReceiverId());
-        friend2.put(Constants.KEY_TIMESTAMP, new Date());
-
-        database.collection(Constants.KEY_COLLECTION_FRIENDS)
-                .add(friend1)
-                .addOnSuccessListener(docRef -> {
-                    database.collection(Constants.KEY_COLLECTION_FRIENDS)
-                            .add(friend2)
-                            .addOnSuccessListener(unused -> {
-                                // Xóa lời mời kết bạn
-                                database.collection(Constants.KEY_COLLECTION_FRIEND_REQUESTS)
-                                        .document(request.getId())
-                                        .delete()
-                                        .addOnSuccessListener(unused2 -> {
-                                            Toast.makeText(this, "Đã chấp nhận lời mời kết bạn!", Toast.LENGTH_SHORT).show();
-                                            // Xóa khỏi giao diện
-                                            FriendRequestAdapter adapter = (FriendRequestAdapter) binding.usersRecyclerView.getAdapter();
-                                            if (adapter != null) {
-                                                adapter.removeRequest(request);
-                                            }
-                                        });
-                            });
-                });
-    }
-
-
-    private void rejectFriendRequest(FriendRequest request) {
-        FirebaseFirestore database = FirebaseFirestore.getInstance();
-
-        database.collection(Constants.KEY_COLLECTION_FRIEND_REQUESTS)
-                .document(request.getId())
-                .delete()
-                .addOnSuccessListener(unused -> {
-                    Toast.makeText(this, "Đã từ chối lời mời kết bạn!", Toast.LENGTH_SHORT).show();
-                    // Xóa lời mời khỏi danh sách hiển thị
-                    FriendRequestAdapter adapter = (FriendRequestAdapter) binding.usersRecyclerView.getAdapter();
-                    if (adapter != null) {
-                        adapter.removeRequest(request);
-                    }
-                });
-    }
-
-
-    private void searchUser(String email) {
-        FirebaseFirestore database = FirebaseFirestore.getInstance();
-        database.collection(Constants.KEY_COLLECTION_USERS)
-                .whereEqualTo(Constants.KEY_EMAIL, email)
-                .get()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful() && task.getResult() != null && !task.getResult().isEmpty()) {
-                        for (QueryDocumentSnapshot snapshot : task.getResult()) {
-                            UserModel user = snapshot.toObject(UserModel.class);
-                            user.setId(snapshot.getId());
-                            sendFriendRequest(user); // Gửi lời mời kết bạn
-                        }
-                    } else {
-                        Toast.makeText(this, "Không tìm thấy người dùng!", Toast.LENGTH_SHORT).show();
-                    }
-                });
-    }
-
-    private void sendFriendRequest(UserModel user) {
-        FirebaseFirestore database = FirebaseFirestore.getInstance();
-        String currentUserId = preferenceManager.getString(Constants.KEY_USER_ID);
-
-        if (currentUserId.equals(user.getId())) {
-            Toast.makeText(this, "Bạn không thể kết bạn với chính mình!", Toast.LENGTH_SHORT).show();
-            return; // Dừng lại, không tiếp tục gửi lời mời
-        }
-        // Kiểm tra xem đã là bạn bè chưa
         database.collection(Constants.KEY_COLLECTION_FRIENDS)
                 .whereEqualTo("userId", currentUserId)
-                .whereEqualTo("friendId", user.getId())
                 .get()
                 .addOnCompleteListener(task -> {
-                    if (task.isSuccessful() && task.getResult() != null && !task.getResult().isEmpty()) {
-                        // Nếu đã là bạn bè
-                        Toast.makeText(this, "Người này đã là bạn bè của bạn!", Toast.LENGTH_SHORT).show();
+                    loading(false); // Ẩn ProgressBar
+                    if (task.isSuccessful() && task.getResult() != null) {
+                        List<UserModel> friends = new ArrayList<>();
+                        for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
+                            String friendId = documentSnapshot.getString("friendId");
+
+                            // Tải thông tin chi tiết của bạn bè
+                            database.collection(Constants.KEY_COLLECTION_USERS)
+                                    .document(friendId)
+                                    .get()
+                                    .addOnSuccessListener(document -> {
+                                        UserModel user = new UserModel();
+                                        user.setId(friendId);
+                                        user.setName(document.getString(Constants.KEY_NAME));
+                                        user.setEmail(document.getString(Constants.KEY_EMAIL));
+                                        friends.add(user);
+
+                                        if (friends.size() > 0) {
+                                            showFriends(friends); // Hiển thị danh sách bạn bè
+                                        } else {
+                                            showErrorMessage("Không có bạn bè!");
+                                        }
+                                    });
+                        }
                     } else {
-                        // Nếu chưa là bạn bè, tiến hành gửi lời mời
-                        proceedToSendFriendRequest(user);
+                        showErrorMessage("Không thể tải danh sách bạn bè!");
                     }
                 });
     }
 
-    private void proceedToSendFriendRequest(UserModel user) {
-        FirebaseFirestore database = FirebaseFirestore.getInstance();
-        String currentUserId = preferenceManager.getString(Constants.KEY_USER_ID);
-        String currentUserName = preferenceManager.getString(Constants.KEY_NAME);
-        String currentUserEmail = preferenceManager.getString(Constants.KEY_EMAIL);
-
-        HashMap<String, Object> request = new HashMap<>();
-        request.put(Constants.KEY_SENDER_ID, currentUserId);
-        request.put(Constants.KEY_RECEIVER_ID, user.getId());
-        request.put(Constants.KEY_STATUS, Constants.STATUS_PENDING);
-        request.put(Constants.KEY_TIMESTAMP, new Date());
-        request.put("senderName", currentUserName);
-        request.put("senderEmail", currentUserEmail);
-
-        database.collection(Constants.KEY_COLLECTION_FRIEND_REQUESTS)
-                .add(request)
-                .addOnSuccessListener(documentReference -> {
-                    Toast.makeText(this, "Lời mời kết bạn đã được gửi!", Toast.LENGTH_SHORT).show();
-                })
-                .addOnFailureListener(e -> {
-                    Toast.makeText(this, "Không thể gửi lời mời kết bạn!", Toast.LENGTH_SHORT).show();
-                });
+    private void showFriends(List<UserModel> friends) {
+        UsersAdapter usersAdapter = new UsersAdapter(friends, this);
+        binding.usersRecyclerView.setAdapter(usersAdapter);
+        binding.usersRecyclerView.setVisibility(View.VISIBLE);
+        binding.textErrorMessage.setVisibility(View.GONE);
     }
-
 
 }

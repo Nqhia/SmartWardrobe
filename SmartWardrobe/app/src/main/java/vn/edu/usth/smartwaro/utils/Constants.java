@@ -22,6 +22,7 @@ public class Constants {
     public static final String STATUS_REJECTED = "rejected";
     public static final String KEY_COLLECTION_FRIEND_REQUESTS ="friend_requested";
 
+    public static final String KEY_IMAGE = "image";
     public static final String KEY_COLLECTION_FRIENDS = "friends";
 
 }
