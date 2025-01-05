@@ -2,7 +2,6 @@ package vn.edu.usth.smartwaro.auth.ui;
 
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
@@ -28,12 +27,10 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         preferenceManager = new PreferenceManager(getApplicationContext());
 
-        // Check if user is already logged in
         if (preferenceManager.getBoolean(Constants.KEY_IS_SIGNED_IN)) {
             navigateToMain();
             return;
         }
-
         binding = ActivityLoginBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
@@ -46,11 +43,6 @@ public class LoginActivity extends AppCompatActivity {
         preferenceManager.putString(Constants.KEY_USER_ID, user.getId());
         preferenceManager.putString(Constants.KEY_NAME, user.getName());
         preferenceManager.putString(Constants.KEY_EMAIL, user.getEmail());
-        Log.d("LoginActivity", "Verifying saved data:");
-        Log.d("LoginActivity", "Is signed in: " + preferenceManager.getBoolean(Constants.KEY_IS_SIGNED_IN));
-        Log.d("LoginActivity", "Saved user ID: " + preferenceManager.getString(Constants.KEY_USER_ID));
-        Log.d("LoginActivity", "Saved name: " + preferenceManager.getString(Constants.KEY_NAME));
-        Log.d("LoginActivity", "Saved email: " + preferenceManager.getString(Constants.KEY_EMAIL));
     }
 
     private boolean validateInput(String email, String password) {

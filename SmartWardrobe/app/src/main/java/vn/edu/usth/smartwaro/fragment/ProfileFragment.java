@@ -1,5 +1,6 @@
 package vn.edu.usth.smartwaro.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,14 +22,13 @@ import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import vn.edu.usth.smartwaro.R;
+import vn.edu.usth.smartwaro.auth.UpdateProfileActivity;
 import vn.edu.usth.smartwaro.network.FirebaseService;
 
 public class ProfileFragment extends Fragment {
     private TextView usernameTextView;
     private TextView emailTextView;
     private CircleImageView avatarImageView;
-    private Button editProfileButton;
-    private Button friendsButton; // Add this button
     private ProgressBar progressBar;
 
     private FirebaseAuth firebaseAuth;
@@ -38,27 +38,23 @@ public class ProfileFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
 
-        // Initialize views
         usernameTextView = view.findViewById(R.id.usernameTextView);
         emailTextView = view.findViewById(R.id.emailTextView);
         avatarImageView = view.findViewById(R.id.avatarImageView);
-        editProfileButton = view.findViewById(R.id.editProfileButton);
-        friendsButton = view.findViewById(R.id.friendsButton); // Initialize friends button
+        Button editProfileButton = view.findViewById(R.id.editProfileButton);
+        Button friendsButton = view.findViewById(R.id.friendsButton); // Initialize friends button
         progressBar = view.findViewById(R.id.progressBar);
 
-        // Initialize Firebase services
         firebaseAuth = FirebaseService.getInstance().getFirebaseAuth();
         databaseReference = FirebaseService.getInstance().getDatabaseReference();
 
-        // Set up edit profile button
         editProfileButton.setOnClickListener(v -> {
-            // Implement edit profile logic here
+            Intent intent = new Intent(requireActivity(), UpdateProfileActivity.class);
+            startActivity(intent);
         });
 
-        // Navigate to FriendListFragment when friends button is clicked
         friendsButton.setOnClickListener(v -> navigateToFriendListFragment());
 
-        // Load the user profile data
         loadUserProfile();
 
         return view;

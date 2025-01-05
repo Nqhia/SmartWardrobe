@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -13,7 +14,6 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import vn.edu.usth.smartwaro.R;
@@ -22,55 +22,119 @@ import vn.edu.usth.smartwaro.network.FlaskNetwork;
 public class CategoriesFragment extends Fragment {
     private RecyclerView recyclerView;
     private CategoryAdapter adapter;
-    private List<String> images = new ArrayList<>();
+    private ProgressBar progressBar;
+    private final List<GalleryImage> categoryImages = new ArrayList<>();
+    private String currentCategory;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_categories, container, false);
 
+        // Initialize views
         recyclerView = view.findViewById(R.id.recyclerView);
-        recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2)); // Grid layout with 2 columns
+        progressBar = view.findViewById(R.id.progress_bar); // Add this to your layout
 
-        // Load images based on category
-        String category = getArguments() != null ? getArguments().getString("category") : "Unknown";
-        loadCategoryImagesFromServer(category);
+        // Get category from arguments
+        currentCategory = getArguments() != null ? getArguments().getString("category") : "Unknown";
 
-        // Setup adapter
-        adapter = new CategoryAdapter(
-                images,
-                category,
-                selectedCategory -> Toast.makeText(getContext(), "Selected: " + selectedCategory, Toast.LENGTH_SHORT).show()
-        );
-        recyclerView.setAdapter(adapter);
+        setupRecyclerView();
+        loadCategoryImagesFromServer();
 
         return view;
     }
 
-    private void loadCategoryImagesFromServer(String category) {
+    private void setupRecyclerView() {
+        // Initialize adapter with current category
+        adapter = new CategoryAdapter(requireContext(), currentCategory);
+
+        // Calculate span count based on screen width
+        int spanCount = getResources().getConfiguration().screenWidthDp / 180;
+        recyclerView.setLayoutManager(new GridLayoutManager(getContext(), Math.max(2, spanCount)));
+
+        // Set click listener
+        adapter.setOnImageClickListener(image -> {
+            // Handle image click - open image viewer
+            int position = categoryImages.indexOf(image);
+            if (position != -1) {
+                ImageViewerFragment viewerFragment = ImageViewerFragment.newInstance(
+                        new ArrayList<>(categoryImages),
+                        position
+                );
+                requireActivity().getSupportFragmentManager()
+                        .beginTransaction()
+                        .add(R.id.fragment_container, viewerFragment)
+                        .addToBackStack(null)
+                        .commit();
+            }
+        });
+
+        recyclerView.setAdapter(adapter);
+    }
+
+    private void loadCategoryImagesFromServer() {
+        if (progressBar != null) {
+            progressBar.setVisibility(View.VISIBLE);
+        }
+
         FlaskNetwork flaskNetwork = new FlaskNetwork();
-        flaskNetwork.getUserImages(category, new FlaskNetwork.OnImagesLoadedListener() {
+        flaskNetwork.getUserImages(currentCategory, new FlaskNetwork.OnImagesLoadedListener() {
             @Override
             public void onSuccess(String[] imageUrls) {
-                // Cập nhật giao diện trên main thread
-                getActivity().runOnUiThread(() -> {
-                    images.clear();
-                    images.addAll(Arrays.asList(imageUrls));
+                if (!isAdded()) return;
 
-                    if (adapter != null) {
-                        adapter.notifyDataSetChanged();
+                requireActivity().runOnUiThread(() -> {
+                    try {
+                        categoryImages.clear();
+                        for (String url : imageUrls) {
+                            if (url != null && !url.isEmpty()) {
+                                String filename = extractFilename(url);
+                                categoryImages.add(new GalleryImage(
+                                        filename,
+                                        filename,
+                                        "",
+                                        url,
+                                        currentCategory
+                                ));
+                            }
+                        }
+                        adapter.setImages(categoryImages);
+                    } catch (Exception e) {
+                        Toast.makeText(requireContext(),
+                                "Error processing images",
+                                Toast.LENGTH_SHORT).show();
+                    } finally {
+                        if (progressBar != null) {
+                            progressBar.setVisibility(View.GONE);
+                        }
                     }
                 });
             }
 
             @Override
             public void onError(String message) {
-                // Hiển thị lỗi trên main thread
-                getActivity().runOnUiThread(() ->
-                        Toast.makeText(getContext(), "Error loading images: " + message, Toast.LENGTH_LONG).show()
-                );
+                if (!isAdded()) return;
+
+                requireActivity().runOnUiThread(() -> {
+                    Toast.makeText(requireContext(),
+                            "Error loading images: " + message,
+                            Toast.LENGTH_SHORT).show();
+                    if (progressBar != null) {
+                        progressBar.setVisibility(View.GONE);
+                    }
+                });
             }
         });
     }
 
+    private String extractFilename(String url) {
+        if (url == null || url.isEmpty()) {
+            return "unknown_" + System.currentTimeMillis();
+        }
+        int lastSlashIndex = url.lastIndexOf('/');
+        if (lastSlashIndex != -1 && lastSlashIndex < url.length() - 1) {
+            return url.substring(lastSlashIndex + 1);
+        }
+        return "unknown_" + System.currentTimeMillis();
+    }
 }

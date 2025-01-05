@@ -1,23 +1,24 @@
 {
     "user_id": "ipnAkChjrGcAWyJ6Y6yBEiPOMX83",
     "images": {
-        "processed_20241230_204238_upload_1735566162420_processed_1735566159475.png": {
+        "processed_20250103_211258_upload_1735913582899_processed_1735913579278.png": {
             "category": "uncategorized",
-            "timestamp": "20241230_204238",
-            "original_filename": "upload_1735566162420_processed_1735566159475.png"
+            "timestamp": "20250103_211258",
+            "original_filename": "upload_1735913582899_processed_1735913579278.png"
         },
-        "processed_20241230_204844_upload_1735566529057_processed_1735566526919.png": {
-            "category": "uncategorized",
-            "timestamp": "20241230_204844",
-            "original_filename": "upload_1735566529057_processed_1735566526919.png"
+        "processed_20250103_211325_upload_1735913609490_processed_1735913597302.png": {
+            "category": "long sleeves",
+            "timestamp": "20250103_211325",
+            "original_filename": "upload_1735913609490_processed_1735913597302.png"
         }
     },
     "categories": {
         "uncategorized": [
-            "processed_20241230_204238_upload_1735566162420_processed_1735566159475.png",
-            "processed_20241230_204844_upload_1735566529057_processed_1735566526919.png"
+            "processed_20250103_211258_upload_1735913582899_processed_1735913579278.png"
         ],
-        "long sleeves": [],
+        "long sleeves": [
+            "processed_20250103_211325_upload_1735913609490_processed_1735913597302.png"
+        ],
         "short sleeves": [],
         "long leggings": [],
         "short leggings": []

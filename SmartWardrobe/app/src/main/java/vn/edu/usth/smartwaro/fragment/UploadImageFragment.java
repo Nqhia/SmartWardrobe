@@ -64,19 +64,16 @@ public class UploadImageFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_upload_image, container, false);
 
-        // Initialize BackgroundRemovalService
         flaskNetwork = new FlaskNetwork();
 
-        // Initialize views
         btnPhoto = rootView.findViewById(R.id.btn_photo);
         btnGallery = rootView.findViewById(R.id.btn_gallery);
         progressBar = rootView.findViewById(R.id.progressBar);
 
-        // Initially hide progress bar
         progressBar.setVisibility(View.GONE);
 
         btnPhoto.setOnClickListener(v -> {
-            if (ContextCompat.checkSelfPermission(getContext(), android.Manifest.permission.CAMERA)
+            if (ContextCompat.checkSelfPermission(requireContext(), android.Manifest.permission.CAMERA)
                     == android.content.pm.PackageManager.PERMISSION_GRANTED) {
                 openCamera();
             } else {
@@ -84,9 +81,7 @@ public class UploadImageFragment extends Fragment {
             }
         });
 
-        btnGallery.setOnClickListener(v -> {
-            galleryActivityResultLauncher.launch("image/*");
-        });
+        btnGallery.setOnClickListener(v -> galleryActivityResultLauncher.launch("image/*"));
 
         return rootView;
     }
@@ -105,9 +100,7 @@ public class UploadImageFragment extends Fragment {
                 new FlaskNetwork.OnBackgroundRemovalListener() {
                     @Override
                     public void onProcessing() {
-                        requireActivity().runOnUiThread(() -> {
-                            progressBar.setVisibility(View.VISIBLE);
-                        });
+                        requireActivity().runOnUiThread(() -> progressBar.setVisibility(View.VISIBLE));
                     }
 
                     @Override
@@ -115,7 +108,7 @@ public class UploadImageFragment extends Fragment {
                         requireActivity().runOnUiThread(() -> {
                             // Update image URI to processed image
                             imageUri = FileProvider.getUriForFile(
-                                    getContext(),
+                                    requireContext(),
                                     "vn.edu.usth.swaro.fileprovider",
                                     processedImage
                             );
@@ -150,7 +143,7 @@ public class UploadImageFragment extends Fragment {
         Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         File photoFile = createImageFile();
         if (photoFile != null) {
-            imageUri = FileProvider.getUriForFile(getContext(), "vn.edu.usth.swaro.fileprovider", photoFile);
+            imageUri = FileProvider.getUriForFile(requireContext(), "vn.edu.usth.swaro.fileprovider", photoFile);
             cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
             cameraActivityResultLauncher.launch(cameraIntent);
         }
@@ -158,7 +151,7 @@ public class UploadImageFragment extends Fragment {
 
     private File createImageFile() {
         String imageFileName = "IMG_" + System.currentTimeMillis();
-        File storageDir = getContext().getExternalFilesDir(android.os.Environment.DIRECTORY_PICTURES);
+        File storageDir = requireContext().getExternalFilesDir(android.os.Environment.DIRECTORY_PICTURES);
         File image = new File(storageDir, imageFileName + ".png");
 
         try {

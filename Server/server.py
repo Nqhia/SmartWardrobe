@@ -125,6 +125,29 @@ class UserCategories:
             
         return True, "Category removed successfully"
 
+def verify_metadata_structure(user_id):
+    """Verify and repair metadata structure if needed"""
+    metadata = load_metadata(user_id)
+    categories = UserCategories.get_categories(user_id)
+    
+    if metadata:
+        # Ensure all categories exist in metadata
+        for category in categories:
+            if category not in metadata['categories']:
+                metadata['categories'][category] = []
+                
+        # Verify all images are properly categorized
+        for filename, info in metadata['images'].items():
+            category = info['category']
+            if category not in metadata['categories']:
+                metadata['categories'][category] = []
+            if filename not in metadata['categories'][category]:
+                metadata['categories'][category].append(filename)
+                
+        save_metadata(user_id, metadata)
+    
+    return metadata
+
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
@@ -410,6 +433,8 @@ def get_categories():
         if not user_id or not is_valid_firebase_uid(user_id):
             return jsonify({'error': 'Invalid user ID'}), 400
             
+        # Verify metadata structure before returning categories
+        verify_metadata_structure(user_id)
         categories = UserCategories.get_categories(user_id)
         return jsonify({'categories': categories})
         
@@ -428,12 +453,22 @@ def add_category():
             
         if not category_name or not isinstance(category_name, str):
             return jsonify({'error': 'Invalid category name'}), 400
-            
+        
+        # Normalize category name
+        category_name = category_name.lower().strip()
+        
+        # First update categories.json
         success, message = UserCategories.add_category(user_id, category_name)
-        if success:
-            return jsonify({'message': message}), 200
-        else:
+        if not success:
             return jsonify({'error': message}), 400
+            
+        # Then update metadata.json
+        metadata = load_metadata(user_id)
+        if metadata and category_name not in metadata['categories']:
+            metadata['categories'][category_name] = []
+            save_metadata(user_id, metadata)
+            
+        return jsonify({'message': message}), 200
             
     except Exception as e:
         logger.error(f"Error adding category: {str(e)}")
@@ -451,8 +486,36 @@ def remove_category():
         if not category_name or not isinstance(category_name, str):
             return jsonify({'error': 'Invalid category name'}), 400
             
+        # Load metadata first to check for images
+        metadata = load_metadata(user_id)
+        if metadata and category_name in metadata['categories']:
+            # Move all images to 'uncategorized' category
+            if len(metadata['categories'][category_name]) > 0:
+                for filename in metadata['categories'][category_name][:]:  # Create a copy of the list
+                    try:
+                        # Move file
+                        old_path = os.path.join(UPLOAD_FOLDER, str(user_id), category_name, filename)
+                        new_path = os.path.join(UPLOAD_FOLDER, str(user_id), 'uncategorized', filename)
+                        if os.path.exists(old_path):
+                            os.rename(old_path, new_path)
+                        
+                        # Update metadata
+                        metadata['categories'][category_name].remove(filename)
+                        if filename not in metadata['categories']['uncategorized']:
+                            metadata['categories']['uncategorized'].append(filename)
+                        metadata['images'][filename]['category'] = 'uncategorized'
+                    except Exception as e:
+                        logger.error(f"Error moving file {filename}: {str(e)}")
+                
+                save_metadata(user_id, metadata)
+        
+        # Then remove the category
         success, message = UserCategories.remove_category(user_id, category_name)
         if success:
+            # Remove category from metadata if it exists
+            if metadata and category_name in metadata['categories']:
+                del metadata['categories'][category_name]
+                save_metadata(user_id, metadata)
             return jsonify({'message': message}), 200
         else:
             return jsonify({'error': message}), 400
@@ -460,6 +523,7 @@ def remove_category():
     except Exception as e:
         logger.error(f"Error removing category: {str(e)}")
         return jsonify({'error': str(e)}), 500
+
 @app.route('/move-image', methods=['POST'])
 def move_image():
     try:
@@ -473,12 +537,16 @@ def move_image():
         if not filename or not new_category:
             return jsonify({'error': 'Missing filename or new category'}), 400
             
+        # Verify metadata structure
+        metadata = verify_metadata_structure(user_id)
+        if not metadata:
+            return jsonify({'error': 'Metadata not found'}), 404
+            
         categories = UserCategories.get_categories(user_id)
         if new_category not in categories:
             return jsonify({'error': 'Invalid category'}), 400
             
-        metadata = load_metadata(user_id)
-        if not metadata or filename not in metadata['images']:
+        if filename not in metadata['images']:
             return jsonify({'error': 'Image not found'}), 404
             
         old_category = metadata['images'][filename]['category']
@@ -492,8 +560,10 @@ def move_image():
         os.rename(old_path, new_path)
         
         # Update metadata
-        metadata['categories'][old_category].remove(filename)
-        metadata['categories'][new_category].append(filename)
+        if filename in metadata['categories'][old_category]:
+            metadata['categories'][old_category].remove(filename)
+        if filename not in metadata['categories'][new_category]:
+            metadata['categories'][new_category].append(filename)
         metadata['images'][filename]['category'] = new_category
         save_metadata(user_id, metadata)
         

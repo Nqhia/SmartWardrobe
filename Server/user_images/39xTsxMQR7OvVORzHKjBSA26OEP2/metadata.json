@@ -1,0 +1,19 @@
+{
+    "user_id": "39xTsxMQR7OvVORzHKjBSA26OEP2",
+    "images": {
+        "processed_20241231_113123_upload_1735619482222_processed_1735619474045.png": {
+            "category": "long leggings",
+            "timestamp": "20241231_113123",
+            "original_filename": "upload_1735619482222_processed_1735619474045.png"
+        }
+    },
+    "categories": {
+        "uncategorized": [],
+        "long sleeves": [],
+        "short sleeves": [],
+        "long leggings": [
+            "processed_20241231_113123_upload_1735619482222_processed_1735619474045.png"
+        ],
+        "short leggings": []
+    }
+}

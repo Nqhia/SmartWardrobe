@@ -4,189 +4,120 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.bumptech.glide.Glide;
-import com.google.android.material.textfield.TextInputEditText;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.storage.StorageReference;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import de.hdodenhof.circleimageview.CircleImageView;
 import vn.edu.usth.smartwaro.R;
-import vn.edu.usth.smartwaro.auth.utils.AuthenticationManager;
-import vn.edu.usth.smartwaro.network.FirebaseService;
 import vn.edu.usth.smartwaro.auth.utils.ValidationUtils;
+import vn.edu.usth.smartwaro.auth.viewmodel.UpdateProfileViewModel;
+import vn.edu.usth.smartwaro.databinding.ActivityUpdateProfileBinding;
+
 public class UpdateProfileActivity extends AppCompatActivity {
-    private TextInputEditText usernameEditText, emailEditText;
-    private CircleImageView avatarImageView;
-    private Button saveButton, changeAvatarButton;
-    private ProgressBar progressBar;
-
-    private FirebaseAuth firebaseAuth;
-    private DatabaseReference databaseReference;
-    private StorageReference storageReference;
-
+    private ActivityUpdateProfileBinding binding;
+    private UpdateProfileViewModel viewModel;
     private static final int REQUEST_CODE_PICK_IMAGE = 1001;
     private Uri selectedImageUri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_update_profile);
+        binding = ActivityUpdateProfileBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
-        // Initialize views
-        usernameEditText = findViewById(R.id.usernameEditText);
-        emailEditText = findViewById(R.id.emailEditText);
-        avatarImageView = findViewById(R.id.avatarImageView);
-        saveButton = findViewById(R.id.saveButton);
-        changeAvatarButton = findViewById(R.id.changeAvatarButton);
-        progressBar = findViewById(R.id.progressBar);
+        viewModel = new ViewModelProvider(this).get(UpdateProfileViewModel.class);
 
-        // Initialize Firebase services
-        firebaseAuth = FirebaseService.getInstance().getFirebaseAuth();
-        databaseReference = FirebaseService.getInstance().getDatabaseReference();
-        storageReference = FirebaseService.getInstance().getStorageReference();
-
-        // Load user data
-        loadUserProfile();
-
-        // Set up listeners
-        saveButton.setOnClickListener(v -> updateProfile());
-        changeAvatarButton.setOnClickListener(v -> openImagePicker());
+        setupViews();
+        observeViewModel();
+        viewModel.loadUserProfile();
     }
 
-    private void loadUserProfile() {
-        FirebaseUser currentUser = firebaseAuth.getCurrentUser();
-        if (currentUser != null) {
-            progressBar.setVisibility(View.VISIBLE);
-            String userId = currentUser.getUid();
+    private void setupViews() {
+        binding.saveButton.setOnClickListener(v -> updateProfile());
+    }
 
-            databaseReference.child("users").child(userId).get()
-                    .addOnCompleteListener(task -> {
-                        progressBar.setVisibility(View.GONE);
-                        if (task.isSuccessful()) {
-                            Map<String, Object> userData = (Map<String, Object>) task.getResult().getValue();
-                            if (userData != null) {
-                                // Set username
-                                String username = (String) userData.get("username");
-                                usernameEditText.setText(username);
+    private void observeViewModel() {
+        viewModel.getProfileData().observe(this, result -> {
+            switch (result.getStatus()) {
+                case LOADING:
+                    showLoading(true);
+                    break;
+                case SUCCESS:
+                    showLoading(false);
+                    if (result.getData() != null) {
+                        binding.usernameEditText.setText(result.getData().getName());
+                        binding.emailEditText.setText(result.getData().getEmail());
 
-                                // Set email
-                                emailEditText.setText(currentUser.getEmail());
-
-                                // Load avatar
-                                String avatarUrl = (String) userData.get("avatarUrl");
-                                if (avatarUrl != null && !avatarUrl.isEmpty()) {
-                                    Glide.with(this)
-                                            .load(avatarUrl)
-                                            .placeholder(R.drawable.placeholder_avatar)
-                                            .into(avatarImageView);
-                                }
-                            }
-                        } else {
-                            Toast.makeText(this, "Failed to load profile", Toast.LENGTH_SHORT).show();
+                        // Load avatar
+                        if (result.getData().getImage() != null && !result.getData().getImage().isEmpty()) {
+                            Glide.with(this)
+                                    .load(result.getData().getImage())
+                                    .placeholder(R.drawable.placeholder_avatar)
+                                    .into(binding.avatarImageView);
                         }
-                    });
-        }
+                    }
+                    break;
+                case ERROR:
+                    showLoading(false);
+                    showToast(result.getError());
+                    break;
+            }
+        });
+
+        viewModel.getUpdateResult().observe(this, result -> {
+            switch (result.getStatus()) {
+                case LOADING:
+                    showLoading(true);
+                    break;
+                case SUCCESS:
+                    showLoading(false);
+                    showToast("Profile updated successfully");
+                    finish();
+                    break;
+                case ERROR:
+                    showLoading(false);
+                    showToast(result.getError());
+                    break;
+            }
+        });
     }
 
     private void updateProfile() {
-        String newUsername = usernameEditText.getText().toString().trim();
+        String newUsername = binding.usernameEditText.getText().toString().trim();
 
-        // Validate username
         if (!ValidationUtils.isValidUsername(newUsername)) {
-            Toast.makeText(this, "Invalid username. Must be 3-20 characters.", Toast.LENGTH_SHORT).show();
+            showToast("Invalid username. Must be 3-20 characters.");
             return;
         }
 
-        progressBar.setVisibility(View.VISIBLE);
-        FirebaseUser currentUser = firebaseAuth.getCurrentUser();
-        if (currentUser != null) {
-            String userId = currentUser.getUid();
-
-            // Prepare update map
+        String userId = viewModel.getCurrentUserId();
+        if (userId != null) {
             Map<String, Object> updates = new HashMap<>();
-            updates.put("username", newUsername);
-
-            // Update username in database
-            databaseReference.child("users").child(userId)
-                    .updateChildren(updates)
-                    .addOnCompleteListener(task -> {
-                        progressBar.setVisibility(View.GONE);
-                        if (task.isSuccessful()) {
-                            Toast.makeText(this, "Profile updated successfully", Toast.LENGTH_SHORT).show();
-                            // Optionally, finish the activity or refresh the view
-                            finish();
-                        } else {
-                            Toast.makeText(this, "Failed to update profile", Toast.LENGTH_SHORT).show();
-                        }
-                    });
+            updates.put("name", newUsername);
+            viewModel.updateProfile(userId, updates);
         }
     }
 
-    private void openImagePicker() {
-        Intent intent = new Intent(Intent.ACTION_PICK);
-        intent.setType("image/*");
-        startActivityForResult(intent, REQUEST_CODE_PICK_IMAGE);
+    private void showLoading(boolean isLoading) {
+        binding.progressBar.setVisibility(isLoading ? View.VISIBLE : View.GONE);
+        binding.saveButton.setEnabled(!isLoading);
+        binding.changeAvatarButton.setEnabled(!isLoading);
+    }
+
+    private void showToast(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_CODE_PICK_IMAGE && resultCode == RESULT_OK && data != null) {
-            selectedImageUri = data.getData();
-            if (selectedImageUri != null) {
-
-                Glide.with(this)
-                        .load(selectedImageUri)
-                        .into(avatarImageView);
-                uploadAvatar();
-            }
-        }
-    }
-
-    private void uploadAvatar() {
-        if (selectedImageUri == null) return;
-
-        progressBar.setVisibility(View.VISIBLE);
-        FirebaseUser currentUser = firebaseAuth.getCurrentUser();
-        if (currentUser != null) {
-            String userId = currentUser.getUid();
-            StorageReference avatarRef = storageReference.child("avatars/" + userId + ".jpg");
-
-            avatarRef.putFile(selectedImageUri)
-                    .addOnSuccessListener(taskSnapshot -> {
-                        avatarRef.getDownloadUrl().addOnSuccessListener(uri -> {
-                            // Update avatar URL in database
-                            Map<String, Object> updates = new HashMap<>();
-                            updates.put("avatarUrl", uri.toString());
-
-                            databaseReference.child("users").child(userId)
-                                    .updateChildren(updates)
-                                    .addOnCompleteListener(task -> {
-                                        progressBar.setVisibility(View.GONE);
-                                        if (task.isSuccessful()) {
-                                            Toast.makeText(this, "Avatar updated successfully", Toast.LENGTH_SHORT).show();
-                                        } else {
-                                            Toast.makeText(this, "Failed to update avatar", Toast.LENGTH_SHORT).show();
-                                        }
-                                    });
-                        });
-                    })
-                    .addOnFailureListener(e -> {
-                        progressBar.setVisibility(View.GONE);
-                        Toast.makeText(this, "Avatar upload failed", Toast.LENGTH_SHORT).show();
-                    });
-        }
+    protected void onDestroy() {
+        super.onDestroy();
+        binding = null;
     }
 }

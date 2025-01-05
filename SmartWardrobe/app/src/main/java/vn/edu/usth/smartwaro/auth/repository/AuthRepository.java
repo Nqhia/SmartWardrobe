@@ -26,10 +26,8 @@ public class AuthRepository {
     public void signIn(String email, String password, AuthCallback callback) {
         firebaseAuth.signInWithEmailAndPassword(email, password)
                 .addOnSuccessListener(authResult -> {
-                    // After successful auth, get user data from Firestore
                     getUserData(Objects.requireNonNull(authResult.getUser()).getUid(), callback);
 
-                    // Update last login time
                     updateLastLogin(authResult.getUser().getUid());
                 })
                 .addOnFailureListener(e -> callback.onError(e.getMessage()));
@@ -40,7 +38,7 @@ public class AuthRepository {
                 .addOnSuccessListener(authResult -> {
                     FirebaseUser firebaseUser = authResult.getUser();
                     if (firebaseUser != null) {
-                        // Create user model
+
                         UserModel newUser = new UserModel();
                         newUser.setId(firebaseUser.getUid());
                         newUser.setName(username);
@@ -49,13 +47,11 @@ public class AuthRepository {
                         newUser.setLastLogin(new Timestamp(new Date()));
                         newUser.setDefaultImage(true);
 
-                        // Save to Firestore
                         firestore.collection(Constants.KEY_COLLECTION_USERS)
                                 .document(firebaseUser.getUid())
                                 .set(newUser)
                                 .addOnSuccessListener(aVoid -> callback.onSuccess(newUser))
                                 .addOnFailureListener(e -> {
-                                    // Delete auth user if Firestore save fails
                                     firebaseUser.delete();
                                     callback.onError("Failed to create user profile: " + e.getMessage());
                                 });
@@ -88,14 +84,6 @@ public class AuthRepository {
                 .update(updates);
     }
 
-    public void logout() {
-        firebaseAuth.signOut();
-    }
-
-    public boolean isUserLoggedIn() {
-        return firebaseAuth.getCurrentUser() != null;
-    }
-
     public String getCurrentUserId() {
         FirebaseUser user = firebaseAuth.getCurrentUser();
         return user != null ? user.getUid() : null;
@@ -108,5 +96,12 @@ public class AuthRepository {
         } else {
             callback.onError("No user logged in");
         }
+    }
+    public void updateProfile(String userId, Map<String, Object> updates, AuthCallback callback) {
+        firestore.collection(Constants.KEY_COLLECTION_USERS)
+                .document(userId)
+                .update(updates)
+                .addOnSuccessListener(aVoid -> getUserData(userId, callback))
+                .addOnFailureListener(e -> callback.onError(e.getMessage()));
     }
 }

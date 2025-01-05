@@ -1,93 +1,97 @@
 package vn.edu.usth.smartwaro.mycloset;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RadioButton;
-import android.widget.TextView;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+
+import java.util.ArrayList;
 import java.util.List;
 
 import vn.edu.usth.smartwaro.R;
+import vn.edu.usth.smartwaro.network.FlaskNetwork;
 
-public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHolder> {
-    private final List<String> categories;
-    private String selectedCategory;
-    private final OnCategorySelectedListener listener;
+public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ImageViewHolder> {
+    private Context context;
+    private List<GalleryImage> categoryImages;
+    private OnImageClickListener listener;
+    private String currentCategory;
 
-    public interface OnCategorySelectedListener {
-        void onCategorySelected(String category);
+    public interface OnImageClickListener {
+        void onImageClick(GalleryImage image);
     }
 
-    public CategoryAdapter(List<String> categories, String selectedCategory,
-                           OnCategorySelectedListener listener) {
-        this.categories = categories;
-        this.selectedCategory = selectedCategory;
+    public CategoryAdapter(Context context, String category) {
+        this.context = context;
+        this.categoryImages = new ArrayList<>();
+        this.currentCategory = category;
+    }
+
+    public void setOnImageClickListener(OnImageClickListener listener) {
         this.listener = listener;
+    }
+
+    public void setImages(List<GalleryImage> images) {
+        this.categoryImages = images;
+        notifyDataSetChanged();
+    }
+
+    public void filterByCategory(List<GalleryImage> allImages, String category) {
+        this.currentCategory = category;
+        this.categoryImages.clear();
+        for (GalleryImage image : allImages) {
+            if (image.getCategory().equals(category)) {
+                this.categoryImages.add(image);
+            }
+        }
+        notifyDataSetChanged();
     }
 
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_category, parent, false);
-        return new ViewHolder(view);
+    public ImageViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(context).inflate(R.layout.item_gallery_image, parent, false);
+        return new ImageViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        String category = categories.get(position);
-        holder.categoryName.setText(category);
-        holder.radioButton.setChecked(category.equals(selectedCategory));
+    public void onBindViewHolder(@NonNull ImageViewHolder holder, int position) {
+        GalleryImage image = categoryImages.get(position);
 
-        // Set click listener for the item
+        String fullUrl = FlaskNetwork.BASE_URL + (image.getUrl().startsWith("/") ? image.getUrl() : "/" + image.getUrl());
+
+        Glide.with(context)
+                .load(fullUrl)
+                .centerCrop()
+                .placeholder(R.drawable.placeholder_image)
+                .into(holder.imageView);
+
         holder.itemView.setOnClickListener(v -> {
-            // Update the selected category
-            if (!category.equals(selectedCategory)) {
-                String previousCategory = selectedCategory;
-                selectedCategory = category;
-
-                // Notify listener about the change
-                listener.onCategorySelected(category);
-
-                // Update the UI for the previous and current selections
-                notifyItemChanged(categories.indexOf(previousCategory));
-                notifyItemChanged(position);
-            }
-        });
-
-        // Optional: Set click listener for RadioButton (if needed)
-        holder.radioButton.setOnClickListener(v -> {
-            if (!category.equals(selectedCategory)) {
-                String previousCategory = selectedCategory;
-                selectedCategory = category;
-
-                // Notify listener about the change
-                listener.onCategorySelected(category);
-
-                // Update the UI for the previous and current selections
-                notifyItemChanged(categories.indexOf(previousCategory));
-                notifyItemChanged(position);
+            if (listener != null) {
+                listener.onImageClick(image);
             }
         });
     }
 
     @Override
     public int getItemCount() {
-        return categories.size();
+        return categoryImages.size();
     }
 
-    static class ViewHolder extends RecyclerView.ViewHolder {
-        RadioButton radioButton;
-        TextView categoryName;
+    static class ImageViewHolder extends RecyclerView.ViewHolder {
+        ImageView imageView;
 
-        ViewHolder(View view) {
-            super(view);
-            radioButton = view.findViewById(R.id.radioButton);
-            categoryName = view.findViewById(R.id.categoryName);
+        ImageViewHolder(View itemView) {
+            super(itemView);
+            imageView = itemView.findViewById(R.id.gallery_image);
         }
     }
+
+
 }

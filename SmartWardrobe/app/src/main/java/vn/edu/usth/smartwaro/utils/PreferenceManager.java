@@ -56,7 +56,6 @@ public class PreferenceManager {
         editor.apply();
     }
 
-    // Friend Request Helpers
     public void putFriendRequestStatus(String friendId, String status) {
         try {
             SharedPreferences.Editor editor = sharedPreferences.edit();

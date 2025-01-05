@@ -19,12 +19,11 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import vn.edu.usth.smartwaro.R;
-import vn.edu.usth.smartwaro.mycloset.CategoryAdapter;
+import vn.edu.usth.smartwaro.mycloset.CategorySelectionAdapter;
 import vn.edu.usth.smartwaro.mycloset.ClothingItem;
 import vn.edu.usth.smartwaro.mycloset.ClosetViewModel;
 import vn.edu.usth.smartwaro.network.FlaskNetwork;
@@ -33,16 +32,15 @@ import vn.edu.usth.smartwaro.network.FlaskNetwork;
 public class AddImageViewFragment extends Fragment {
 
     private static final String ARG_IMAGE_URI = "image_uri";
-    private ImageView imgCaptured;
-    private Button btnOk, btnCancel;
     private ProgressBar progressBar;
     private Uri imageUri;
     private ClosetViewModel closetViewModel;
     private FlaskNetwork flaskNetwork;
     private static final String DEFAULT_CATEGORY = "uncategorized";
     private String category = DEFAULT_CATEGORY;
-    private ImageButton btnCategoryMenu;
     private List<String> categories = new ArrayList<>();
+    private CategorySelectionAdapter categoryAdapter; // Add this as a class field
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -64,12 +62,12 @@ public class AddImageViewFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_image_view_add, container, false);
 
         // Initialize views
-        imgCaptured = rootView.findViewById(R.id.imgCaptured);
-        btnOk = rootView.findViewById(R.id.btnOk);
-        btnCancel = rootView.findViewById(R.id.btnCancel);
+        ImageView imgCaptured = rootView.findViewById(R.id.imgCaptured);
+        Button btnOk = rootView.findViewById(R.id.btnOk);
+        Button btnCancel = rootView.findViewById(R.id.btnCancel);
         progressBar = rootView.findViewById(R.id.progressBar);
 
-        btnCategoryMenu = rootView.findViewById(R.id.categoryButton);
+        ImageButton btnCategoryMenu = rootView.findViewById(R.id.categoryButton);
         loadCategories();
         btnCategoryMenu.setOnClickListener(v -> showCategoryDialog());
 
@@ -134,12 +132,10 @@ public class AddImageViewFragment extends Fragment {
                 Toast.makeText(getContext(), "No image to upload", Toast.LENGTH_SHORT).show();
             }
         });
-        btnCancel.setOnClickListener(v -> {
-            requireActivity().getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.fragment_container, new MyClosetFragment())
-                    .commit();
-        });
+        btnCancel.setOnClickListener(v -> requireActivity().getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragment_container, new MyClosetFragment())
+                .commit());
 
         return rootView;
     }
@@ -147,16 +143,12 @@ public class AddImageViewFragment extends Fragment {
         flaskNetwork.getCategories(new FlaskNetwork.OnCategoriesLoadedListener() {
             @Override
             public void onSuccess(List<String> loadedCategories) {
-                requireActivity().runOnUiThread(() -> {
-                    categories = loadedCategories;
-                });
+                requireActivity().runOnUiThread(() -> categories = loadedCategories);
             }
 
             @Override
             public void onError(String message) {
-                requireActivity().runOnUiThread(() -> {
-                    Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
-                });
+                requireActivity().runOnUiThread(() -> Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show());
             }
         });
     }
@@ -167,7 +159,7 @@ public class AddImageViewFragment extends Fragment {
         RecyclerView recyclerView = dialogView.findViewById(R.id.categoryRecyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
 
-        CategoryAdapter adapter = new CategoryAdapter(
+        categoryAdapter = new CategorySelectionAdapter(
                 new ArrayList<>(categories),
                 category,
                 selectedCategory -> {
@@ -177,16 +169,20 @@ public class AddImageViewFragment extends Fragment {
                             Toast.LENGTH_SHORT).show();
                 }
         );
-        recyclerView.setAdapter(adapter);
+        recyclerView.setAdapter(categoryAdapter);
 
         Button btnAddNew = dialogView.findViewById(R.id.btnAddNewCategory);
         btnAddNew.setOnClickListener(v -> showAddCategoryDialog());
 
-        builder.setView(dialogView);
-        builder.setTitle("Select Category");
+        builder.setView(dialogView)
+                .setTitle("Select Category")
+                .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
+                .setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
+
         AlertDialog dialog = builder.create();
         dialog.show();
     }
+
     private void showAddCategoryDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
         final EditText input = new EditText(requireContext());
@@ -202,15 +198,18 @@ public class AddImageViewFragment extends Fragment {
                         requireActivity().runOnUiThread(() -> {
                             categories.add(newCategory);
                             category = newCategory;
+                            if (categoryAdapter != null) {
+                                categoryAdapter.updateCategories(new ArrayList<>(categories));
+                            }
                             Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
                         });
                     }
 
                     @Override
                     public void onError(String message) {
-                        requireActivity().runOnUiThread(() -> {
-                            Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
-                        });
+                        requireActivity().runOnUiThread(() ->
+                                Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show()
+                        );
                     }
                 });
             }

@@ -36,14 +36,11 @@ public class SettingsActivity extends AppCompatActivity {
 
     private void logoutUser() {
         try {
-            // Đăng xuất Firebase
             FirebaseAuth.getInstance().signOut();
 
-            // Clear all preferences
             PreferenceManager preferenceManager = new PreferenceManager(getApplicationContext());
-            preferenceManager.clear(); // Xóa tất cả preferences
+            preferenceManager.clear();
 
-            // Redirect to login
             Intent intent = new Intent(this, LoginActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);

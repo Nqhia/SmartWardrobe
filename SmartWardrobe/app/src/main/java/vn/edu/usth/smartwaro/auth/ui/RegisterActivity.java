@@ -16,6 +16,8 @@ import vn.edu.usth.smartwaro.databinding.ActivityRegisterBinding;
 import android.content.Intent;
 import android.widget.Toast;
 
+import java.util.Objects;
+
 public class RegisterActivity extends AppCompatActivity {
     private ActivityRegisterBinding binding;
     private RegisterViewModel viewModel;
@@ -36,10 +38,10 @@ public class RegisterActivity extends AppCompatActivity {
 
     private void setupViews() {
         binding.registerButton.setOnClickListener(v -> {
-            String username = binding.username.getText().toString();
-            String email = binding.email.getText().toString();
-            String password = binding.password.getText().toString();
-            String confirmPassword = binding.confirmPassword.getText().toString();
+            String username = Objects.requireNonNull(binding.username.getText()).toString();
+            String email = Objects.requireNonNull(binding.email.getText()).toString();
+            String password = Objects.requireNonNull(binding.password.getText()).toString();
+            String confirmPassword = Objects.requireNonNull(binding.confirmPassword.getText()).toString();
 
             if (validateInput(username, email, password, confirmPassword)) {
                 viewModel.register(username, email, password);
@@ -75,28 +77,24 @@ public class RegisterActivity extends AppCompatActivity {
     private boolean validateInput(String username, String email, String password, String confirmPassword) {
         boolean isValid = true;
 
-        // Validate username
         String usernameError = ValidationUtils.getUsernameError(username);
         if (usernameError != null) {
             binding.username.setError(usernameError);
             isValid = false;
         }
 
-        // Validate email
         String emailError = ValidationUtils.getEmailError(email);
         if (emailError != null) {
             binding.email.setError(emailError);
             isValid = false;
         }
 
-        // Validate password
         String passwordError = ValidationUtils.getPasswordError(password);
         if (passwordError != null) {
             binding.password.setError(passwordError);
             isValid = false;
         }
 
-        // Validate confirm password
         if (!password.equals(confirmPassword)) {
             binding.confirmPassword.setError("Passwords do not match");
             isValid = false;

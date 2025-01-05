@@ -146,7 +146,7 @@ public class GalleryFragment extends Fragment implements GalleryAdapter.OnImageC
     private void loadImages() {
         progressBar.setVisibility(View.VISIBLE);
 
-        flaskNetwork.getUserImages((currentCategory == null || currentCategory.isEmpty()) ? null : currentCategory, new FlaskNetwork.OnImagesLoadedListener() {
+        flaskNetwork.getUserImages(currentCategory, new FlaskNetwork.OnImagesLoadedListener() {
             @Override
             public void onSuccess(String[] imageUrls) {
                 if (!isAdded()) {
@@ -161,7 +161,7 @@ public class GalleryFragment extends Fragment implements GalleryAdapter.OnImageC
                                 galleryImages.add(new GalleryImage(
                                         filename,
                                         filename,
-                                        "", // TODO: Add proper date handling
+                                        "",
                                         url,
                                         currentCategory
                                 ));

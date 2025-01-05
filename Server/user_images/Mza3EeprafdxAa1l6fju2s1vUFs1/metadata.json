@@ -1,0 +1,23 @@
+{
+    "user_id": "Mza3EeprafdxAa1l6fju2s1vUFs1",
+    "images": {
+        "processed_20250105_161814_upload_1736068694024_processed_1736068685929.png": {
+            "category": "short sleeves",
+            "timestamp": "20250105_161814",
+            "original_filename": "upload_1736068694024_processed_1736068685929.png"
+        }
+    },
+    "categories": {
+        "uncategorized": [],
+        "long sleeves": [],
+        "short sleeves": [
+            "processed_20250105_161814_upload_1736068694024_processed_1736068685929.png"
+        ],
+        "long leggings": [],
+        "short leggings": [],
+        "sister": [],
+        "none": [],
+        "nonee": [],
+        "nghia": []
+    }
+}
