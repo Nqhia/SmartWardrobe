@@ -14,6 +14,12 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1">
+
+            <Button
+                android:id="@+id/button_show_friends"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:text="@string/share"/>
         </FrameLayout>
 
         <!-- View model -->
@@ -22,6 +28,11 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="3">
+
+            <FrameLayout
+                android:id="@+id/fragmentContainer"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
 
             <ImageView
                 android:id="@+id/model_female"
@@ -81,14 +92,14 @@
                     android:orientation="vertical">
 
 
-                        <Button
-                            android:id="@+id/type_top_female"
-                            android:layout_width="50dp"
-                            android:layout_height="60dp"
-                            app:cornerRadius="30dp"
-                            android:backgroundTint="@color/white"
-                            android:drawableRight="@drawable/top_category"
-                            android:layout_margin="5dp" />
+                    <Button
+                        android:id="@+id/type_top_female"
+                        android:layout_width="50dp"
+                        android:layout_height="60dp"
+                        app:cornerRadius="30dp"
+                        android:backgroundTint="@color/white"
+                        android:drawableRight="@drawable/top_category"
+                        android:layout_margin="5dp" />
 
                     <Button
                         android:layout_width="50dp"
@@ -98,50 +109,50 @@
                         android:drawableRight="@drawable/coat"
                         android:layout_margin="5dp" />
 
-                        <Button
-                            android:id="@+id/type_bot_female"
-                            android:layout_width="50dp"
-                            android:layout_height="60dp"
-                            app:cornerRadius="30dp"
-                            android:backgroundTint="@color/white"
-                            android:drawableRight="@drawable/trousers_category"
-                            android:layout_margin="5dp" />
+                    <Button
+                        android:id="@+id/type_bot_female"
+                        android:layout_width="50dp"
+                        android:layout_height="60dp"
+                        app:cornerRadius="30dp"
+                        android:backgroundTint="@color/white"
+                        android:drawableRight="@drawable/trousers_category"
+                        android:layout_margin="5dp" />
 
-                        <Button
-                            android:id="@+id/type_skirt_female"
-                            android:layout_width="50dp"
-                            android:layout_height="60dp"
-                            app:cornerRadius="30dp"
-                            android:backgroundTint="@color/white"
-                            android:drawableRight="@drawable/skirt_category"
-                            android:layout_margin="5dp" />
+                    <Button
+                        android:id="@+id/type_skirt_female"
+                        android:layout_width="50dp"
+                        android:layout_height="60dp"
+                        app:cornerRadius="30dp"
+                        android:backgroundTint="@color/white"
+                        android:drawableRight="@drawable/skirt_category"
+                        android:layout_margin="5dp" />
 
-                        <Button
-                            android:id="@+id/type_dress_female"
-                            android:layout_width="50dp"
-                            android:layout_height="60dp"
-                            app:cornerRadius="30dp"
-                            android:backgroundTint="@color/white"
-                            android:drawableRight="@drawable/dress_category"
-                            android:layout_margin="5dp" />
+                    <Button
+                        android:id="@+id/type_dress_female"
+                        android:layout_width="50dp"
+                        android:layout_height="60dp"
+                        app:cornerRadius="30dp"
+                        android:backgroundTint="@color/white"
+                        android:drawableRight="@drawable/dress_category"
+                        android:layout_margin="5dp" />
 
-                        <Button
-                            android:id="@+id/type_footware_female"
-                            android:layout_width="50dp"
-                            android:layout_height="60dp"
-                            app:cornerRadius="30dp"
-                            android:backgroundTint="@color/white"
-                            android:drawableRight="@drawable/heels_category"
-                            android:layout_margin="5dp" />
+                    <Button
+                        android:id="@+id/type_footware_female"
+                        android:layout_width="50dp"
+                        android:layout_height="60dp"
+                        app:cornerRadius="30dp"
+                        android:backgroundTint="@color/white"
+                        android:drawableRight="@drawable/heels_category"
+                        android:layout_margin="5dp" />
 
-                        <Button
-                            android:id="@+id/type_skin_female"
-                            android:layout_width="50dp"
-                            android:layout_height="60dp"
-                            app:cornerRadius="30dp"
-                            android:backgroundTint="@color/white"
-                            android:drawableRight="@drawable/skin_category"
-                            android:layout_margin="5dp" />
+                    <Button
+                        android:id="@+id/type_skin_female"
+                        android:layout_width="50dp"
+                        android:layout_height="60dp"
+                        app:cornerRadius="30dp"
+                        android:backgroundTint="@color/white"
+                        android:drawableRight="@drawable/skin_category"
+                        android:layout_margin="5dp" />
 
                     <Button
                         android:layout_width="50dp"
@@ -186,50 +197,50 @@
                     android:padding="8dp">
 
 
-                        <ImageButton
-                            android:id="@+id/top_blazer_icon"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:background="@color/white"
-                            android:scaleType="centerInside"
-                            android:src="@drawable/top_blazer_icon" />
+                    <ImageButton
+                        android:id="@+id/top_blazer_icon"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@color/white"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/top_blazer_icon" />
 
 
-                        <ImageButton
-                            android:id="@+id/top_cardigan_icon"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:background="@null"
-                            android:scaleType="centerInside"
-                            android:src="@drawable/top_cardigan_icon" />
+                    <ImageButton
+                        android:id="@+id/top_cardigan_icon"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@null"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/top_cardigan_icon" />
 
 
 
 
-                        <ImageButton
-                            android:id="@+id/top_tanktop_icon"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:background="@null"
-                            android:scaleType="centerInside"
-                            android:src="@drawable/top_tanktop_icon" />
+                    <ImageButton
+                        android:id="@+id/top_tanktop_icon"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@null"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/top_tanktop_icon" />
 
-                        <ImageButton
-                            android:id="@+id/top_sweater_icon"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:background="@null"
-                            android:scaleType="centerInside"
-                            android:src="@drawable/top_sweater_icon" />
+                    <ImageButton
+                        android:id="@+id/top_sweater_icon"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@null"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/top_sweater_icon" />
 
 
-                        <ImageButton
-                            android:id="@+id/top_mockneck_icon"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:background="@null"
-                            android:scaleType="centerInside"
-                            android:src="@drawable/top_mockneck_icon" />
+                    <ImageButton
+                        android:id="@+id/top_mockneck_icon"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@null"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/top_mockneck_icon" />
 
                 </LinearLayout>
             </ScrollView>
@@ -249,22 +260,22 @@
                     android:orientation="vertical"
                     android:padding="16dp">
 
-                        <ImageButton
-                            android:id="@+id/bot_jeans_icon"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:background="@null"
-                            android:scaleType="centerInside"
-                            android:src="@drawable/bot_jeans_icon" />
+                    <ImageButton
+                        android:id="@+id/bot_jeans_icon"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@null"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/bot_jeans_icon" />
 
 
-                        <ImageButton
-                            android:id="@+id/bot_legging_icon"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:background="@null"
-                            android:scaleType="centerInside"
-                            android:src="@drawable/bot_legging_icon" />
+                    <ImageButton
+                        android:id="@+id/bot_legging_icon"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@null"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/bot_legging_icon" />
 
 
                 </LinearLayout>
@@ -286,13 +297,13 @@
                     android:orientation="vertical"
                     android:padding="16dp">
 
-                        <ImageButton
-                            android:id="@+id/bot_skirt_icon"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:background="@null"
-                            android:scaleType="centerInside"
-                            android:src="@drawable/bot_skirt_icon" />
+                    <ImageButton
+                        android:id="@+id/bot_skirt_icon"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@null"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/bot_skirt_icon" />
 
                 </LinearLayout>
             </ScrollView>
@@ -313,31 +324,31 @@
                     android:orientation="vertical"
                     android:padding="16dp">
 
-                        <ImageButton
-                            android:id="@+id/tube_purple_icon"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:background="@null"
-                            android:scaleType="centerInside"
-                            android:src="@drawable/tube_purple_icon" />
+                    <ImageButton
+                        android:id="@+id/tube_purple_icon"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@null"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/tube_purple_icon" />
 
 
-                        <ImageButton
-                            android:id="@+id/black_tube_icon"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:background="@null"
-                            android:scaleType="centerInside"
-                            android:src="@drawable/black_tube_icon" />
+                    <ImageButton
+                        android:id="@+id/black_tube_icon"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@null"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/black_tube_icon" />
 
 
-                        <ImageButton
-                            android:id="@+id/tube_red_icon"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:background="@null"
-                            android:scaleType="centerInside"
-                            android:src="@drawable/tube_red_icon" />
+                    <ImageButton
+                        android:id="@+id/tube_red_icon"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@null"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/tube_red_icon" />
 
 
 
@@ -360,21 +371,21 @@
                     android:orientation="vertical"
                     android:padding="16dp">
 
-                        <ImageButton
-                            android:id="@+id/female_loafer_icon"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:background="@null"
-                            android:scaleType="centerInside"
-                            android:src="@drawable/female_loafer_icon" />
+                    <ImageButton
+                        android:id="@+id/female_loafer_icon"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@null"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/female_loafer_icon" />
 
-                        <ImageButton
-                            android:id="@+id/female_heels_icon"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:background="@null"
-                            android:scaleType="centerInside"
-                            android:src="@drawable/female_heels_icon" />
+                    <ImageButton
+                        android:id="@+id/female_heels_icon"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@null"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/female_heels_icon" />
 
                 </LinearLayout>
             </ScrollView>
@@ -394,13 +405,13 @@
                     android:orientation="vertical"
                     android:padding="16dp">
 
-                        <ImageButton
-                            android:id="@+id/buttonChangeSkinColor"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:background="@null"
-                            android:scaleType="centerInside"
-                            android:src="@drawable/skintone" />
+                    <ImageButton
+                        android:id="@+id/buttonChangeSkinColor"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@null"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/skintone" />
 
                 </LinearLayout>
             </ScrollView>

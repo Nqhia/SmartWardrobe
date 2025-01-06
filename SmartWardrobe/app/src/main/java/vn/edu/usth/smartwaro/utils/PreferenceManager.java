@@ -28,7 +28,7 @@ public class PreferenceManager {
         try {
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putString(key, value);
-            boolean success = editor.commit(); // Sử dụng commit() thay vì apply() để đảm bảo lưu ngay lập tức
+            boolean success = editor.commit();
             Log.d(TAG, "putString - Key: " + key + ", Value: " + value + ", Success: " + success);
 
             // Verify immediately
@@ -54,29 +54,5 @@ public class PreferenceManager {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.clear();
         editor.apply();
-    }
-
-    public void putFriendRequestStatus(String friendId, String status) {
-        try {
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putString("friend_request_status_" + friendId, status);
-            editor.apply();
-        } catch (Exception e) {
-            Log.e(TAG, "Error saving friend request status", e);
-        }
-    }
-
-    public String getFriendRequestStatus(String friendId) {
-        return sharedPreferences.getString("friend_request_status_" + friendId, Constants.STATUS_PENDING);
-    }
-
-    public void putIsFriend(String friendId, boolean isFriend) {
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putBoolean("is_friend_" + friendId, isFriend);
-        editor.apply();
-    }
-
-    public boolean isFriend(String friendId) {
-        return sharedPreferences.getBoolean("is_friend_" + friendId, false);
     }
 }

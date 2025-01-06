@@ -1,16 +1,23 @@
 package vn.edu.usth.smartwaro.wardrobe;
 
+import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ScrollView;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
+
+import java.io.ByteArrayOutputStream;
 
 import vn.edu.usth.smartwaro.R;
+import vn.edu.usth.smartwaro.chat.ShareUsersFragment;
 
 public class MaleFragment extends Fragment {
 
@@ -19,6 +26,8 @@ public class MaleFragment extends Fragment {
             buttonbotJeanMale, buttonbotPant, buttonloafermale, buttonChangeSkinColor;
     private ScrollView primaryScrollView;
     private ScrollView[] overlayScrollViews;
+    private Button buttonShowFriends;
+
 
     private int[] shirtImages = {
             R.drawable.top_blazer_male,
@@ -37,9 +46,6 @@ public class MaleFragment extends Fragment {
             R.drawable.male_footware,
     };
 
-    private int currentShirtIndex = 0;
-    private int currentPantsIndex = 0;
-    private int currentFootwareIndex = 0;
     private int currentModelSkinIndex = 0;
 
     @Override
@@ -117,6 +123,9 @@ public class MaleFragment extends Fragment {
             modelMale.setImageResource(skinImages[currentModelSkinIndex]);
         });
 
+        buttonShowFriends = view.findViewById(R.id.button_show_friends);
+        setListeners(); // Thêm dòng này
+
         return view;
     }
 
@@ -131,4 +140,51 @@ public class MaleFragment extends Fragment {
             overlayScrollViews[i].setVisibility(i == index ? View.VISIBLE : View.GONE);
         }
     }
+
+    private void setListeners() {
+        buttonShowFriends.setOnClickListener(v -> {
+            // Chụp ảnh toàn bộ outfit
+            View modelContainer = requireView().findViewById(R.id.model_container);
+            modelContainer.setDrawingCacheEnabled(true);
+            Bitmap modelImage = Bitmap.createBitmap(modelContainer.getDrawingCache());
+            modelContainer.setDrawingCacheEnabled(false);
+
+            // Chuyển Bitmap thành String
+            String imageString = bitmapToString(modelImage);
+
+            // Tạo bundle và truyền dữ liệu
+            Bundle bundle = new Bundle();
+            bundle.putString("modelImage", imageString);
+
+            // Khởi tạo ShareUsersFragment
+            ShareUsersFragment shareUsersFragment = new ShareUsersFragment();
+            shareUsersFragment.setArguments(bundle);
+
+            // Thực hiện chuyển fragment
+            requireActivity().getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragment_container, shareUsersFragment) // Đảm bảo ID này trùng với container trong activity
+                    .addToBackStack(null)
+                    .commit();
+        });
+    }
+
+
+
+    private Bitmap captureModelView() {
+        View modelContainer = getView().findViewById(R.id.model_container); // ID của container chứa model
+        modelContainer.setDrawingCacheEnabled(true);
+        Bitmap bitmap = Bitmap.createBitmap(modelContainer.getDrawingCache());
+        modelContainer.setDrawingCacheEnabled(false);
+        return bitmap;
+    }
+
+    private String bitmapToString(Bitmap bitmap) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
+        byte[] imageBytes = baos.toByteArray();
+        return Base64.encodeToString(imageBytes, Base64.DEFAULT);
+    }
+
+
 }

@@ -1,11 +1,16 @@
 package vn.edu.usth.smartwaro.chat;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Base64;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.bumptech.glide.Glide;
 
 import java.util.List;
 
@@ -48,12 +53,53 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        if (getItemViewType(position) == VIEW_TYPE_SENT){
-            ((SentMessageViewHolder) holder).setData(chatMessages.get(position));
-        }else {
-            ((ReceivedMessageViewHolder) holder).setData(chatMessages.get(position));
+        ChatMessage chatMessage = chatMessages.get(position);
+
+        if (getItemViewType(position) == VIEW_TYPE_SENT) {
+            SentMessageViewHolder sentHolder = (SentMessageViewHolder) holder;
+            if (chatMessage.image != null) {
+                sentHolder.binding.textMessage.setVisibility(View.GONE);
+                sentHolder.binding.imageMessage.setVisibility(View.VISIBLE);
+
+                byte[] bytes = Base64.decode(chatMessage.image, Base64.DEFAULT);
+                Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+
+                // Sử dụng Glide để tối ưu hiển thị ảnh
+                Glide.with(sentHolder.itemView.getContext())
+                        .load(bitmap)
+                        .override(1080, 1920) // Kích thước tối đa
+                        .fitCenter()
+                        .into(sentHolder.binding.imageMessage);
+            } else {
+                sentHolder.binding.textMessage.setVisibility(View.VISIBLE);
+                sentHolder.binding.imageMessage.setVisibility(View.GONE);
+                sentHolder.binding.textMessage.setText(chatMessage.message);
+            }
+            sentHolder.binding.textDateTime.setText(chatMessage.dateTime);
+        } else {
+            ReceivedMessageViewHolder receivedHolder = (ReceivedMessageViewHolder) holder;
+            if (chatMessage.image != null) {
+                receivedHolder.binding.textMessage.setVisibility(View.GONE);
+                receivedHolder.binding.imageMessage.setVisibility(View.VISIBLE);
+
+                byte[] bytes = Base64.decode(chatMessage.image, Base64.DEFAULT);
+                Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+
+                Glide.with(receivedHolder.itemView.getContext())
+                        .load(bitmap)
+                        .override(1080, 1920)
+                        .fitCenter()
+                        .into(receivedHolder.binding.imageMessage);
+            } else {
+                receivedHolder.binding.textMessage.setVisibility(View.VISIBLE);
+                receivedHolder.binding.imageMessage.setVisibility(View.GONE);
+                receivedHolder.binding.textMessage.setText(chatMessage.message);
+            }
+            receivedHolder.binding.textDateTime.setText(chatMessage.dateTime);
         }
     }
+
+
 
     @Override
     public int getItemCount() {
@@ -75,11 +121,6 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         SentMessageViewHolder(ItemContainerSentMessageBinding itemContainerSentMessageBinding){
             super(itemContainerSentMessageBinding.getRoot());
             binding = itemContainerSentMessageBinding;
-        }
-
-        void setData(ChatMessage chatMessage){
-            binding.textMessage.setText(chatMessage.message);
-            binding.textDateTime.setText(chatMessage.dateTime);
         }
     }
 

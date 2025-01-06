@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:animateLayoutChanges="true"
     android:background="@color/background_app"
-    tools:context=".chat.UsersActivity">
+    tools:context=".chat.FriendRequestActivity">
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/imageBack"

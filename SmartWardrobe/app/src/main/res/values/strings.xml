@@ -8,4 +8,5 @@
     <string name="create_account">Create Account</string>
     <string name="select_user">Select User</string>
     <string name="type_a_message">Type a Message</string>
+    <string name="share">Share</string>
 </resources>

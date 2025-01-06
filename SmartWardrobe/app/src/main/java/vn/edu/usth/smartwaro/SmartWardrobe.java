@@ -17,7 +17,7 @@ import com.google.firebase.auth.FirebaseUser;
 import java.util.Objects;
 
 import vn.edu.usth.smartwaro.auth.ui.LoginActivity;
-import vn.edu.usth.smartwaro.chat.ChatActivity;
+import vn.edu.usth.smartwaro.chat.UsersActivity;
 import vn.edu.usth.smartwaro.settings.SettingsActivity;
 import vn.edu.usth.smartwaro.fragment.WardrobeFragment;
 import vn.edu.usth.smartwaro.fragment.MyClosetFragment;
@@ -114,7 +114,7 @@ public class SmartWardrobe extends AppCompatActivity {
 
     private void switchFragment(int itemId) {
         if (itemId == R.id.social) {
-            Intent intent = new Intent(this, ChatActivity.class);
+            Intent intent = new Intent(this, UsersActivity.class);
             startActivity(intent);
             return;
         }

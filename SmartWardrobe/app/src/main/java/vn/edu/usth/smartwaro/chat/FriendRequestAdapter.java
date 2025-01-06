@@ -43,7 +43,7 @@ public class FriendRequestAdapter extends RecyclerView.Adapter<FriendRequestAdap
         int position = friendRequests.indexOf(request);
         if (position != -1) {
             friendRequests.remove(position);
-            notifyItemRemoved(position); // Cập nhật giao diện sau khi xóa
+            notifyItemRemoved(position);
         }
     }
 
@@ -57,7 +57,7 @@ public class FriendRequestAdapter extends RecyclerView.Adapter<FriendRequestAdap
 
         void setFriendRequestData(FriendRequest request) {
             binding.textSenderName.setText(request.getSenderId());
-            binding.textSenderEmail.setText(request.getSenderEmail()); // Hiển thị email// Thay bằng tên người gửi nếu có
+            binding.textSenderEmail.setText(request.getSenderEmail());
             binding.buttonAccept.setOnClickListener(v -> listener.onAcceptClicked(request));
             binding.buttonReject.setOnClickListener(v -> listener.onRejectClicked(request));
         }
