@@ -1,5 +1,7 @@
 package vn.edu.usth.smartwaro.mycloset;
 
+import static vn.edu.usth.smartwaro.network.FlaskNetwork.BASE_URL;
+
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -11,7 +13,7 @@ public class GalleryImage implements Parcelable {
     private final String originalFilename;
     private final String uploadDate;
     private final String url;
-    private final String category;    // Added category field
+    private final String category;
     private boolean isSelected;
 
     public GalleryImage(@NonNull String filename,
@@ -62,6 +64,9 @@ public class GalleryImage implements Parcelable {
 
     @NonNull
     public String getCategory() { return category; }    // Added getter for category
+
+
+
 
     public boolean isSelected() { return isSelected; }
 

@@ -5,13 +5,25 @@
             "category": "short sleeves",
             "timestamp": "20250105_161814",
             "original_filename": "upload_1736068694024_processed_1736068685929.png"
+        },
+        "processed_20250212_155847_upload_1739350727806_processed_1739350715702.png": {
+            "category": "short sleeves",
+            "timestamp": "20250212_155847",
+            "original_filename": "upload_1739350727806_processed_1739350715702.png"
+        },
+        "processed_20250212_155922_upload_1739350763430_processed_1739350745192.png": {
+            "category": "short sleeves",
+            "timestamp": "20250212_155922",
+            "original_filename": "upload_1739350763430_processed_1739350745192.png"
         }
     },
     "categories": {
         "uncategorized": [],
         "long sleeves": [],
         "short sleeves": [
-            "processed_20250105_161814_upload_1736068694024_processed_1736068685929.png"
+            "processed_20250105_161814_upload_1736068694024_processed_1736068685929.png",
+            "processed_20250212_155847_upload_1739350727806_processed_1739350715702.png",
+            "processed_20250212_155922_upload_1739350763430_processed_1739350745192.png"
         ],
         "long leggings": [],
         "short leggings": [],

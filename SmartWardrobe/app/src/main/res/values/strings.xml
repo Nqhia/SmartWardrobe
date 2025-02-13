@@ -9,4 +9,7 @@
     <string name="select_user">Select User</string>
     <string name="type_a_message">Type a Message</string>
     <string name="share">Share</string>
+    <string name="recommended_clothes">Recommended Clothes</string>
+    <string name="top_wear">Top Wear</string>
+    <string name="bottom_wear">Bottom Wear</string>
 </resources>

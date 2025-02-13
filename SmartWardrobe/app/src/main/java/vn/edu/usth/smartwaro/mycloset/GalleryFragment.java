@@ -1,6 +1,11 @@
 package vn.edu.usth.smartwaro.mycloset;
 
+import static vn.edu.usth.smartwaro.network.FlaskNetwork.BASE_URL;
+
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -12,16 +17,24 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.CustomTarget;
+import com.bumptech.glide.request.transition.Transition;
+
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 import vn.edu.usth.smartwaro.R;
+import vn.edu.usth.smartwaro.chat.ShareUsersFragment;
 import vn.edu.usth.smartwaro.network.FlaskNetwork;
+import vn.edu.usth.smartwaro.mycloset.GalleryImage;
 
 public class GalleryFragment extends Fragment implements GalleryAdapter.OnImageClickListener {
     private static final String TAG = "GalleryFragment";
@@ -33,6 +46,7 @@ public class GalleryFragment extends Fragment implements GalleryAdapter.OnImageC
     private MenuItem deleteMenuItem;
     private List<GalleryImage> galleryImages = new ArrayList<>();
     private String currentCategory = null;
+    private MenuItem shareMenuItem;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -58,14 +72,30 @@ public class GalleryFragment extends Fragment implements GalleryAdapter.OnImageC
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         inflater.inflate(R.menu.gallery_menu, menu);
         deleteMenuItem = menu.findItem(R.id.action_delete);
+        shareMenuItem = menu.findItem(R.id.action_share); // Initialize share menu item
         deleteMenuItem.setVisible(false);
+        shareMenuItem.setVisible(false); // Hide share button by default
         super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override
+    public void onSelectionChanged(int selectedCount) {
+        if (deleteMenuItem != null) {
+            deleteMenuItem.setVisible(selectedCount > 0);
+        }
+        if (shareMenuItem != null) {
+            shareMenuItem.setVisible(selectedCount > 0);
+        }
+    }
+
+    @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == R.id.action_delete) {
+        int itemId = item.getItemId();
+        if (itemId == R.id.action_delete) {
             showDeleteConfirmationDialog();
+            return true;
+        } else if (itemId == R.id.action_share) {
+            shareSelectedImage();
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -94,13 +124,6 @@ public class GalleryFragment extends Fragment implements GalleryAdapter.OnImageC
                         .addToBackStack(null)
                         .commit();
             }
-        }
-    }
-
-    @Override
-    public void onSelectionChanged(int selectedCount) {
-        if (deleteMenuItem != null) {
-            deleteMenuItem.setVisible(selectedCount > 0);
         }
     }
 
@@ -143,6 +166,7 @@ public class GalleryFragment extends Fragment implements GalleryAdapter.OnImageC
             }
         });
     }
+
     private void loadImages() {
         progressBar.setVisibility(View.VISIBLE);
 
@@ -211,4 +235,94 @@ public class GalleryFragment extends Fragment implements GalleryAdapter.OnImageC
             return "unknown_" + System.currentTimeMillis();
         }
     }
+
+
+    private String bitmapToString(Bitmap bitmap) {
+        // Resize the bitmap to a smaller resolution
+        int newWidth = 512; // Adjust based on your needs
+        int newHeight = (bitmap.getHeight() * newWidth) / bitmap.getWidth();
+        Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, newWidth, newHeight, true);
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        resizedBitmap.compress(Bitmap.CompressFormat.JPEG, 75, baos); // JPEG format & 75% quality
+        byte[] imageBytes = baos.toByteArray();
+
+        return Base64.encodeToString(imageBytes, Base64.DEFAULT);
+    }
+
+    private String formatImageUrl(String url) {
+        if (url == null || url.isEmpty()) {
+            return "";
+        }
+        if (url.startsWith("http")) {
+            return url; // Already a full URL
+        }
+        return BASE_URL + url;
+    }
+    private void shareSelectedImage() {
+        List<GalleryImage> selectedImages = adapter.getSelectedImages();
+
+        if (selectedImages.isEmpty()) {
+            Toast.makeText(requireContext(), "No image selected for sharing!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        GalleryImage imageToShare = selectedImages.get(0);
+        String imageUrl = formatImageUrl(imageToShare.getUrl()); // Ensure full URL
+        progressBar.setVisibility(View.VISIBLE);
+
+        Log.d(TAG, "Attempting to load image for sharing: " + imageUrl);
+
+        // Try forcing Glide to always load the fresh image
+        Glide.with(requireActivity())  // Use requireActivity() instead of requireContext()
+                .asBitmap()
+                .load(imageUrl)
+                .skipMemoryCache(true)  // Skip memory cache
+                .error(R.drawable.ic_error_image)  // Error fallback image
+                .into(new CustomTarget<Bitmap>() {
+                    @Override
+                    public void onResourceReady(@NonNull Bitmap bitmap, Transition<? super Bitmap> transition) {
+                        progressBar.setVisibility(View.GONE);
+
+                        // Convert bitmap to Base64 string
+                        String imageString = bitmapToString(bitmap);
+
+                        // Debugging: Log Base64 string length
+                        Log.d(TAG, "Encoded Image String Length: " + imageString.length());
+
+                        // Create bundle and pass data
+                        Bundle bundle = new Bundle();
+                        bundle.putString("modelImage", imageString);
+                        bundle.putString("imageFilename", imageToShare.getFilename());
+
+                        // Initialize ShareUsersFragment
+                        ShareUsersFragment shareUsersFragment = new ShareUsersFragment();
+                        shareUsersFragment.setArguments(bundle);
+
+                        // Perform fragment transaction
+                        requireActivity().getSupportFragmentManager()
+                                .beginTransaction()
+                                .replace(R.id.fragment_container, shareUsersFragment)
+                                .addToBackStack(null)
+                                .commit();
+
+                        adapter.setMultiSelectMode(false); // Exit selection mode
+                    }
+
+                    @Override
+                    public void onLoadCleared(@Nullable Drawable placeholder) {
+                        progressBar.setVisibility(View.GONE);
+                    }
+
+                    @Override
+                    public void onLoadFailed(@Nullable Drawable errorDrawable) {
+                        progressBar.setVisibility(View.GONE);
+                        Toast.makeText(requireContext(),
+                                "Failed to load image for sharing. Please try again.",
+                                Toast.LENGTH_SHORT).show();
+                        Log.e(TAG, "Failed to load image for sharing: " + imageUrl);
+                    }
+                });
+    }
+
 }

@@ -1,19 +1,38 @@
 {
     "user_id": "39xTsxMQR7OvVORzHKjBSA26OEP2",
     "images": {
-        "processed_20241231_113123_upload_1735619482222_processed_1735619474045.png": {
-            "category": "long leggings",
-            "timestamp": "20241231_113123",
-            "original_filename": "upload_1735619482222_processed_1735619474045.png"
+        "processed_20250206_171956_upload_1738837197354_processed_1738837194858.png": {
+            "category": "uncategorized",
+            "timestamp": "20250206_171956",
+            "original_filename": "upload_1738837197354_processed_1738837194858.png"
+        },
+        "processed_20250206_172033_upload_1738837233628_processed_1738837214543.png": {
+            "category": "short leggings",
+            "timestamp": "20250206_172033",
+            "original_filename": "upload_1738837233628_processed_1738837214543.png"
+        },
+        "processed_20250206_175949_upload_1738839589725_processed_1738839587954.png": {
+            "category": "uncategorized",
+            "timestamp": "20250206_175949",
+            "original_filename": "upload_1738839589725_processed_1738839587954.png"
+        },
+        "processed_20250206_180030_upload_1738839631417_processed_1738839629865.png": {
+            "category": "uncategorized",
+            "timestamp": "20250206_180030",
+            "original_filename": "upload_1738839631417_processed_1738839629865.png"
         }
     },
     "categories": {
-        "uncategorized": [],
+        "uncategorized": [
+            "processed_20250206_171956_upload_1738837197354_processed_1738837194858.png",
+            "processed_20250206_175949_upload_1738839589725_processed_1738839587954.png",
+            "processed_20250206_180030_upload_1738839631417_processed_1738839629865.png"
+        ],
         "long sleeves": [],
         "short sleeves": [],
-        "long leggings": [
-            "processed_20241231_113123_upload_1735619482222_processed_1735619474045.png"
-        ],
-        "short leggings": []
+        "long leggings": [],
+        "short leggings": [
+            "processed_20250206_172033_upload_1738837233628_processed_1738837214543.png"
+        ]
     }
 }
