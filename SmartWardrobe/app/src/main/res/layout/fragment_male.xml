@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/fittingroom">
 
     <LinearLayout
@@ -12,17 +12,24 @@
         android:layout_height="match_parent"
         android:orientation="horizontal">
 
-
+        <!-- Left section with buttons -->
         <FrameLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1">
 
             <Button
+                android:id="@+id/button_show_friends"
                 android:layout_width="wrap_content"
                 android:layout_height="40dp"
-                android:id="@+id/button_show_friends"
-                android:text="@string/share"/>
+                android:text="@string/share" />
+
+            <Button
+                android:id="@+id/button_my_closet"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_gravity="bottom"
+                android:text="My Closet" />
         </FrameLayout>
 
         <!-- View model -->
@@ -35,7 +42,7 @@
             <FrameLayout
                 android:id="@+id/fragmentContainer"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
+                android:layout_height="match_parent" />
 
             <ImageView
                 android:id="@+id/model_male"
@@ -66,6 +73,20 @@
                 android:scaleType="centerCrop"
                 android:visibility="gone" />
 
+            <ImageButton
+                android:id="@+id/remove_button"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="bottom|center_horizontal"
+                android:layout_marginBottom="10dp"
+                android:background="@null"
+                android:contentDescription="Remove selected item"
+                android:scaleType="centerInside"
+                android:src="@android:drawable/ic_delete"
+                android:visibility="gone"
+                android:padding="10dp"
+                android:clickable="true"
+                android:focusable="true" />
         </FrameLayout>
 
         <!-- Choose items view -->
@@ -77,14 +98,14 @@
 
             <!-- Type view -->
             <ScrollView
-                android:id="@+id/male_type_scroll_view"
+                android:id="@+id/primary_scroll_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:padding="8dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:gravity="end"
                     android:orientation="vertical">
 
@@ -114,7 +135,6 @@
                         android:backgroundTint="@color/white"
                         android:drawableRight="@drawable/men_footware_category"
                         android:layout_margin="5dp" />
-
 
                     <Button
                         android:id="@+id/type_skin_male"
@@ -189,7 +209,6 @@
                         android:background="@null"
                         android:scaleType="centerInside"
                         android:src="@drawable/top_breast_icon" />
-
                 </LinearLayout>
             </ScrollView>
 
@@ -199,7 +218,8 @@
                 android:layout_width="match_parent"
                 android:layout_gravity="center"
                 android:layout_height="600dp"
-                android:background="@drawable/rounded_background"                android:visibility="gone">
+                android:background="@drawable/rounded_background"
+                android:visibility="gone">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -222,7 +242,6 @@
                         android:background="@null"
                         android:scaleType="centerInside"
                         android:src="@drawable/bot_pant_icon" />
-
                 </LinearLayout>
             </ScrollView>
 
@@ -230,9 +249,9 @@
             <ScrollView
                 android:id="@+id/overlay_scroll_view_footware_male"
                 android:layout_width="match_parent"
-                android:visibility="gone"
                 android:layout_gravity="center"
                 android:layout_height="600dp"
+                android:visibility="gone"
                 android:background="@drawable/rounded_background">
 
                 <LinearLayout
@@ -248,7 +267,6 @@
                         android:background="@null"
                         android:scaleType="centerInside"
                         android:src="@drawable/female_loafer_icon" />
-
                 </LinearLayout>
             </ScrollView>
 
@@ -256,10 +274,10 @@
             <ScrollView
                 android:id="@+id/overlay_scroll_view_skin_tone_male"
                 android:layout_width="match_parent"
-                android:visibility="gone"
                 android:layout_gravity="center"
                 android:layout_height="600dp"
-                android:background="@drawable/rounded_background"                >
+                android:visibility="gone"
+                android:background="@drawable/rounded_background">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -274,12 +292,8 @@
                         android:background="@null"
                         android:scaleType="centerInside"
                         android:src="@drawable/skintone" />
-
                 </LinearLayout>
             </ScrollView>
-
         </FrameLayout>
     </LinearLayout>
 </FrameLayout>
-
-    

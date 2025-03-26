@@ -2,6 +2,8 @@ package vn.edu.usth.smartwaro.network;
 
 import android.content.Context;
 import android.net.Uri;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -18,7 +20,6 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.ArrayList;
 
-
 import okhttp3.HttpUrl;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -33,13 +34,21 @@ import vn.edu.usth.smartwaro.utils.FileUtils;
 
 public class FlaskNetwork {
     private static final String TAG = "FlaskNetwork";
-    public static final String BASE_URL = "http://192.168.1.55:5000";
+    public static final String BASE_URL = "http://192.168.1.33:5000";
     private final OkHttpClient client;
+    private final Handler mainHandler;
     public static final String CATEGORY_UNCATEGORIZED = "uncategorized";
     public static final String CATEGORY_LONG_SLEEVES = "long sleeves";
     public static final String CATEGORY_SHORT_SLEEVES = "short sleeves";
     public static final String CATEGORY_LONG_LEGGINGS = "long leggings";
     public static final String CATEGORY_SHORT_LEGGINGS = "short leggings";
+
+    public static final List<String> DEFAULT_CATEGORIES = Arrays.asList(
+            "long sleeves",
+            "short sleeves",
+            "long leggings",
+            "short leggings"
+    );
 
     public interface OnCategoryOperationListener {
         void onSuccess(String message);
@@ -78,14 +87,42 @@ public class FlaskNetwork {
         void onError(String message);
     }
 
+    public interface OnRecommendationReceivedListener {
+        void onSuccess(String topWear, String bottomWear);
+        void onError(String message);
+    }
+
+    public interface OnRandomOutfitReceivedListener {
+        void onSuccess(RandomOutfit outfit);
+        void onError(String message);
+    }
+
+    // Thêm interface OnAllClothesLoadedListener
+    public interface OnAllClothesLoadedListener {
+        void onSuccess(List<Category> categories);
+        void onError(String message);
+    }
+
+    // Định nghĩa class Category
+    public static class Category {
+        public String name;
+        public String[] images;
+
+        public Category(String name, String[] images) {
+            this.name = name;
+            this.images = images;
+        }
+    }
+
     public FlaskNetwork() {
         client = new OkHttpClient.Builder()
                 .connectTimeout(30, TimeUnit.SECONDS)
                 .writeTimeout(30, TimeUnit.SECONDS)
                 .readTimeout(30, TimeUnit.SECONDS)
                 .build();
-    }
 
+        mainHandler = new Handler(Looper.getMainLooper());
+    }
 
     private String getCurrentUserId() {
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -94,7 +131,6 @@ public class FlaskNetwork {
         }
         return currentUser.getUid();
     }
-
 
     public void removeBackground(Context context, Uri imageUri, OnBackgroundRemovalListener listener) {
         new Thread(() -> {
@@ -227,6 +263,69 @@ public class FlaskNetwork {
             } catch (Exception e) {
                 Log.e(TAG, "Failed to get images", e);
                 listener.onError("Failed to get images: " + e.getMessage());
+            }
+        }).start();
+    }
+
+    /**
+     * Lấy đề xuất quần áo dựa trên nhiệt độ và dữ liệu người dùng
+     * @param temperature Nhiệt độ hiện tại
+     * @param listener Listener để nhận kết quả đề xuất
+     */
+    public void getRecommendedClothing(double temperature, int humidity, double windSpeed, OnRecommendationReceivedListener listener) {
+        new Thread(() -> {
+            try {
+                String userId = getCurrentUserId();
+
+                HttpUrl.Builder urlBuilder = HttpUrl.parse(BASE_URL + "/recommend-clothing")
+                        .newBuilder()
+                        .addQueryParameter("temperature", String.valueOf(temperature))
+                        .addQueryParameter("humidity", String.valueOf(humidity))
+                        .addQueryParameter("wind_speed", String.valueOf(windSpeed))
+                        .addQueryParameter("user_id", userId);
+
+                Request request = new Request.Builder()
+                        .url(urlBuilder.build())
+                        .build();
+
+                try (Response response = client.newCall(request).execute()) {
+                    if (!response.isSuccessful()) {
+                        String errorBody = response.body() != null ? response.body().string() : "No error details";
+                        mainHandler.post(() -> listener.onError("Server error: " + response.code() + "\n" + errorBody));
+                        return;
+                    }
+
+                    String jsonResponse = response.body().string();
+                    JSONObject jsonObject = new JSONObject(jsonResponse);
+
+                    String topWear = jsonObject.optString("topWear", "long sleeves");
+                    String bottomWear = jsonObject.optString("bottomWear", "long leggings");
+
+                    // Kiểm tra danh sách hình ảnh
+                    JSONArray topImagesArray = jsonObject.optJSONArray("topImages");
+                    JSONArray bottomImagesArray = jsonObject.optJSONArray("bottomImages");
+
+                    List<String> topImages = new ArrayList<>();
+                    List<String> bottomImages = new ArrayList<>();
+
+                    if (topImagesArray != null) {
+                        for (int i = 0; i < topImagesArray.length(); i++) {
+                            topImages.add(topImagesArray.getString(i));
+                        }
+                    }
+
+                    if (bottomImagesArray != null) {
+                        for (int i = 0; i < bottomImagesArray.length(); i++) {
+                            bottomImages.add(bottomImagesArray.getString(i));
+                        }
+                    }
+
+                    // Gửi dữ liệu về UI
+                    mainHandler.post(() -> listener.onSuccess(topWear, bottomWear));
+                }
+            } catch (Exception e) {
+                Log.e(TAG, "Failed to get clothing recommendations", e);
+                mainHandler.post(() -> listener.onError("Failed to get recommendations: " + e.getMessage()));
             }
         }).start();
     }
@@ -365,6 +464,7 @@ public class FlaskNetwork {
             }
         }).start();
     }
+
     public void removeCategory(String categoryName, OnCategoryOperationListener listener) {
         new Thread(() -> {
             try {
@@ -407,7 +507,6 @@ public class FlaskNetwork {
         }).start();
     }
 
-
     public void moveImage(String filename, String newCategory, OnMoveImageListener listener) {
         new Thread(() -> {
             try {
@@ -444,4 +543,131 @@ public class FlaskNetwork {
         }).start();
     }
 
+    public void getRandomOutfit(OnRandomOutfitReceivedListener listener) {
+        new Thread(() -> {
+            try {
+                String userId = getCurrentUserId();
+
+                HttpUrl.Builder urlBuilder = HttpUrl.parse(BASE_URL + "/random-outfit")
+                        .newBuilder()
+                        .addQueryParameter("user_id", userId);
+
+                Request request = new Request.Builder()
+                        .url(urlBuilder.build())
+                        .build();
+
+                try (Response response = client.newCall(request).execute()) {
+                    if (!response.isSuccessful()) {
+                        String errorBody = response.body() != null ? response.body().string() : "No error details";
+                        listener.onError("Server error: " + response.code() + "\n" + errorBody);
+                        return;
+                    }
+
+                    String jsonResponse = response.body().string();
+                    JSONObject jsonObject = new JSONObject(jsonResponse);
+
+                    // Parse top item
+                    JSONObject topJson = jsonObject.getJSONObject("top");
+                    RandomOutfit.OutfitItem top = new RandomOutfit.OutfitItem(
+                            topJson.getString("category"),
+                            topJson.getString("filename"),
+                            topJson.getString("url")
+                    );
+
+                    // Parse bottom item
+                    JSONObject bottomJson = jsonObject.getJSONObject("bottom");
+                    RandomOutfit.OutfitItem bottom = new RandomOutfit.OutfitItem(
+                            bottomJson.getString("category"),
+                            bottomJson.getString("filename"),
+                            bottomJson.getString("url")
+                    );
+
+                    // Create and return RandomOutfit
+                    RandomOutfit outfit = new RandomOutfit(top, bottom);
+                    listener.onSuccess(outfit);
+
+                } catch (JSONException e) {
+                    Log.e(TAG, "JSON parsing error", e);
+                    listener.onError("Failed to parse server response: " + e.getMessage());
+                }
+            } catch (IllegalStateException e) {
+                Log.e(TAG, "Authentication error", e);
+                listener.onError("Please log in to continue");
+            } catch (IOException e) {
+                Log.e(TAG, "Network error", e);
+                listener.onError("Network error: " + e.getMessage());
+            }
+        }).start();
+    }
+
+    // Thêm phương thức getAllUserClothes
+    public void getAllUserClothes(OnAllClothesLoadedListener listener) {
+        new Thread(() -> {
+            try {
+                String userId = getCurrentUserId();
+
+                HttpUrl url = HttpUrl.parse(BASE_URL + "/getAllUserClothes")
+                        .newBuilder()
+                        .addQueryParameter("user_id", userId)
+                        .build();
+
+                Request request = new Request.Builder()
+                        .url(url)
+                        .build();
+
+                try (Response response = client.newCall(request).execute()) {
+                    if (!response.isSuccessful()) {
+                        String errorBody = response.body() != null ? response.body().string() : "No error details";
+                        Log.e(TAG, "Server error: " + response.code() + ", Body: " + errorBody);
+                        listener.onError("Server error: " + response.code() + "\n" + errorBody);
+                        return;
+                    }
+
+                    String jsonResponse = response.body().string();
+                    JSONArray jsonArray = new JSONArray(jsonResponse);
+                    List<Category> categories = new ArrayList<>();
+
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        JSONObject categoryObject = jsonArray.getJSONObject(i);
+                        String categoryName = categoryObject.getString("category");
+                        JSONArray imagesArray = categoryObject.getJSONArray("images");
+                        String[] imageUrls = new String[imagesArray.length()];
+                        for (int j = 0; j < imagesArray.length(); j++) {
+                            imageUrls[j] = imagesArray.getString(j);
+                        }
+                        categories.add(new Category(categoryName, imageUrls));
+                    }
+                    listener.onSuccess(categories);
+                }
+            } catch (IllegalStateException e) {
+                Log.e(TAG, "Authentication error", e);
+                listener.onError("Please log in to continue");
+            } catch (Exception e) {
+                Log.e(TAG, "Failed to get all user clothes", e);
+                listener.onError("Failed to get all user clothes: " + e.getMessage());
+            }
+        }).start();
+    }
+
+    public static class RandomOutfit {
+        public final OutfitItem top;
+        public final OutfitItem bottom;
+
+        public RandomOutfit(OutfitItem top, OutfitItem bottom) {
+            this.top = top;
+            this.bottom = bottom;
+        }
+
+        public static class OutfitItem {
+            public final String category;
+            public final String filename;
+            public final String url;
+
+            public OutfitItem(String category, String filename, String url) {
+                this.category = category;
+                this.filename = filename;
+                this.url = url;
+            }
+        }
+    }
 }

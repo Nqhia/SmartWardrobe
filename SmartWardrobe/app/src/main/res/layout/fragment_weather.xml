@@ -1,100 +1,163 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp">
+    android:layout_height="match_parent">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:background="@drawable/border">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Location :"
-            android:layout_gravity="center"
-            android:fontFamily="@font/agbalumo_regular"
-            android:textColor="@color/black"/>
-
-        <TextView
-            android:id="@+id/locationText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:text="Location"
-            android:textColor="#CE2240"
-            android:textSize="15dp"
-            android:fontFamily="@font/agbalumo_regular"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Current condition :"
-            android:layout_gravity="center"
-            android:fontFamily="@font/agbalumo_regular"
-            android:textColor="@color/black"/>
-
-        <TextView
-            android:id="@+id/conditionText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:text="Condition"
-            android:fontFamily="@font/agbalumo_regular"
-            android:textColor="#CE2240"
-            android:textSize="15dp"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Current temperature :"
-            android:layout_gravity="center"
-            android:fontFamily="@font/agbalumo_regular"
-            android:textColor="@color/black"/>
-
-        <TextView
-            android:id="@+id/temp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:text="Temperature"
-            android:textColor="#CE2240"
-            android:textSize="30dp"
-            android:fontFamily="@font/agbalumo_regular"/>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="370dp"
-        android:background="@drawable/border"
-        android:layout_marginTop="20dp"
-        android:orientation="vertical"
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         android:padding="16dp">
 
-        <TextView
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Recommendation :"
-            android:layout_gravity="center"
-            android:fontFamily="@font/agbalumo_regular"
-            android:textColor="@color/black"/>
+            android:orientation="vertical">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/topClothingRecyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="150dp"
-            android:layout_marginTop="8dp" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/border"
+                android:padding="16dp">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/bottomClothingRecyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="150dp"
-            android:layout_marginTop="8dp" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Current Temperature"
+                    android:layout_gravity="center"
+                    android:fontFamily="@font/agbalumo_regular"
+                    android:textColor="@color/black"/>
 
-    </LinearLayout>
+                <TextView
+                    android:id="@+id/temp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:text="Temperature"
+                    android:textColor="#CE2240"
+                    android:textSize="36sp"
+                    android:fontFamily="@font/agbalumo_regular"/>
 
-</LinearLayout>
+                <TextView
+                    android:id="@+id/humidityText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:text="Humidity"
+                    android:textColor="#CE2240"
+                    android:textSize="18sp"
+                    android:fontFamily="@font/agbalumo_regular"/>
+
+                <TextView
+                    android:id="@+id/windSpeedText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:text="windSpeed"
+                    android:textColor="#CE2240"
+                    android:textSize="18sp"
+                    android:fontFamily="@font/agbalumo_regular"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Location"
+                    android:layout_gravity="center"
+                    android:fontFamily="@font/agbalumo_regular"
+                    android:textColor="@color/black"/>
+
+                <TextView
+                    android:id="@+id/locationText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:text="Location"
+                    android:textColor="#CE2240"
+                    android:textSize="18sp"
+                    android:fontFamily="@font/agbalumo_regular"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Current Condition"
+                    android:layout_gravity="center"
+                    android:fontFamily="@font/agbalumo_regular"
+                    android:textColor="@color/black"/>
+
+                <TextView
+                    android:id="@+id/conditionText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="Condition"
+                    android:fontFamily="@font/agbalumo_regular"
+                    android:textColor="#CE2240"
+                    android:textSize="18sp"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Categories Recommendations"
+                    android:layout_gravity="center"
+                    android:fontFamily="@font/agbalumo_regular"
+                    android:textColor="@color/black"/>
+
+                <TextView
+                    android:id="@+id/recommendationText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="Recommends"
+                    android:fontFamily="@font/agbalumo_regular"
+                    android:textColor="#CE2240"
+                    android:textSize="18sp"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/border"
+                android:layout_marginTop="15dp"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Recommendation"
+                    android:layout_gravity="center"
+                    android:fontFamily="@font/agbalumo_regular"
+                    android:textColor="@color/black"/>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/topClothingRecyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:layout_marginTop="5dp" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/bottomClothingRecyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:layout_marginTop="5dp" />
+
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/random_frag"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Random Suggestion"/>
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>

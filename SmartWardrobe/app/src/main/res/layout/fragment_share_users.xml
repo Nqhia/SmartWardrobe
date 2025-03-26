@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/primary"
+    android:background="#FFFFF0"
     android:fitsSystemWindows="true">
 
     <androidx.appcompat.widget.AppCompatImageView
@@ -23,8 +23,8 @@
         android:id="@+id/textTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Chia sẻ với bạn bè"
-        android:textColor="@color/white"
+        android:text="Sharing With Friends"
+        android:textColor="@color/black"
         android:textSize="14sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@id/imageBack"

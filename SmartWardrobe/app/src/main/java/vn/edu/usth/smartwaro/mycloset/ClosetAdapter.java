@@ -1,49 +1,42 @@
 package vn.edu.usth.smartwaro.mycloset;
 
 import android.os.Bundle;
-
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
+import java.util.List;
 
 public class ClosetAdapter extends FragmentStateAdapter {
-    public ClosetAdapter(@NonNull Fragment fragment) {
+    private List<String> categories;
+
+    public ClosetAdapter(@NonNull Fragment fragment, List<String> categories) {
         super(fragment);
+        this.categories = categories;
     }
 
     @NonNull
     @Override
     public Fragment createFragment(int position) {
         if (position == 0) {
-            return new GalleryFragment(); // Tab "Gallery"
+            return new GalleryFragment();
         } else {
             CategoriesFragment fragment = new CategoriesFragment();
-            fragment.setArguments(getCategoryBundle(position));
+            Bundle args = new Bundle();
+            args.putString("category", categories.get(position - 1)); // ✅ Lấy đúng category từ danh sách
+            fragment.setArguments(args);
             return fragment;
         }
     }
 
     @Override
     public int getItemCount() {
-        return 5; // 1 "Gallery" + 4 Categories
+        return categories.size() + 1; // ✅ 1 "Gallery" + danh sách category từ API
     }
 
-    private Bundle getCategoryBundle(int position) {
-        Bundle args = new Bundle();
-        switch (position) {
-            case 1:
-                args.putString("category", "Short Sleeves");
-                break;
-            case 2:
-                args.putString("category", "Long Sleeves");
-                break;
-            case 3:
-                args.putString("category", "Short Leggings");
-                break;
-            case 4:
-                args.putString("category", "Long Leggings");
-                break;
-        }
-        return args;
+    public void setCategories(List<String> newCategories) {
+        this.categories = newCategories;
+        notifyDataSetChanged();
     }
+
+
 }

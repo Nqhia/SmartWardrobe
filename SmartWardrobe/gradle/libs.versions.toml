@@ -25,6 +25,7 @@ glide = "4.16.0"
 circle-imageview = "3.1.0"
 roundedimageview = "2.3.0"
 swiperefreshlayout = "1.1.0"
+litertSupportApi = "1.2.0"
 
 
 [libraries]
@@ -58,6 +59,7 @@ glide-compiler = { module = "com.github.bumptech.glide:compiler", version.ref = 
 circle-imageview = { module = "de.hdodenhof:circleimageview", version.ref = "circle-imageview" }
 roundedimageview = { module = "com.makeramen:roundedimageview", version.ref = "roundedimageview" }
 swiperefreshlayout = { group = "androidx.swiperefreshlayout", name = "swiperefreshlayout", version.ref = "swiperefreshlayout" }
+litert-support-api = { group = "com.google.ai.edge.litert", name = "litert-support-api", version.ref = "litertSupportApi" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

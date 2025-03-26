@@ -11,6 +11,14 @@ import logging
 import json
 from pathlib import Path
 
+# Import for Machine Learning
+import numpy as np
+import pandas as pd
+from sklearn.preprocessing import StandardScaler, OneHotEncoder
+from sklearn.compose import ColumnTransformer
+from sklearn.pipeline import Pipeline
+from sklearn.ensemble import RandomForestClassifier
+
 app = Flask(__name__)
 CORS(app)
 
@@ -21,6 +29,69 @@ BASE_DIR = os.path.dirname(__file__)
 UPLOAD_FOLDER = os.path.join(BASE_DIR, 'user_images')
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
+
+# Machine Learning
+
+class ClothingRecommender:
+    def __init__(self):
+        # Dữ liệu mở rộng với nhiều loại trang phục hơn
+        self.training_data = pd.DataFrame({
+            'temperature': [0, 5, 10, 15, 20, 25, 30, 35, 40]*4,
+            'humidity': [20, 30, 40, 50, 60, 70, 80, 90, 100]*4,
+            'wind_speed': [0, 5, 10, 15, 20, 25, 30, 35, 40]*4,
+            'top_wear': [
+                "Winter Coat", "Heavy Jacket", "Parka", "Trench Coat", "Peacoat", "Leather Jacket",
+                "Fleece Jacket", "Turtleneck", "Wool Sweater", "Hoodie", "Pullover", "Cardigan",
+                "T-Shirt", "Polo Shirt", "Tank Top", "Crop Top", "Sleeveless Shirt", "Hawaiian Shirt",
+                "Denim Jacket", "Bomber Jacket", "Windbreaker", "Blazer", "Flannel Shirt", "Long Sleeve Shirt",
+                "Athletic Shirt", "Compression Shirt", "Thermal Shirt", "Baseball Shirt", "Fishing Shirt", "Cycling Jersey",
+                "Kimono", "Poncho", "Chambray Shirt", "Henley Shirt", "V-Neck Shirt", "Graphic Tee"
+            ],
+            'bottom_wear': [
+                "Thermal Pants", "Fleece-Lined Pants", "Corduroy Pants", "Wool Pants", "Leather Pants", "Cargo Pants",
+                "Shorts", "Denim Shorts", "Bermuda Shorts", "Board Shorts", "Capri Pants", "Linen Pants",
+                "Jeans", "Slim-Fit Jeans", "Straight-Leg Jeans", "Distressed Jeans", "Chinos", "Khaki Pants",
+                "Joggers", "Sweatpants", "Track Pants", "Yoga Pants", "Tights", "Cycling Shorts",
+                "Skirt", "Mini Skirt", "Maxi Skirt", "Pleated Skirt", "A-Line Skirt", "Pencil Skirt",
+                "Palazzo Pants", "Culottes", "Overalls", "Parachute Pants", "Bell-Bottoms", "Sarong"
+            ]
+        })
+        
+        self.model = None
+        self.prepare_model()
+
+    def prepare_model(self):
+        """Chuẩn bị mô hình máy học"""
+        X = self.training_data[['temperature', 'humidity', 'wind_speed']]
+        y_top = self.training_data['top_wear']
+        y_bottom = self.training_data['bottom_wear']
+
+        # Chuẩn hóa dữ liệu
+        self.scaler = StandardScaler()
+        X_scaled = self.scaler.fit_transform(X)
+        
+        # Huấn luyện mô hình
+        self.top_classifier = RandomForestClassifier(n_estimators=100, random_state=42)
+        self.bottom_classifier = RandomForestClassifier(n_estimators=100, random_state=42)
+        
+        self.top_classifier.fit(X_scaled, y_top)
+        self.bottom_classifier.fit(X_scaled, y_bottom)
+
+    def recommend_clothing(self, temperature, humidity, wind_speed):
+        """Dự đoán quần áo dựa trên nhiệt độ, độ ẩm và tốc độ gió"""
+        input_data = [[temperature, humidity, wind_speed]]
+        input_scaled = self.scaler.transform(input_data)
+        
+        top_wear = self.top_classifier.predict(input_scaled)[0]
+        bottom_wear = self.bottom_classifier.predict(input_scaled)[0]
+
+        return {
+            'topWear': top_wear,
+            'bottomWear': bottom_wear
+        }
+
+# Khởi tạo recommender toàn cục
+global_recommender = ClothingRecommender()
 
 class UserCategories:
     DEFAULT_CATEGORIES = [
@@ -354,20 +425,27 @@ def get_user_images():
         logger.error(f"Error in get_user_images: {str(e)}")
         return jsonify({'error': str(e)}), 500
 
-
-
 @app.route('/images/<user_id>/<category>/<filename>')
 def serve_image(user_id, category, filename):
     try:
+        logger.debug(f"Attempting to serve image - User ID: {user_id}, Category: {category}, Filename: {filename}")
+        
         if not user_id or not is_valid_firebase_uid(user_id):
+            logger.error("Invalid user ID")
             return jsonify({'error': 'Invalid user ID'}), 400
 
         categories = UserCategories.get_categories(user_id)
+        logger.debug(f"Available categories for user: {categories}")
+        
         if category not in categories:
+            logger.error(f"Category {category} not found in user categories")
             return jsonify({'error': 'Invalid category'}), 400
 
         file_path = os.path.join(UPLOAD_FOLDER, str(user_id), category, filename)
+        logger.debug(f"Searching for file at path: {file_path}")
+
         if not os.path.exists(file_path):
+            logger.error(f"File not found: {file_path}")
             return jsonify({'error': 'Image not found'}), 404
 
         return send_file(file_path, mimetype='image/png')
@@ -424,7 +502,6 @@ def delete_images():
     except Exception as e:
         logger.error(f"Error in delete_images: {str(e)}")
         return jsonify({'error': str(e)}), 500
-
 
 @app.route('/get-categories', methods=['GET'])
 def get_categories():
@@ -575,10 +652,193 @@ def move_image():
     except Exception as e:
         logger.error(f"Error moving image: {str(e)}")
         return jsonify({'error': str(e)}), 500
+    
+##################################################################33
+@app.route('/recommend-clothing', methods=['GET'])
+def recommend_clothing():
+    try:
+        temperature = float(request.args.get('temperature'))
+        humidity = float(request.args.get('humidity', 50))
+        wind_speed = float(request.args.get('wind_speed', 10))
+        user_id = request.args.get('user_id')
+        
+        if not user_id or not is_valid_firebase_uid(user_id):
+            return jsonify({'error': 'Invalid user ID'}), 400
+        
+        # Dự đoán quần áo
+        recommendation = global_recommender.recommend_clothing(temperature, humidity, wind_speed)
+        
+        # Kiểm tra nếu quần áo được đề xuất có trong danh mục người dùng
+        categories = UserCategories.get_categories(user_id)
+        if recommendation['topWear'] not in categories:
+            recommendation['topWear'] = select_best_match(categories, 'top')
+        if recommendation['bottomWear'] not in categories:
+            recommendation['bottomWear'] = select_best_match(categories, 'bottom')
+        
+        # Lấy ảnh phù hợp nếu có
+        top_images = get_user_images_by_categories(user_id, recommendation['topWear'], categories)
+        bottom_images = get_user_images_by_categories(user_id, recommendation['bottomWear'], categories)
+        
+        return jsonify({
+            'topWear': recommendation['topWear'],
+            'bottomWear': recommendation['bottomWear'],
+            'topImages': top_images,
+            'bottomImages': bottom_images
+        })
+    
+    except Exception as e:
+        logger.error(f"Lỗi đề xuất quần áo: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+
+def get_user_images_by_categories(user_id, clothing_type, categories):
+    """
+    Lấy danh sách ảnh phù hợp với loại quần áo và danh mục người dùng.
+    """
+    try:
+        metadata = load_metadata(user_id)
+        if not metadata:
+            return []
+        
+        matching_images = [
+            f"/images/{user_id}/{info['category']}/{filename}"
+            for filename, info in metadata['images'].items()
+            if info['category'] in categories and clothing_type.lower() in info['category'].lower()
+        ]
+        
+        return matching_images
+    except Exception as e:
+        logger.error(f"Lỗi lấy ảnh: {str(e)}")
+        return []
+
+
+def select_best_match(categories, clothing_type):
+    """
+    Chọn category gần nhất nếu category được đề xuất không tồn tại.
+    """
+    priority_map = {
+        'bottom': ['warm pants', 'long leggings', 'jeans', 'cargo pants', "shorts"],
+        'top': ['sweater', 'long sleeves', 'hoodie', 'turtleneck']
+    }
+
+    for preferred in priority_map.get(clothing_type, []):
+        if preferred in categories:
+            return preferred
+    
+    return 'uncategorized'
+    
+###################################################3
 
 @app.route('/health', methods=['GET'])
 def health_check():
     return jsonify({'status': 'healthy', 'timestamp': datetime.datetime.now().isoformat()})
+
+@app.route('/random-outfit', methods=['GET'])
+def random_outfit():
+    try:
+        user_id = request.args.get('user_id')
+        
+        if not user_id or not is_valid_firebase_uid(user_id):
+            return jsonify({'error': 'Invalid user ID'}), 400
+            
+        # Get user's metadata
+        metadata = load_metadata(user_id)
+        
+        if not metadata or not metadata['images']:
+            return jsonify({'error': 'No images found for the user'}), 404
+        
+        # Riêng với top, mở rộng keywords để bao gồm nhiều loại áo hơn
+        top_keywords = [
+            'sleeve', 'shirt', 'top', 'jacket', 'sweater', 
+            't-shirt', 'long sleeve', 'short sleeve', 
+            'polo', 'blouse', 'tank top','short'
+        ]
+        bottom_keywords = ['legging', 'pant', 'trouser', 'jean', 'short', 'skirt']
+        
+        # Lọc categories top wear
+        top_categories = [
+            cat for cat in metadata['categories'].keys() 
+            if any(keyword in cat.lower() for keyword in top_keywords) 
+            and not any(keyword in cat.lower() for keyword in bottom_keywords)
+        ]
+        
+        bottom_categories = [
+            cat for cat in metadata['categories'].keys() 
+            if any(word in cat.lower() for word in bottom_keywords) 
+            and not any(word in cat.lower() for word in top_keywords)
+        ]
+        
+        # Filter categories with actual images
+        valid_top_categories = [cat for cat in top_categories if metadata['categories'][cat]]
+        valid_bottom_categories = [cat for cat in bottom_categories if metadata['categories'][cat]]
+        
+        if not valid_top_categories or not valid_bottom_categories:
+            return jsonify({'error': 'Not enough categories with images'}), 404
+        
+        import random
+        
+        # Randomly select a top category and an image from that category
+        random_top_category = random.choice(valid_top_categories)
+        top_images = metadata['categories'][random_top_category]
+        random_top_image = random.choice(top_images)
+        
+        # Randomly select a bottom category and an image from that category
+        random_bottom_category = random.choice(valid_bottom_categories)
+        bottom_images = metadata['categories'][random_bottom_category]
+        random_bottom_image = random.choice(bottom_images)
+        
+        # Return image URLs and categories with full URL
+        base_url = request.host_url.rstrip('/')  # Get the base URL of the server
+        return jsonify({
+            'top': {
+                'category': random_top_category,
+                'filename': random_top_image,
+                'url': f"{base_url}/images/{user_id}/{random_top_category}/{random_top_image}"
+            },
+            'bottom': {
+                'category': random_bottom_category,
+                'filename': random_bottom_image,
+                'url': f"{base_url}/images/{user_id}/{random_bottom_category}/{random_bottom_image}"
+            }
+        })
+    except Exception as e:
+        logger.error(f"Error generating random outfit: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+# Thêm endpoint /getAllUserClothes
+@app.route('/getAllUserClothes', methods=['GET'])
+def get_all_user_clothes():
+    try:
+        user_id = request.args.get('user_id')
+        
+        if not user_id or not is_valid_firebase_uid(user_id):
+            return jsonify({'error': 'Invalid user ID'}), 400
+
+        # Log received parameters
+        logger.debug(f"Getting all clothes for user: {user_id}")
+
+        metadata = load_metadata(user_id)
+        if not metadata:
+            logger.debug("No metadata found, returning empty list")
+            return jsonify([])
+
+        categories = UserCategories.get_categories(user_id)
+        result = []
+
+        for category in categories:
+            image_files = metadata['categories'].get(category, [])
+            image_urls = [f"/images/{user_id}/{category}/{filename}" for filename in image_files]
+            result.append({
+                'category': category,
+                'images': image_urls
+            })
+
+        logger.debug(f"Returning {len(result)} categories with images")
+        return jsonify(result)
+
+    except Exception as e:
+        logger.error(f"Error in get_all_user_clothes: {str(e)}")
+        return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
     # Create upload folder if it doesn't exist

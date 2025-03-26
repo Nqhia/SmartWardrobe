@@ -1,5 +1,6 @@
 package vn.edu.usth.smartwaro.chat;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,9 +23,16 @@ import vn.edu.usth.smartwaro.databinding.FragmentShareUsersBinding;
 import vn.edu.usth.smartwaro.utils.Constants;
 import vn.edu.usth.smartwaro.utils.PreferenceManager;
 
-public class ShareUsersFragment extends Fragment implements UserListener{
+public class ShareUsersFragment extends Fragment implements UserListener {
     private FragmentShareUsersBinding binding;
     private PreferenceManager preferenceManager;
+    private Context safeContext; // Biến để lưu context an toàn
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        safeContext = context; // Lưu context khi fragment attached
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -91,7 +99,11 @@ public class ShareUsersFragment extends Fragment implements UserListener{
     public void onUserClicked(UserModel user) {
         if (user == null) return;
 
-        String imageString = getArguments().getString("modelImage");
+        String imageString = getArguments() != null ? getArguments().getString("modelImage") : null;
+        if (imageString == null) {
+            showToast("No outfit to share");
+            return;
+        }
 
         HashMap<String, Object> message = new HashMap<>();
         message.put(Constants.KEY_SENDER_ID, preferenceManager.getString(Constants.KEY_USER_ID));
@@ -104,14 +116,20 @@ public class ShareUsersFragment extends Fragment implements UserListener{
                 .collection(Constants.KEY_COLLECTION_CHAT)
                 .add(message)
                 .addOnSuccessListener(documentReference -> {
-                    Toast.makeText(getContext(), "Outfit shared successfully!", Toast.LENGTH_SHORT).show();
-                    requireActivity().onBackPressed();
+                    showToast("Outfit shared successfully!");
+                    if (getActivity() != null) {
+                        requireActivity().onBackPressed();
+                    }
                 })
-                .addOnFailureListener(e ->
-                        Toast.makeText(getContext(), "Failed to share outfit", Toast.LENGTH_SHORT).show()
-                );
+                .addOnFailureListener(e -> showToast("Failed to share outfit: " + e.getMessage()));
     }
 
+    // Phương thức helper để hiển thị Toast an toàn
+    private void showToast(String message) {
+        if (safeContext != null) {
+            Toast.makeText(safeContext, message, Toast.LENGTH_SHORT).show();
+        }
+    }
 
     private void loading(Boolean isLoading) {
         if (isLoading) {
@@ -134,5 +152,10 @@ public class ShareUsersFragment extends Fragment implements UserListener{
         );
         binding = null;
     }
-}
 
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        safeContext = null; // Xóa tham chiếu khi fragment detach
+    }
+}

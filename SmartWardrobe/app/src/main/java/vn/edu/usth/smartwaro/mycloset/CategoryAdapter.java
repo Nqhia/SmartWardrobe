@@ -22,16 +22,38 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ImageV
     private List<GalleryImage> categoryImages;
     private OnImageClickListener listener;
     private String currentCategory;
+    private boolean isMultiSelectMode;
 
     public interface OnImageClickListener {
         void onImageClick(GalleryImage image);
+        void onSelectionChanged(int selectedCount);
     }
+    public void setMultiSelectMode(boolean enabled) {
+        isMultiSelectMode = enabled;
+        for (GalleryImage image : categoryImages) {
+            image.setSelected(false);
+        }
+        notifyDataSetChanged();
+    }
+
+    public List<GalleryImage> getSelectedImages() {
+        List<GalleryImage> selectedImage = new ArrayList<>();
+        for (GalleryImage image : categoryImages) {
+            if (image.isSelected()) {
+                selectedImage.add(image);
+            }
+        }
+        return selectedImage;
+    }
+
+
 
     public CategoryAdapter(Context context, String category) {
         this.context = context;
         this.categoryImages = new ArrayList<>();
         this.currentCategory = category;
     }
+
 
     public void setOnImageClickListener(OnImageClickListener listener) {
         this.listener = listener;
@@ -72,10 +94,31 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ImageV
                 .placeholder(R.drawable.placeholder_image)
                 .into(holder.imageView);
 
+        holder.itemView.setAlpha(image.isSelected() ? 0.5f : 1.0f);
+        holder.checkOverlay.setVisibility(image.isSelected() ? View.VISIBLE : View.GONE);
+
         holder.itemView.setOnClickListener(v -> {
-            if (listener != null) {
+            if (isMultiSelectMode) {
+                image.setSelected(!image.isSelected());
+                notifyItemChanged(position);
+                if (listener != null) {
+                    listener.onSelectionChanged(getSelectedImages().size());
+                }
+            } else if (listener != null) {
                 listener.onImageClick(image);
             }
+        });
+        holder.itemView.setOnLongClickListener(v -> {
+            if (!isMultiSelectMode) {
+                isMultiSelectMode = true;
+                image.setSelected(true);
+                notifyDataSetChanged();
+                if (listener != null) {
+                    listener.onSelectionChanged(1);
+                }
+                return true;
+            }
+            return false;
         });
     }
 
@@ -86,12 +129,11 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ImageV
 
     static class ImageViewHolder extends RecyclerView.ViewHolder {
         ImageView imageView;
-
+        View checkOverlay;
         ImageViewHolder(View itemView) {
             super(itemView);
             imageView = itemView.findViewById(R.id.gallery_image);
+            checkOverlay= itemView.findViewById(R.id.check_overlay);
         }
     }
-
-
 }

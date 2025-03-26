@@ -41,12 +41,26 @@ public class WeatherResponse {
         @SerializedName("condition")
         private Condition condition;
 
+        @SerializedName("humidity")
+        private int humidity;
+
+        @SerializedName("wind_kph")
+        private double windKph;
+
         public double getTempC() {
             return tempC;
         }
 
         public Condition getCondition() {
             return condition;
+        }
+
+        public int getHumidity() {
+            return humidity;
+        }
+
+        public double getWindKph() {
+            return windKph;
         }
     }
 
@@ -56,7 +70,6 @@ public class WeatherResponse {
 
         public String getText() {
             return text;
-
         }
     }
 }

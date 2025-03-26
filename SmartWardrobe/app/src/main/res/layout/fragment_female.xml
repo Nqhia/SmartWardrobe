@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/royal_bg">
 
     <LinearLayout
@@ -10,6 +10,7 @@
         android:layout_height="match_parent"
         android:orientation="horizontal">
 
+        <!-- Left section with buttons -->
         <FrameLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
@@ -19,7 +20,15 @@
                 android:id="@+id/button_show_friends"
                 android:layout_width="wrap_content"
                 android:layout_height="40dp"
-                android:text="@string/share"/>
+                android:text="@string/share" />
+
+            <!-- "My Closet" button -->
+            <Button
+                android:id="@+id/button_my_closet"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_gravity="bottom"
+                android:text="My Closet" />
         </FrameLayout>
 
         <!-- View model -->
@@ -32,14 +41,14 @@
             <FrameLayout
                 android:id="@+id/fragmentContainer"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
+                android:layout_height="match_parent" />
 
             <ImageView
                 android:id="@+id/model_female"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:src="@drawable/female"
                 android:scaleType="centerCrop"
+                android:src="@drawable/female"
                 android:visibility="visible" />
 
             <ImageView
@@ -69,6 +78,21 @@
                 android:layout_height="match_parent"
                 android:scaleType="centerCrop"
                 android:visibility="gone" />
+
+            <ImageButton
+                android:id="@+id/remove_button"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="bottom|center_horizontal"
+                android:layout_marginBottom="10dp"
+                android:background="@null"
+                android:contentDescription="Remove selected item"
+                android:scaleType="centerInside"
+                android:src="@android:drawable/ic_delete"
+                android:visibility="gone"
+                android:padding="10dp"
+                android:clickable="true"
+                android:focusable="true" />
         </FrameLayout>
 
         <!-- Choose items view -->
@@ -78,7 +102,6 @@
             android:layout_height="match_parent"
             android:layout_weight="1">
 
-            <!-- Type view -->
             <ScrollView
                 android:id="@+id/primary_scroll_view"
                 android:layout_width="match_parent"
@@ -90,7 +113,6 @@
                     android:layout_height="match_parent"
                     android:gravity="end"
                     android:orientation="vertical">
-
 
                     <Button
                         android:id="@+id/type_top_female"
@@ -177,7 +199,6 @@
                         android:backgroundTint="@color/white"
                         android:drawableRight="@drawable/necklace"
                         android:layout_margin="5dp" />
-
                 </LinearLayout>
             </ScrollView>
 
@@ -196,7 +217,6 @@
                     android:orientation="vertical"
                     android:padding="8dp">
 
-
                     <ImageButton
                         android:id="@+id/top_blazer_icon"
                         android:layout_width="match_parent"
@@ -205,7 +225,6 @@
                         android:scaleType="centerInside"
                         android:src="@drawable/top_blazer_icon" />
 
-
                     <ImageButton
                         android:id="@+id/top_cardigan_icon"
                         android:layout_width="match_parent"
@@ -213,9 +232,6 @@
                         android:background="@null"
                         android:scaleType="centerInside"
                         android:src="@drawable/top_cardigan_icon" />
-
-
-
 
                     <ImageButton
                         android:id="@+id/top_tanktop_icon"
@@ -233,7 +249,6 @@
                         android:scaleType="centerInside"
                         android:src="@drawable/top_sweater_icon" />
 
-
                     <ImageButton
                         android:id="@+id/top_mockneck_icon"
                         android:layout_width="match_parent"
@@ -241,7 +256,6 @@
                         android:background="@null"
                         android:scaleType="centerInside"
                         android:src="@drawable/top_mockneck_icon" />
-
                 </LinearLayout>
             </ScrollView>
 
@@ -268,7 +282,6 @@
                         android:scaleType="centerInside"
                         android:src="@drawable/bot_jeans_icon" />
 
-
                     <ImageButton
                         android:id="@+id/bot_legging_icon"
                         android:layout_width="match_parent"
@@ -276,8 +289,6 @@
                         android:background="@null"
                         android:scaleType="centerInside"
                         android:src="@drawable/bot_legging_icon" />
-
-
                 </LinearLayout>
             </ScrollView>
 
@@ -288,8 +299,7 @@
                 android:layout_gravity="center"
                 android:layout_height="600dp"
                 android:visibility="gone"
-                android:background="@drawable/rounded_background"
-                >
+                android:background="@drawable/rounded_background">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -304,7 +314,6 @@
                         android:background="@null"
                         android:scaleType="centerInside"
                         android:src="@drawable/bot_skirt_icon" />
-
                 </LinearLayout>
             </ScrollView>
 
@@ -315,8 +324,7 @@
                 android:layout_gravity="center"
                 android:layout_height="600dp"
                 android:visibility="gone"
-                android:background="@drawable/rounded_background"
-                >
+                android:background="@drawable/rounded_background">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -332,7 +340,6 @@
                         android:scaleType="centerInside"
                         android:src="@drawable/tube_purple_icon" />
 
-
                     <ImageButton
                         android:id="@+id/black_tube_icon"
                         android:layout_width="match_parent"
@@ -341,7 +348,6 @@
                         android:scaleType="centerInside"
                         android:src="@drawable/black_tube_icon" />
 
-
                     <ImageButton
                         android:id="@+id/tube_red_icon"
                         android:layout_width="match_parent"
@@ -349,9 +355,6 @@
                         android:background="@null"
                         android:scaleType="centerInside"
                         android:src="@drawable/tube_red_icon" />
-
-
-
                 </LinearLayout>
             </ScrollView>
 
@@ -362,8 +365,7 @@
                 android:layout_height="600dp"
                 android:layout_gravity="center"
                 android:visibility="gone"
-                android:background="@drawable/rounded_background"
-                >
+                android:background="@drawable/rounded_background">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -386,7 +388,6 @@
                         android:background="@null"
                         android:scaleType="centerInside"
                         android:src="@drawable/female_heels_icon" />
-
                 </LinearLayout>
             </ScrollView>
 
@@ -412,12 +413,8 @@
                         android:background="@null"
                         android:scaleType="centerInside"
                         android:src="@drawable/skintone" />
-
                 </LinearLayout>
             </ScrollView>
-
-
-
         </FrameLayout>
     </LinearLayout>
 </FrameLayout>

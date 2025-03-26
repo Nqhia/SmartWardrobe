@@ -1,82 +1,162 @@
 package vn.edu.usth.smartwaro.wardrobe;
 
 import android.annotation.SuppressLint;
-import android.graphics.Bitmap;
-import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
-import android.util.Base64;
-import android.view.LayoutInflater;
+import android.app.Dialog;
+import android.view.MotionEvent;
+import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ScrollView;
-
-import java.io.ByteArrayOutputStream;
-
+import android.widget.Toast;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import com.squareup.picasso.Picasso;
+import java.util.ArrayList;
+import java.util.List;
 import vn.edu.usth.smartwaro.R;
-import vn.edu.usth.smartwaro.chat.ShareUsersFragment;
+import vn.edu.usth.smartwaro.network.FlaskNetwork;
 
+public class FemaleFragment extends BaseWardrobeFragment {
 
-public class FemaleFragment extends Fragment {
-
-    private ImageView modelFemale, topFemale, botFemale, tubedress, footwareFemale;
-    private ImageButton buttonmodelFemale, buttontopBlazer, buttontopCar, buttontopTank, buttontopSweater, buttontopMock,
+    private ImageView topFemale, botFemale, tubedress, footwareFemale;
+    private ImageButton buttontopBlazer, buttontopCar, buttontopTank, buttontopSweater, buttontopMock,
             buttonbotJean, buttonbotLegging, buttonbotSkirt,
             buttontubepurple, buttontubeblack, buttontubered, buttonloafer, buttonheels, buttonChangeSkinColor;
-    private ScrollView primaryScrollView;
-    private ScrollView[] overlayScrollViews;
-    private Button buttonShowFriends;
+    private Button buttonMyCloset;
+    private ImageButton removeButton;
+    private ScaleGestureDetector scaleGestureDetector;
+    private FlaskNetwork flaskNetwork;
+    private List<CustomClothingItem> activeClothingItems = new ArrayList<>();
+    private CustomClothingItem selectedClothingItem = null;
 
     private int[] shirtImages = {
-            R.drawable.top_blazer,
-            R.drawable.top_cardigan,
-            R.drawable.top_tanktop,
-            R.drawable.top_sweater_turtleneck,
-            R.drawable.top_tshirt_mockneck,
-
+            R.drawable.top_blazer, R.drawable.top_cardigan, R.drawable.top_tanktop,
+            R.drawable.top_sweater_turtleneck, R.drawable.top_tshirt_mockneck
     };
+    private int[] pantsImages = {R.drawable.bot_jean, R.drawable.bot_legging, R.drawable.bot_skirt};
+    private int[] dressImages = {R.drawable.tube_purple, R.drawable.dress_tube, R.drawable.dress_red};
+    private int[] footwareImages = {R.drawable.loafer, R.drawable.heels};
 
-    private int[] pantsImages = {
-            R.drawable.bot_jean,
-            R.drawable.bot_legging,
-            R.drawable.bot_skirt
-    };
-
-    private int[] dressImages = {
-            R.drawable.tube_purple,
-            R.drawable.dress_tube,
-            R.drawable.dress_red
-
-    };
-
-    private int[] footwareImages = {
-            R.drawable.loafer,
-            R.drawable.heels
-    };
-
-
-    private int currentShirtIndex = 0;
-    private int currentPantsIndex = 0;
-    private int currentDressIndex = 0;
-    private int currentFootwareIndex = 0;
     private int currentModelSkinIndex = 0;
 
+    private class CustomClothingItem {
+        ImageView imageView;
+        String imageUrl;
+        float scaleFactor = 1.0f;
+        float xPosition = 0f, yPosition = 0f;
+        private float lastTouchX, lastTouchY;
+        private boolean isMoving = false;
+
+        CustomClothingItem(String imageUrl, ViewGroup modelContainer) {
+            this.imageUrl = imageUrl;
+            this.imageView = new ImageView(requireContext());
+            this.imageView.setLayoutParams(new ViewGroup.LayoutParams(
+                    ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+            modelContainer.addView(this.imageView);
+            setupTouchListeners();
+        }
+
+        private void setupTouchListeners() {
+            this.imageView.setOnTouchListener((v, event) -> {
+                scaleGestureDetector.onTouchEvent(event);
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        selectClothingItem(this);
+                        lastTouchX = event.getRawX();
+                        lastTouchY = event.getRawY();
+                        isMoving = true;
+                        break;
+                    case MotionEvent.ACTION_MOVE:
+                        if (!scaleGestureDetector.isInProgress() && isMoving && this == selectedClothingItem) {
+                            float dx = event.getRawX() - lastTouchX;
+                            float dy = event.getRawY() - lastTouchY;
+                            v.setX(v.getX() + dx);
+                            v.setY(v.getY() + dy);
+                            xPosition = v.getX();
+                            yPosition = v.getY();
+                            lastTouchX = event.getRawX();
+                            lastTouchY = event.getRawY();
+                        }
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        isMoving = false;
+                        break;
+                }
+                return true;
+            });
+        }
+
+        void loadImage() {
+            Picasso.get().load(FlaskNetwork.BASE_URL + "/" + imageUrl).into(imageView);
+            imageView.setScaleX(1.0f);
+            imageView.setScaleY(1.0f);
+            imageView.setX(0);
+            imageView.setY(0);
+            scaleFactor = 1.0f;
+        }
+
+        void setVisibility(int visibility) {
+            imageView.setVisibility(visibility);
+        }
+    }
+
+    private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
+        @Override
+        public boolean onScale(ScaleGestureDetector detector) {
+            if (selectedClothingItem != null) {
+                selectedClothingItem.scaleFactor *= detector.getScaleFactor();
+                selectedClothingItem.scaleFactor = Math.max(0.5f, Math.min(selectedClothingItem.scaleFactor, 3.0f));
+                selectedClothingItem.imageView.setScaleX(selectedClothingItem.scaleFactor);
+                selectedClothingItem.imageView.setScaleY(selectedClothingItem.scaleFactor);
+                return true;
+            }
+            return false;
+        }
+    }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_female, container, false);
+    protected int getLayoutResourceId() {
+        return R.layout.fragment_female;
+    }
 
-        modelFemale = view.findViewById(R.id.model_female);
+    @Override
+    protected int getModelViewId() {
+        return R.id.model_female;
+    }
+
+    @Override
+    protected void setupOverlayScrollViews(View view) {
+        overlayScrollViews = new ScrollView[]{
+                view.findViewById(R.id.overlay_scroll_view_tops),
+                view.findViewById(R.id.overlay_scroll_view_bot),
+                view.findViewById(R.id.overlay_scroll_view_skirt),
+                view.findViewById(R.id.overlay_scroll_view_dress),
+                view.findViewById(R.id.overlay_scroll_view_footware),
+                view.findViewById(R.id.overlay_scroll_view_skin_tone)
+        };
+        view.findViewById(R.id.type_top_female).setOnClickListener(v -> toggleOverlay(0));
+        view.findViewById(R.id.type_bot_female).setOnClickListener(v -> toggleOverlay(1));
+        view.findViewById(R.id.type_skirt_female).setOnClickListener(v -> toggleOverlay(2));
+        view.findViewById(R.id.type_dress_female).setOnClickListener(v -> toggleOverlay(3));
+        view.findViewById(R.id.type_footware_female).setOnClickListener(v -> toggleOverlay(4));
+        view.findViewById(R.id.type_skin_female).setOnClickListener(v -> toggleOverlay(5));
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    @Override
+    protected void setupClothingListeners(View view) {
+        flaskNetwork = new FlaskNetwork();
+
         topFemale = view.findViewById(R.id.top_female);
         botFemale = view.findViewById(R.id.bot_female);
         tubedress = view.findViewById(R.id.tube_dress);
         footwareFemale = view.findViewById(R.id.female_footwear);
+        removeButton = view.findViewById(R.id.remove_button);
 
-        //buttonmodelFemale = view.findViewById(R.id.female_icon);
         buttontopBlazer = view.findViewById(R.id.top_blazer_icon);
         buttontopCar = view.findViewById(R.id.top_cardigan_icon);
         buttontopTank = view.findViewById(R.id.top_tanktop_icon);
@@ -91,211 +171,126 @@ public class FemaleFragment extends Fragment {
         buttonloafer = view.findViewById(R.id.female_loafer_icon);
         buttonheels = view.findViewById(R.id.female_heels_icon);
         buttonChangeSkinColor = view.findViewById(R.id.buttonChangeSkinColor);
+        buttonMyCloset = view.findViewById(R.id.button_my_closet);
 
-        primaryScrollView = view.findViewById(R.id.primary_scroll_view);
+        scaleGestureDetector = new ScaleGestureDetector(requireContext(), new ScaleListener());
 
+        // Clothing listeners
+        buttontopBlazer.setOnClickListener(v -> { updateClothing(topFemale, shirtImages, 0); tubedress.setVisibility(View.GONE); hideAllCustomClothing(); });
+        buttontopCar.setOnClickListener(v -> { updateClothing(topFemale, shirtImages, 1); tubedress.setVisibility(View.GONE); hideAllCustomClothing(); });
+        buttontopTank.setOnClickListener(v -> { updateClothing(topFemale, shirtImages, 2); tubedress.setVisibility(View.GONE); hideAllCustomClothing(); });
+        buttontopSweater.setOnClickListener(v -> { updateClothing(topFemale, shirtImages, 3); tubedress.setVisibility(View.GONE); hideAllCustomClothing(); });
+        buttontopMock.setOnClickListener(v -> { updateClothing(topFemale, shirtImages, 4); tubedress.setVisibility(View.GONE); hideAllCustomClothing(); });
 
-        overlayScrollViews = new ScrollView[]{
-                view.findViewById(R.id.overlay_scroll_view_tops),
-                view.findViewById(R.id.overlay_scroll_view_bot),
-                view.findViewById(R.id.overlay_scroll_view_skirt),
-                view.findViewById(R.id.overlay_scroll_view_dress),
-                view.findViewById(R.id.overlay_scroll_view_footware),
-                view.findViewById(R.id.overlay_scroll_view_skin_tone)
-        };
+        buttonbotJean.setOnClickListener(v -> { updateClothing(botFemale, pantsImages, 0); tubedress.setVisibility(View.GONE); hideAllCustomClothing(); });
+        buttonbotLegging.setOnClickListener(v -> { updateClothing(botFemale, pantsImages, 1); tubedress.setVisibility(View.GONE); hideAllCustomClothing(); });
+        buttonbotSkirt.setOnClickListener(v -> { updateClothing(botFemale, pantsImages, 2); tubedress.setVisibility(View.GONE); hideAllCustomClothing(); });
 
-        // Handle click on category buttons
-        view.findViewById(R.id.type_top_female).setOnClickListener(v -> toggleOverlay(0));
-        view.findViewById(R.id.type_bot_female).setOnClickListener(v -> toggleOverlay(1));
-        view.findViewById(R.id.type_skirt_female).setOnClickListener(v -> toggleOverlay(2));
-        view.findViewById(R.id.type_dress_female).setOnClickListener(v -> toggleOverlay(3));
-        view.findViewById(R.id.type_footware_female).setOnClickListener(v -> toggleOverlay(4));
-        view.findViewById(R.id.type_skin_female).setOnClickListener(v -> toggleOverlay(5));
+        buttontubepurple.setOnClickListener(v -> { updateClothing(tubedress, dressImages, 0); topFemale.setVisibility(View.GONE); botFemale.setVisibility(View.GONE); hideAllCustomClothing(); });
+        buttontubeblack.setOnClickListener(v -> { updateClothing(tubedress, dressImages, 1); topFemale.setVisibility(View.GONE); botFemale.setVisibility(View.GONE); hideAllCustomClothing(); });
+        buttontubered.setOnClickListener(v -> { updateClothing(tubedress, dressImages, 2); topFemale.setVisibility(View.GONE); botFemale.setVisibility(View.GONE); hideAllCustomClothing(); });
 
-        // Close overlays when touching outside
-        view.setOnTouchListener((v, event) -> {
-            for (ScrollView scrollView : overlayScrollViews) {
-                if (scrollView.getVisibility() == View.VISIBLE) {
-                    scrollView.setVisibility(View.GONE);
-                    primaryScrollView.setVisibility(View.VISIBLE);
-                    return true;
-                }
-            }
-            return false;
-        });
-
-        modelFemale.setImageResource(R.drawable.female);
-
-
-        //Áo
-        buttontopBlazer.setOnClickListener(v -> {
-            currentShirtIndex = 0;
-            topFemale.setImageResource(shirtImages[currentShirtIndex]);
-            topFemale.setVisibility(View.VISIBLE);
-            tubedress.setVisibility(View.GONE);
-
-        });
-        buttontopCar.setOnClickListener(v -> {
-            currentShirtIndex = 1;
-            topFemale.setImageResource(shirtImages[currentShirtIndex]);
-            topFemale.setVisibility(View.VISIBLE);
-            tubedress.setVisibility(View.GONE);
-
-        });
-        buttontopTank.setOnClickListener(v -> {
-            currentShirtIndex = 2;
-            topFemale.setImageResource(shirtImages[currentShirtIndex]);
-            topFemale.setVisibility(View.VISIBLE);
-            tubedress.setVisibility(View.GONE);
-
-        });
-        buttontopSweater.setOnClickListener(v -> {
-            currentShirtIndex = 3;
-            topFemale.setImageResource(shirtImages[currentShirtIndex]);
-            topFemale.setVisibility(View.VISIBLE);
-            tubedress.setVisibility(View.GONE);
-
-        });
-        buttontopMock.setOnClickListener(v -> {
-            currentShirtIndex = 4;
-            topFemale.setImageResource(shirtImages[currentShirtIndex]);
-            topFemale.setVisibility(View.VISIBLE);
-            tubedress.setVisibility(View.GONE);
-
-        });
-
-        //Quần
-        buttonbotJean.setOnClickListener(v -> {
-            currentPantsIndex = 0;
-            botFemale.setImageResource(pantsImages[currentPantsIndex]);
-            botFemale.setVisibility(View.VISIBLE);
-            tubedress.setVisibility(View.GONE);
-
-        });
-        buttonbotLegging.setOnClickListener(v -> {
-            currentPantsIndex = 1;
-            botFemale.setImageResource(pantsImages[currentPantsIndex]);
-            botFemale.setVisibility(View.VISIBLE);
-            tubedress.setVisibility(View.GONE);
-
-        });
-        buttonbotSkirt.setOnClickListener(v -> {
-            currentPantsIndex = 2;
-            botFemale.setImageResource(pantsImages[currentPantsIndex]);
-            botFemale.setVisibility(View.VISIBLE);
-            tubedress.setVisibility(View.GONE);
-        });
-
-        //Váy
-        buttontubepurple.setOnClickListener(v -> {
-            currentDressIndex = 0;
-            tubedress.setImageResource(dressImages[currentDressIndex]);
-            tubedress.setVisibility(View.VISIBLE);
-            topFemale.setVisibility(View.GONE);
-            botFemale.setVisibility(View.GONE);
-        });
-        buttontubeblack.setOnClickListener(v -> {
-            currentDressIndex = 1;
-            tubedress.setImageResource(dressImages[currentDressIndex]);
-            tubedress.setVisibility(View.VISIBLE);
-            topFemale.setVisibility(View.GONE);
-            botFemale.setVisibility(View.GONE);
-        });
-        buttontubered.setOnClickListener(v -> {
-            currentDressIndex = 2;
-            tubedress.setImageResource(dressImages[currentDressIndex]);
-            tubedress.setVisibility(View.VISIBLE);
-            topFemale.setVisibility(View.GONE);
-            botFemale.setVisibility(View.GONE);
-        });
-
-        //Giày
-        buttonloafer.setOnClickListener(v -> {
-            currentFootwareIndex = 0;
-            footwareFemale.setImageResource(footwareImages[currentFootwareIndex]);
-            footwareFemale.setVisibility(View.VISIBLE);
-        });
-
-        buttonheels.setOnClickListener(v -> {
-            currentFootwareIndex = 1;
-            footwareFemale.setImageResource(footwareImages[currentFootwareIndex]);
-            footwareFemale.setVisibility(View.VISIBLE);
-        });
+        buttonloafer.setOnClickListener(v -> updateClothing(footwareFemale, footwareImages, 0));
+        buttonheels.setOnClickListener(v -> updateClothing(footwareFemale, footwareImages, 1));
 
         buttonChangeSkinColor.setOnClickListener(v -> {
             currentModelSkinIndex = (currentModelSkinIndex + 1) % 7;
-            switch (currentModelSkinIndex) {
-                case 0:
-                    modelFemale.setImageResource(R.drawable.female);
+            int[] skinImages = {R.drawable.female, R.drawable.female_white_skin, R.drawable.female_nude_skin,
+                    R.drawable.female_yellow_skin, R.drawable.female_brown_skin, R.drawable.female_dark_skin, R.drawable.female_black_skin};
+            modelView.setImageResource(skinImages[currentModelSkinIndex]);
+        });
+
+        buttonMyCloset.setOnClickListener(v -> showMyClosetDialog());
+
+        removeButton.setOnClickListener(v -> {
+            if (selectedClothingItem != null) {
+                activeClothingItems.remove(selectedClothingItem);
+                modelContainer.removeView(selectedClothingItem.imageView);
+                selectClothingItem(null);
+            }
+        });
+    }
+
+    private void selectClothingItem(CustomClothingItem item) {
+        selectedClothingItem = item;
+        removeButton.setVisibility(item != null ? View.VISIBLE : View.GONE);
+    }
+
+    private void hideAllCustomClothing() {
+        for (CustomClothingItem item : activeClothingItems) {
+            item.setVisibility(View.GONE);
+        }
+        activeClothingItems.clear();
+        selectClothingItem(null);
+    }
+
+    private void showMyClosetDialog() {
+        Dialog dialog = new Dialog(requireContext());
+        dialog.setContentView(R.layout.dialog_my_closet);
+        dialog.setTitle("My Closet");
+
+        WindowManager.LayoutParams params = dialog.getWindow().getAttributes();
+        params.width = (int) (requireContext().getResources().getDisplayMetrics().widthPixels * 0.9);
+        params.height = (int) (requireContext().getResources().getDisplayMetrics().heightPixels * 0.8);
+        dialog.getWindow().setAttributes(params);
+
+        RecyclerView recyclerView = dialog.findViewById(R.id.recyclerViewCategories);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        List<FlaskNetwork.Category> categoryList = new ArrayList<>();
+        CategoryAdapter categoryAdapter = new CategoryAdapter(categoryList, (category, imageUrl) -> {
+            CustomClothingItem clothingItem = new CustomClothingItem(imageUrl, modelContainer);
+            activeClothingItems.add(clothingItem);
+            clothingItem.loadImage();
+            clothingItem.setVisibility(View.VISIBLE);
+
+            switch (category.toLowerCase()) {
+                case "top": case "long sleeves": case "short sleeves":
+                    topFemale.setVisibility(View.GONE);
+                    tubedress.setVisibility(View.GONE);
                     break;
-                case 1:
-                    modelFemale.setImageResource(R.drawable.female_white_skin);
+                case "bottom": case "long leggings": case "short leggings":
+                    botFemale.setVisibility(View.GONE);
+                    tubedress.setVisibility(View.GONE);
                     break;
-                case 2:
-                    modelFemale.setImageResource(R.drawable.female_nude_skin);
+                case "dress":
+                    topFemale.setVisibility(View.GONE);
+                    botFemale.setVisibility(View.GONE);
                     break;
-                case 3:
-                    modelFemale.setImageResource(R.drawable.female_yellow_skin);
-                    break;
-                case 4:
-                    modelFemale.setImageResource(R.drawable.female_brown_skin);
-                    break;
-                case 5:
-                    modelFemale.setImageResource(R.drawable.female_dark_skin);
-                    break;
-                case 6:
-                    modelFemale.setImageResource(R.drawable.female_black_skin);
-                    break;
+            }
+            dialog.dismiss();
+        });
+        recyclerView.setAdapter(categoryAdapter);
+
+        flaskNetwork.getAllUserClothes(new FlaskNetwork.OnAllClothesLoadedListener() {
+            @Override
+            public void onSuccess(List<FlaskNetwork.Category> categories) {
+                requireActivity().runOnUiThread(() -> {
+                    List<FlaskNetwork.Category> filteredCategories = new ArrayList<>();
+                    for (FlaskNetwork.Category category : categories) {
+                        if (category.images != null && category.images.length > 0) {
+                            filteredCategories.add(category);
+                        }
+                    }
+                    categoryList.clear();
+                    categoryList.addAll(filteredCategories);
+                    categoryAdapter.notifyDataSetChanged();
+                    if (filteredCategories.isEmpty()) {
+                        Toast.makeText(getContext(), "No clothes found in your closet", Toast.LENGTH_SHORT).show();
+                        dialog.dismiss();
+                    }
+                });
+            }
+
+            @Override
+            public void onError(String message) {
+                Toast.makeText(getContext(), "Error loading closet: " + message, Toast.LENGTH_LONG).show();
+                dialog.dismiss();
             }
         });
 
-        buttonShowFriends = view.findViewById(R.id.button_show_friends);
-        setListeners();
-
-        return view;
+        Button closeButton = dialog.findViewById(R.id.closeButton);
+        closeButton.setOnClickListener(v -> dialog.dismiss());
+        dialog.show();
     }
-
-
-    private void toggleOverlay(int index) {
-        primaryScrollView.setVisibility(View.GONE);
-        for (int i = 0; i < overlayScrollViews.length; i++) {
-            overlayScrollViews[i].setVisibility(i == index ? View.VISIBLE : View.GONE);
-        }
-    }
-
-    private void setListeners() {
-        buttonShowFriends.setOnClickListener(v -> {
-            // Chụp ảnh toàn bộ outfit
-            View modelContainer = requireView().findViewById(R.id.model_container);
-            modelContainer.setDrawingCacheEnabled(true);
-            Bitmap modelImage = Bitmap.createBitmap(modelContainer.getDrawingCache());
-            modelContainer.setDrawingCacheEnabled(false);
-
-            // Chuyển Bitmap thành String
-            String imageString = bitmapToString(modelImage);
-
-            // Tạo bundle và truyền dữ liệu
-            Bundle bundle = new Bundle();
-            bundle.putString("modelImage", imageString);
-
-            // Khởi tạo ShareUsersFragment
-            ShareUsersFragment shareUsersFragment = new ShareUsersFragment();
-            shareUsersFragment.setArguments(bundle);
-
-            // Thực hiện chuyển fragment
-            requireActivity().getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.fragment_container, shareUsersFragment) // Đảm bảo ID này trùng với container trong activity
-                    .addToBackStack(null)
-                    .commit();
-        });
-    }
-
-    private String bitmapToString(Bitmap bitmap) {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
-        byte[] imageBytes = baos.toByteArray();
-        return Base64.encodeToString(imageBytes, Base64.DEFAULT);
-    }
-
 }

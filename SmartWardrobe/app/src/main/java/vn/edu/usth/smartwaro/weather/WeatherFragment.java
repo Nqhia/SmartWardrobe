@@ -6,11 +6,14 @@ import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -24,6 +27,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 import vn.edu.usth.smartwaro.R;
+import vn.edu.usth.smartwaro.fragment.RandomFragment;
 import vn.edu.usth.smartwaro.network.FlaskNetwork;
 import vn.edu.usth.smartwaro.network.WeatherApiService;
 import vn.edu.usth.smartwaro.network.WeatherResponse;
@@ -32,11 +36,11 @@ public class WeatherFragment extends Fragment {
     private static final String TAG = "WeatherFragment";
     private static final String BASE_URL = "https://api.weatherapi.com/v1/";
     private static final String API_KEY = "9db56aef06a0411e81d121533242812";
-    private static final double COLD_TEMP_THRESHOLD = 20.0;
 
     private TextView tempTextView;
     private TextView locationTextView;
     private TextView conditionTextView;
+    private TextView recommendationTextView; // Add this to show the AI recommendation explanation
     private RecyclerView topClothingRecyclerView;
     private RecyclerView bottomClothingRecyclerView;
     private ClothingAdapter topAdapter;
@@ -44,10 +48,18 @@ public class WeatherFragment extends Fragment {
     private FlaskNetwork flaskNetwork;
     private final Handler mainHandler = new Handler(Looper.getMainLooper());
     private String userId;
+    private Button randombutton;
+    private TextView humidityTextView;
+    private TextView windSpeedTextView;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_weather, container, false);
+
+        randombutton=view.findViewById(R.id.random_frag);
+        randombutton.setOnClickListener(v -> openFragment( new RandomFragment()));
+
+
         initializeViews(view);
         initializeFlaskNetwork();
         setupRecyclerViews();
@@ -59,8 +71,11 @@ public class WeatherFragment extends Fragment {
         tempTextView = view.findViewById(R.id.temp);
         locationTextView = view.findViewById(R.id.locationText);
         conditionTextView = view.findViewById(R.id.conditionText);
+        recommendationTextView = view.findViewById(R.id.recommendationText); // Make sure to add this in your layout
         topClothingRecyclerView = view.findViewById(R.id.topClothingRecyclerView);
         bottomClothingRecyclerView = view.findViewById(R.id.bottomClothingRecyclerView);
+        humidityTextView = view.findViewById(R.id.humidityText);
+        windSpeedTextView = view.findViewById(R.id.windSpeedText);
     }
 
     private void initializeFlaskNetwork() {
@@ -96,7 +111,7 @@ public class WeatherFragment extends Fragment {
                 .build();
 
         WeatherApiService apiService = retrofit.create(WeatherApiService.class);
-        Call<WeatherResponse> call = apiService.getCurrentWeather(API_KEY, "Hanoi");
+        Call<WeatherResponse> call = apiService.getCurrentWeather(API_KEY, "USA");
 
         call.enqueue(new Callback<WeatherResponse>() {
             @Override
@@ -107,7 +122,13 @@ public class WeatherFragment extends Fragment {
                     if (response.isSuccessful() && response.body() != null) {
                         updateWeatherUI(response.body());
                         if (userId != null) {
-                            fetchClothingRecommendations(response.body().getCurrent().getTempC());
+                            double temperature = response.body().getCurrent().getTempC();
+                            int humidity = response.body().getCurrent().getHumidity();
+                            double windSpeed = response.body().getCurrent().getWindKph();
+                            fetchClothingRecommendations(temperature, humidity, windSpeed);
+
+                            // Update recommendation text based on temperature
+                            // updateRecommendationText(temperature);
                         }
                     } else {
                         showError("Failed to load weather data");
@@ -134,61 +155,69 @@ public class WeatherFragment extends Fragment {
                 weather.getLocation().getCountry());
         String condition = weather.getCurrent().getCondition().getText();
         double temperature = weather.getCurrent().getTempC();
+        int humidity = weather.getCurrent().getHumidity();
+        double windSpeed = weather.getCurrent().getWindKph();
 
         locationTextView.setText(location);
         tempTextView.setText(String.format("%.1f °C", temperature));
         conditionTextView.setText(condition);
+        humidityTextView.setText("Humidity: " + humidity + "%");
+        windSpeedTextView.setText(String.format("Wind Speed: %.1f km/h", windSpeed));
     }
 
-    private void fetchClothingRecommendations(double temperature) {
-        String topCategory = temperature < COLD_TEMP_THRESHOLD ?
-                FlaskNetwork.CATEGORY_LONG_SLEEVES : FlaskNetwork.CATEGORY_SHORT_SLEEVES;
-        String bottomCategory = temperature < COLD_TEMP_THRESHOLD ?
-                FlaskNetwork.CATEGORY_LONG_LEGGINGS : FlaskNetwork.CATEGORY_SHORT_LEGGINGS;
-
-        // Fetch top wear
-        flaskNetwork.getUserImages(topCategory, new FlaskNetwork.OnImagesLoadedListener() {
+    private void fetchClothingRecommendations(double temperature, int humidity, double windSpeed) {
+        flaskNetwork.getRecommendedClothing(temperature, humidity, windSpeed, new FlaskNetwork.OnRecommendationReceivedListener() {
             @Override
-            public void onSuccess(String[] imageUrls) {
+            public void onSuccess(String topWear, String bottomWear) {
                 mainHandler.post(() -> {
                     if (isAdded()) {
-                        topAdapter.updateItems(imageUrls);
+                        // Hiển thị thông tin đề xuất trên recommendationTextView
+                        String recommendationText = topWear + " + " + bottomWear;
+                        recommendationTextView.setText(recommendationText);
+
+                        // Tìm và hiển thị ảnh áo
+                        flaskNetwork.getUserImages(topWear, new FlaskNetwork.OnImagesLoadedListener() {
+                            @Override
+                            public void onSuccess(String[] imageUrls) {
+                                mainHandler.post(() -> {
+                                    if (isAdded()) {
+                                        topAdapter.updateItems(imageUrls);
+                                    }
+                                });
+                            }
+
+                            @Override
+                            public void onError(String message) {
+                                mainHandler.post(() -> showError("Lỗi tải ảnh áo: " + message));
+                            }
+                        });
+
+                        // Tìm và hiển thị ảnh quần
+                        flaskNetwork.getUserImages(bottomWear, new FlaskNetwork.OnImagesLoadedListener() {
+                            @Override
+                            public void onSuccess(String[] imageUrls) {
+                                mainHandler.post(() -> {
+                                    if (isAdded()) {
+                                        bottomAdapter.updateItems(imageUrls);
+                                    }
+                                });
+                            }
+
+                            @Override
+                            public void onError(String message) {
+                                mainHandler.post(() -> showError("Lỗi tải ảnh quần: " + message));
+                            }
+                        });
                     }
                 });
             }
 
             @Override
             public void onError(String message) {
-                mainHandler.post(() -> {
-                    if (isAdded()) {
-                        showError("Error loading top wear: " + message);
-                    }
-                });
-            }
-        });
-
-        // Fetch bottom wear
-        flaskNetwork.getUserImages(bottomCategory, new FlaskNetwork.OnImagesLoadedListener() {
-            @Override
-            public void onSuccess(String[] imageUrls) {
-                mainHandler.post(() -> {
-                    if (isAdded()) {
-                        bottomAdapter.updateItems(imageUrls);
-                    }
-                });
-            }
-
-            @Override
-            public void onError(String message) {
-                mainHandler.post(() -> {
-                    if (isAdded()) {
-                        showError("Error loading bottom wear: " + message);
-                    }
-                });
+                mainHandler.post(() -> showError(message));
             }
         });
     }
-
     private void showError(String message) {
         if (getContext() != null && isAdded()) {
             mainHandler.post(() -> {
@@ -197,5 +226,15 @@ public class WeatherFragment extends Fragment {
                 }
             });
         }
+    }
+
+    private void openFragment(Fragment fragment) {
+        FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.replace(R.id.fragment_container, fragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
+
+
     }
 }
