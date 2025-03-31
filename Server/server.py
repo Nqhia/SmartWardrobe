@@ -673,9 +673,9 @@ def recommend_clothing():
         # Kiểm tra nếu quần áo được đề xuất có trong danh mục người dùng
         categories = UserCategories.get_categories(user_id)
         if recommendation['topWear'] not in categories:
-            recommendation['topWear'] = select_best_match(categories, 'top')
+            recommendation['topWear'] = select_best_match(categories, 'top', temperature)
         if recommendation['bottomWear'] not in categories:
-            recommendation['bottomWear'] = select_best_match(categories, 'bottom')
+            recommendation['bottomWear'] = select_best_match(categories, 'bottom', temperature)
         
         # Lấy ảnh phù hợp nếu có
         top_images = get_user_images_by_categories(user_id, recommendation['topWear'], categories)
@@ -714,19 +714,27 @@ def get_user_images_by_categories(user_id, clothing_type, categories):
         return []
 
 
-def select_best_match(categories, clothing_type):
+def select_best_match(categories, clothing_type, temperature):
     """
     Chọn category gần nhất nếu category được đề xuất không tồn tại.
     """
-    priority_map = {
-        'bottom': ['warm pants', 'long leggings', 'jeans', 'cargo pants', "shorts"],
-        'top': ['sweater', 'long sleeves', 'hoodie', 'turtleneck']
+    temperature_ranges = {
+        'top': {
+            (float('-inf'), 25): ['long sleeves', 'sweater', 'hoodie', 'turtleneck'],
+            (25, float('inf')): ['short sleeves', 't-shirt', 'shirt', 'top', 'blouse', 'tank top']
+        },
+        'bottom': {
+            (float('-inf'), 25): ['long leggings', 'jeans', 'pants', 'trousers'],
+            (25, float('inf')): ['short leggings', 'shorts', 'skirt']
+        }
     }
 
-    for preferred in priority_map.get(clothing_type, []):
-        if preferred in categories:
-            return preferred
-    
+    for temp_range, preferred_categories in temperature_ranges[clothing_type].items():
+        if temp_range[0] <= temperature <= temp_range[1]:
+            for category in preferred_categories:
+                if category in categories:
+                    return category
+
     return 'uncategorized'
     
 ###################################################3
