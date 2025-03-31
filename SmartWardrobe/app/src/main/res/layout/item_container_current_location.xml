@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/textCurrentDate"
+        android:textColor="@color/sonic_silver"
+        android:textSize="10sp"
+        app:layout_constraintEnd_toStartOf="@id/imageCurrentLocation"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Today, 22 March 2025" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:layout_width="22dp"
+        android:layout_height="22dp"
+        android:id="@+id/imageLocation"
+        android:layout_marginTop="4dp"
+        android:src="@drawable/round_location_on_24"
+        android:tint="@color/sonic_silver"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textCurrentDate" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/textCurrentLocation"
+        android:layout_marginStart="4dp"
+        android:textColor="@color/raisin_black"
+        android:textSize="12sp"
+        android:layout_marginEnd="4dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        app:layout_constraintBottom_toBottomOf="@id/imageLocation"
+        app:layout_constraintEnd_toStartOf="@id/imageCurrentLocation"
+        app:layout_constraintStart_toEndOf="@id/imageLocation"
+        app:layout_constraintTop_toTopOf="@id/imageLocation"
+        tools:text="Hanoi, Vietnam" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:layout_width="22dp"
+        android:layout_height="22dp"
+        android:id="@+id/imageCurrentLocation"
+        android:src="@drawable/round_my_location_24"
+        android:tint="@color/sonic_silver"
+        app:layout_constraintBottom_toBottomOf="@id/imageLocation"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/textCurrentDate" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

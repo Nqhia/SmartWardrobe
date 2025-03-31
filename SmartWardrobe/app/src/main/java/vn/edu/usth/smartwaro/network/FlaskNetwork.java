@@ -6,8 +6,10 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 
+import com.google.common.reflect.TypeToken;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.gson.Gson;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -15,6 +17,7 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -30,11 +33,12 @@ import okhttp3.Response;
 import okhttp3.ResponseBody;
 import okio.BufferedSink;
 import okio.Okio;
+import vn.edu.usth.smartwaro.mycloset.FavoriteSet;
 import vn.edu.usth.smartwaro.utils.FileUtils;
 
 public class FlaskNetwork {
     private static final String TAG = "FlaskNetwork";
-    public static final String BASE_URL = "http://192.168.1.33:5000";
+    public static final String BASE_URL = "http://192.168.0.100:5000";
     private final OkHttpClient client;
     private final Handler mainHandler;
     public static final String CATEGORY_UNCATEGORIZED = "uncategorized";
@@ -79,6 +83,11 @@ public class FlaskNetwork {
     public interface OnImageSaveListener {
         void onProcessing();
         void onSuccess(String message);
+        void onError(String message);
+    }
+
+    public interface OnFavoriteSetsLoadedListener {
+        void onSuccess(List<FavoriteSet> favoriteSets);
         void onError(String message);
     }
 
@@ -669,5 +678,156 @@ public class FlaskNetwork {
                 this.url = url;
             }
         }
+    }
+
+    public interface OnFavoriteOperationListener {
+        void onSuccess(String message);
+        void onError(String message);
+    }
+
+    public void addImageToFavoriteSet(String filename, OnFavoriteOperationListener listener) {
+        new Thread(() -> {
+            try {
+                String userId = getCurrentUserId();
+                JSONObject jsonBody = new JSONObject();
+                jsonBody.put("user_id", userId);
+                jsonBody.put("filename", filename);
+                // Nếu cần, bạn có thể gửi thêm thông tin set (ở đây mặc định là favourite)
+                jsonBody.put("set", "favourite");
+
+                RequestBody requestBody = RequestBody.create(
+                        MediaType.parse("application/json"),
+                        jsonBody.toString()
+                );
+
+                Request request = new Request.Builder()
+                        .url(BASE_URL + "/add-to-favorite")
+                        .post(requestBody)
+                        .build();
+
+                try (Response response = client.newCall(request).execute()) {
+                    if (!response.isSuccessful()) {
+                        String errorBody = response.body() != null ? response.body().string() : "No error details";
+                        listener.onError("Server error: " + response.code() + "\n" + errorBody);
+                        return;
+                    }
+                    JSONObject jsonResponse = new JSONObject(response.body().string());
+                    listener.onSuccess(jsonResponse.getString("message"));
+                }
+            } catch (Exception e) {
+                listener.onError("Failed to add image to favorite set: " + e.getMessage());
+            }
+        }).start();
+    }
+
+    public interface OnFavoriteSetSaveListener {
+        void onSuccess(String message);
+        void onError(String message);
+    }
+
+    public void createFavoriteSet(String setName, List<String> shirtFilenames, List<String> pantFilenames, OnFavoriteSetSaveListener listener) {
+        new Thread(() -> {
+            try {
+                String userId = getCurrentUserId();
+                JSONObject jsonBody = new JSONObject();
+                jsonBody.put("user_id", userId);
+                jsonBody.put("set_name", setName);
+                // Server ở đây mong đợi key "shirt_images" và "pant_images"
+                JSONArray shirtArray = new JSONArray(shirtFilenames);
+                JSONArray pantArray = new JSONArray(pantFilenames);
+                jsonBody.put("shirt_images", shirtArray);
+                jsonBody.put("pant_images", pantArray);
+
+                RequestBody requestBody = RequestBody.create(MediaType.parse("application/json"), jsonBody.toString());
+                Request request = new Request.Builder()
+                        .url(BASE_URL + "/create-favorite-set")
+                        .post(requestBody)
+                        .build();
+
+                try (Response response = client.newCall(request).execute()) {
+                    if (!response.isSuccessful()) {
+                        String errorBody = response.body() != null ? response.body().string() : "No error details";
+                        listener.onError("Server error: " + response.code() + "\n" + errorBody);
+                        return;
+                    }
+                    JSONObject jsonResponse = new JSONObject(response.body().string());
+                    listener.onSuccess(jsonResponse.getString("message"));
+                }
+            } catch (Exception e) {
+                listener.onError("Failed to create favorite set: " + e.getMessage());
+            }
+        }).start();
+    }
+
+    public void editFavoriteSet(String setId, String setName, List<String> shirtFilenames, List<String> pantFilenames, OnFavoriteSetSaveListener listener) {
+        new Thread(() -> {
+            try {
+                String userId = getCurrentUserId();
+                JSONObject jsonBody = new JSONObject();
+                jsonBody.put("user_id", userId);
+                jsonBody.put("set_id", setId); // truyền set_id
+                jsonBody.put("set_name", setName);
+                JSONArray shirtArray = new JSONArray(shirtFilenames);
+                JSONArray pantArray = new JSONArray(pantFilenames);
+                jsonBody.put("shirt_images", shirtArray);
+                jsonBody.put("pant_images", pantArray);
+
+                RequestBody requestBody = RequestBody.create(MediaType.parse("application/json"), jsonBody.toString());
+                Request request = new Request.Builder()
+                        .url(BASE_URL + "/edit-favorite-set")
+                        .post(requestBody)
+                        .build();
+
+                try (Response response = client.newCall(request).execute()) {
+                    if (!response.isSuccessful()) {
+                        String errorBody = response.body() != null ? response.body().string() : "No error details";
+                        listener.onError("Server error: " + response.code() + "\n" + errorBody);
+                        return;
+                    }
+                    JSONObject jsonResponse = new JSONObject(response.body().string());
+                    listener.onSuccess(jsonResponse.getString("message"));
+                }
+            } catch (Exception e) {
+                listener.onError("Error: " + e.getMessage());
+            }
+        }).start();
+    }
+
+
+
+    public void getFavoriteSets(OnFavoriteSetsLoadedListener listener) {
+        new Thread(() -> {
+            try {
+                String userId = getCurrentUserId();
+                HttpUrl url = HttpUrl.parse(BASE_URL + "/get-favorite-sets")
+                        .newBuilder()
+                        .addQueryParameter("user_id", userId)
+                        .build();
+
+                Request request = new Request.Builder()
+                        .url(url)
+                        .build();
+
+                try (Response response = client.newCall(request).execute()) {
+                    if (!response.isSuccessful()) {
+                        String errorBody = response.body() != null ? response.body().string() : "No error details";
+                        listener.onError("Server error: " + response.code() + "\n" + errorBody);
+                        return;
+                    }
+                    String responseStr = response.body().string();
+                    // Sử dụng Gson để parse phản hồi (mảng JSON) thành List<FavoriteSet>
+                    Gson gson = new Gson();
+                    Type listType = new TypeToken<List<FavoriteSet>>(){}.getType();
+                    List<FavoriteSet> sets = gson.fromJson(responseStr, listType);
+                    if (sets == null) {
+                        sets = new ArrayList<>();
+                    }
+                    listener.onSuccess(sets);
+                }
+            } catch (Exception e) {
+                Log.e(TAG, "Failed to get favorite sets", e);
+                listener.onError("Failed to get favorite sets: " + e.getMessage());
+            }
+        }).start();
     }
 }

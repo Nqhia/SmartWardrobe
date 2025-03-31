@@ -13,6 +13,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentResultListener;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -33,9 +34,14 @@ import vn.edu.usth.smartwaro.network.WeatherApiService;
 import vn.edu.usth.smartwaro.network.WeatherResponse;
 
 public class WeatherFragment extends Fragment {
+    public static final String REQUEST_KEY_MANUAL_LOCATION_SEARCH = "manualLocationSearch";
+    public static final String KEY_LOCATION_TEXT = "locationText";
+    public static final String KEY_LATITUDE = "latitude";
+    public static final String KEY_LONGITUDE = "longitude";
+
     private static final String TAG = "WeatherFragment";
     private static final String BASE_URL = "https://api.weatherapi.com/v1/";
-    private static final String API_KEY = "9db56aef06a0411e81d121533242812";
+    private static final String API_KEY = "24a2f6bb281c4612912115620252203";
 
     private TextView tempTextView;
     private TextView locationTextView;
@@ -52,6 +58,9 @@ public class WeatherFragment extends Fragment {
     private TextView humidityTextView;
     private TextView windSpeedTextView;
 
+    private Button btnSelectLocation;
+    private String currentLocationQuery = "Korea"; // giá trị mặc định
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_weather, container, false);
@@ -59,6 +68,28 @@ public class WeatherFragment extends Fragment {
         randombutton=view.findViewById(R.id.random_frag);
         randombutton.setOnClickListener(v -> openFragment( new RandomFragment()));
 
+
+        tempTextView = view.findViewById(R.id.temp);
+        locationTextView = view.findViewById(R.id.locationText);
+        conditionTextView = view.findViewById(R.id.conditionText);
+        btnSelectLocation = view.findViewById(R.id.btnSelectLocation);
+        btnSelectLocation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openLocationFragment();
+            }
+        });
+
+        getParentFragmentManager().setFragmentResultListener(REQUEST_KEY_MANUAL_LOCATION_SEARCH, this, new FragmentResultListener() {
+            @Override
+            public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle bundle) {
+                String locationText = bundle.getString(KEY_LOCATION_TEXT, "Korea");
+                // Có thể sử dụng thêm tọa độ nếu cần: double lat = bundle.getDouble(KEY_LATITUDE);
+                currentLocationQuery = locationText;
+                // Gọi lại API thời tiết với thành phố mới
+                fetchWeatherData();
+            }
+        });
 
         initializeViews(view);
         initializeFlaskNetwork();
@@ -111,7 +142,7 @@ public class WeatherFragment extends Fragment {
                 .build();
 
         WeatherApiService apiService = retrofit.create(WeatherApiService.class);
-        Call<WeatherResponse> call = apiService.getCurrentWeather(API_KEY, "USA");
+        Call<WeatherResponse> call = apiService.getCurrentWeather(API_KEY, currentLocationQuery);
 
         call.enqueue(new Callback<WeatherResponse>() {
             @Override
@@ -234,7 +265,15 @@ public class WeatherFragment extends Fragment {
         transaction.replace(R.id.fragment_container, fragment);
         transaction.addToBackStack(null);
         transaction.commit();
-
-
     }
+
+    private void openLocationFragment() {
+        // Mở LocationFragment (thêm vào backstack để khi chọn xong có thể quay lại)
+        LocationFragment locationFragment = new LocationFragment();
+        getParentFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container, locationFragment)
+                .addToBackStack(null)
+                .commit();
+    }
+
 }

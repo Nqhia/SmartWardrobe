@@ -47,6 +47,8 @@ public class GalleryFragment extends Fragment implements GalleryAdapter.OnImageC
     private List<GalleryImage> galleryImages = new ArrayList<>();
     private String currentCategory = null;
     private MenuItem shareMenuItem;
+    private MenuItem favoriteMenuItem;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -69,16 +71,6 @@ public class GalleryFragment extends Fragment implements GalleryAdapter.OnImageC
     }
 
     @Override
-    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        inflater.inflate(R.menu.gallery_menu, menu);
-        deleteMenuItem = menu.findItem(R.id.action_delete);
-        shareMenuItem = menu.findItem(R.id.action_share); // Initialize share menu item
-        deleteMenuItem.setVisible(false);
-        shareMenuItem.setVisible(false); // Hide share button by default
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    @Override
     public void onSelectionChanged(int selectedCount) {
         if (deleteMenuItem != null) {
             deleteMenuItem.setVisible(selectedCount > 0);
@@ -86,20 +78,30 @@ public class GalleryFragment extends Fragment implements GalleryAdapter.OnImageC
         if (shareMenuItem != null) {
             shareMenuItem.setVisible(selectedCount > 0);
         }
+        if (favoriteMenuItem != null){
+            favoriteMenuItem.setVisible(selectedCount > 0);
+        }
     }
 
     @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        int itemId = item.getItemId();
-        if (itemId == R.id.action_delete) {
-            showDeleteConfirmationDialog();
-            return true;
-        } else if (itemId == R.id.action_share) {
-            shareSelectedImage();
-            return true;
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        inflater.inflate(R.menu.gallery_menu, menu);
+        deleteMenuItem = menu.findItem(R.id.action_delete);
+        shareMenuItem = menu.findItem(R.id.action_share);
+        favoriteMenuItem = menu.findItem(R.id.action_favourite); // Khởi tạo favoriteMenuItem
+
+        if (deleteMenuItem != null) {
+            deleteMenuItem.setVisible(false);
         }
-        return super.onOptionsItemSelected(item);
+        if (favoriteMenuItem != null) {
+            favoriteMenuItem.setVisible(false);
+        }
+        if (shareMenuItem != null) {
+            shareMenuItem.setVisible(false);
+        }
+        super.onCreateOptionsMenu(menu, inflater);
     }
+
 
     private void setupRecyclerView() {
         adapter = new GalleryAdapter(requireContext());
@@ -323,6 +325,33 @@ public class GalleryFragment extends Fragment implements GalleryAdapter.OnImageC
                         Log.e(TAG, "Failed to load image for sharing: " + imageUrl);
                     }
                 });
+    }
+
+    private void favouriteSelectedImages() {
+        List<GalleryImage> selectedImages = adapter.getSelectedImages();
+        if (selectedImages.isEmpty()) {
+            Toast.makeText(requireContext(), "Chọn ít nhất 1 hình để thêm vào favourite", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        // Thêm từng hình được chọn vào favourite set
+        for (GalleryImage image : selectedImages) {
+            new FlaskNetwork().addImageToFavoriteSet(image.getFilename(), new FlaskNetwork.OnFavoriteOperationListener() {
+                @Override
+                public void onSuccess(String message) {
+                    requireActivity().runOnUiThread(() ->
+                            Toast.makeText(requireContext(), "Đã thêm " + image.getFilename() + " vào favourite", Toast.LENGTH_SHORT).show()
+                    );
+                }
+                @Override
+                public void onError(String message) {
+                    requireActivity().runOnUiThread(() ->
+                            Toast.makeText(requireContext(), "Lỗi khi thêm " + image.getFilename() + ": " + message, Toast.LENGTH_SHORT).show()
+                    );
+                }
+            });
+        }
+        // Thoát chế độ chọn nhiều nếu đang hoạt động
+        adapter.setMultiSelectMode(false);
     }
 
 }

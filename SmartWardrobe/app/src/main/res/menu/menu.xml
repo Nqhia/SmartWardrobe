@@ -5,6 +5,7 @@
         android:icon="@drawable/baseline_settings_suggest_24"
         android:title="setting"
         app:showAsAction="ifRoom"
-    />
+        android:orderInCategory="1"
+        />
 
 </menu>

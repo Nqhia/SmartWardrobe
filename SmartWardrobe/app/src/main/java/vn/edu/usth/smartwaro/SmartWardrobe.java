@@ -18,6 +18,7 @@ import java.util.Objects;
 
 import vn.edu.usth.smartwaro.auth.ui.LoginActivity;
 import vn.edu.usth.smartwaro.chat.UsersActivity;
+import vn.edu.usth.smartwaro.mycloset.FavoriteSetListFragment;
 import vn.edu.usth.smartwaro.settings.SettingsActivity;
 import vn.edu.usth.smartwaro.fragment.WardrobeFragment;
 import vn.edu.usth.smartwaro.fragment.MyClosetFragment;
@@ -113,11 +114,11 @@ public class SmartWardrobe extends AppCompatActivity {
     }
 
     private void switchFragment(int itemId) {
-        if (itemId == R.id.social) {
-            Intent intent = new Intent(this, UsersActivity.class);
-            startActivity(intent);
-            return;
-        }
+//        if (itemId == R.id.social) {
+//            Intent intent = new Intent(this, UsersActivity.class);
+//            startActivity(intent);
+//            return;
+//        }
 
         Fragment fragment = null;
 
@@ -129,6 +130,8 @@ public class SmartWardrobe extends AppCompatActivity {
             fragment = new WardrobeFragment();
         } else if (itemId == R.id.weather) {
             fragment = new WeatherFragment();
+        }   else if (itemId == R.id.favorite) {
+            fragment = new FavoriteSetListFragment();
         }
 
         if (fragment != null) {

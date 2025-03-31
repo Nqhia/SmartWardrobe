@@ -41,4 +41,8 @@
     <color name="error">#B00020</color>
     <color name="received_message_background">#090D16</color>
 
+    <color name="cultured">#F5F5F8</color>
+    <color name="sonic_silver">#757575</color>
+    <color name="raisin_black">#212121</color>
+
 </resources>

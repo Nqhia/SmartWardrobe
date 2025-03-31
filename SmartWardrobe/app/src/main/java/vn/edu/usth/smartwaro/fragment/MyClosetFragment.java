@@ -20,11 +20,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import vn.edu.usth.smartwaro.R;
+import vn.edu.usth.smartwaro.mycloset.FavoriteSetCreationFragment;
 import vn.edu.usth.smartwaro.network.FlaskNetwork;
 import vn.edu.usth.smartwaro.mycloset.ClosetAdapter;
 
 public class MyClosetFragment extends Fragment {
     private ViewPager2 viewPager;
+    private TabLayoutMediator tabLayoutMediator;
     private TabLayout tabLayout;
     private ClosetAdapter pagerAdapter;
     private List<String> categories = new ArrayList<>();
@@ -37,10 +39,20 @@ public class MyClosetFragment extends Fragment {
         viewPager = view.findViewById(R.id.viewPager);
         tabLayout = view.findViewById(R.id.tabLayout);
         Button fabAddItem = view.findViewById(R.id.fabAddItem);
+        Button btnFavourite = view.findViewById(R.id.favourite);
 
         fetchCategories();
 
         fabAddItem.setOnClickListener(v -> showUploadDialog());
+
+
+        btnFavourite.setOnClickListener(v -> {
+            // Mở FavoriteFragment
+            getParentFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, new FavoriteSetCreationFragment())
+                    .addToBackStack(null)
+                    .commit();
+        });
 
         return view;
     }
@@ -80,17 +92,25 @@ public class MyClosetFragment extends Fragment {
             viewPager.setAdapter(pagerAdapter);
         } else {
             pagerAdapter.setCategories(categories);
+            pagerAdapter.notifyDataSetChanged();
+        }
+
+        if (tabLayoutMediator != null) {
+            tabLayoutMediator.detach();
         }
 
         tabLayout.removeAllTabs();
 
-        new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> {
+        tabLayout.removeAllTabs();
+        // Now create and attach the mediator
+        tabLayoutMediator = new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> {
             if (position == 0) {
                 tab.setText("Gallery");
             } else {
                 tab.setText(categories.get(position - 1));
             }
-        }).attach();
+        });
+        tabLayoutMediator.attach();
 
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override

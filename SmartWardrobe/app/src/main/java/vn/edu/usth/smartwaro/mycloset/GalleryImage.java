@@ -8,13 +8,30 @@ import android.os.Parcelable;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.google.gson.annotations.SerializedName;
+
 public class GalleryImage implements Parcelable {
-    private final String filename;
-    private final String originalFilename;
-    private final String uploadDate;
-    private final String url;
-    private final String category;
+    @SerializedName("filename")
+    private  String filename;
+
+    @SerializedName("originalFilename")
+    private String originalFilename;
+
+    @SerializedName("uploadDate")
+    private String uploadDate;
+
+    @SerializedName("url")
+    private String url;
+
+    @SerializedName("category")
+    private String category;
+
     private boolean isSelected;
+    private boolean isFavorite;
+
+    // Default constructor (bắt buộc cho Gson)
+    public GalleryImage() {
+    }
 
     public GalleryImage(@NonNull String filename,
                         @NonNull String originalFilename,
@@ -27,6 +44,7 @@ public class GalleryImage implements Parcelable {
         this.url = url;
         this.category = category != null ? category : "";    // Default to empty string if null
         this.isSelected = false;
+        this.isFavorite = false;
     }
 
     protected GalleryImage(Parcel in) {
@@ -36,6 +54,7 @@ public class GalleryImage implements Parcelable {
         url = in.readString();
         category = in.readString();    // Read category from parcel
         isSelected = in.readByte() != 0;
+        isFavorite = in.readByte() != 0;
     }
 
     public static final Creator<GalleryImage> CREATOR = new Creator<GalleryImage>() {
@@ -53,11 +72,23 @@ public class GalleryImage implements Parcelable {
     @NonNull
     public String getFilename() { return filename; }
 
+    public void setFilename(String filename) {
+        this.filename = filename;
+    }
+
     @NonNull
     public String getOriginalFilename() { return originalFilename; }
 
+    public void setOriginalFilename(String originalFilename) {
+        this.originalFilename = originalFilename;
+    }
+
     @NonNull
     public String getUploadDate() { return uploadDate; }
+
+    public void setUploadDate(String uploadDate) {
+        this.uploadDate = uploadDate;
+    }
 
     @NonNull
     public String getUrl() { return url; }
@@ -65,12 +96,22 @@ public class GalleryImage implements Parcelable {
     @NonNull
     public String getCategory() { return category; }    // Added getter for category
 
+    public void setCategory(String category) {
+        this.category = category;
+    }
 
-
+    public boolean isFavorite() {
+        return isFavorite;
+    }
 
     public boolean isSelected() { return isSelected; }
 
     public void setSelected(boolean selected) { isSelected = selected; }
+
+    public void setFavorite(boolean favorite) {
+        isFavorite = favorite;
+    }
+
 
     @Override
     public int describeContents() {
@@ -85,6 +126,7 @@ public class GalleryImage implements Parcelable {
         dest.writeString(url);
         dest.writeString(category);    // Write category to parcel
         dest.writeByte((byte) (isSelected ? 1 : 0));
+        dest.writeByte((byte) (isFavorite ? 1 : 0));
     }
 
     @Override
@@ -94,7 +136,9 @@ public class GalleryImage implements Parcelable {
                 ", originalFilename='" + originalFilename + '\'' +
                 ", uploadDate='" + uploadDate + '\'' +
                 ", url='" + url + '\'' +
-                ", category='" + category + '\'' +    // Added category to toString
+                ", category='" + category + '\'' +
+                ", isSelected=" + isSelected + '\'' +
+                ", isFavorite=" + isFavorite +// Added category to toString
                 '}';
     }
 }

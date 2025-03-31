@@ -10,4 +10,10 @@
         android:icon="@drawable/ic_share"
         android:title="Share"
         app:showAsAction="ifRoom"/>
+
+    <item
+        android:id="@+id/action_favourite"
+        android:icon="@drawable/round_star_outline_24"
+        android:title="Favourite"
+        app:showAsAction="ifRoom"/>
 </menu>

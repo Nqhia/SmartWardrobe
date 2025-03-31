@@ -8,15 +8,14 @@
         android:id="@+id/weather"
         android:icon="@drawable/cloudy"
         android:title="Weather" />
-
-    <item
-        android:id="@+id/social"
-        android:icon="@drawable/baseline_chat_24"
-        android:title="social" />
     <item
         android:id="@+id/my_closet"
         android:icon="@drawable/clothes_hanger"
         android:title="Closet" />
+    <item
+        android:id="@+id/favorite"
+        android:icon="@drawable/round_star_outline_24"
+        android:title="Set" />
     <item
         android:id="@+id/profile"
         android:icon="@drawable/user"

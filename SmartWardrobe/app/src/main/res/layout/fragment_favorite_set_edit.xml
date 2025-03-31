@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/scrollRootEdit"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+
+    <!-- Container duy nhất của ScrollView -->
+    <LinearLayout
+        android:id="@+id/linearContainerEdit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Tiêu đề hiển thị -->
+        <TextView
+            android:id="@+id/tvEditTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Edit Favorite Set"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:paddingBottom="8dp" />
+
+        <!-- EditText cho tên set đồ -->
+        <EditText
+            android:id="@+id/editSetName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Nhập tên set đồ"
+            android:padding="8dp"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Phần chọn ảnh áo -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardShirt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="10dp">
+
+            <RelativeLayout
+                android:layout_width="128dp"
+                android:layout_height="128dp">
+
+                <FrameLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true">
+
+                    <Button
+                        android:id="@+id/btnAddShirt"
+                        android:layout_width="50dp"
+                        android:layout_height="60dp"
+                        android:layout_marginBottom="30dp"
+                        android:backgroundTint="#FFC1C1"
+                        android:drawableRight="@drawable/baseline_photo_24" />
+                </FrameLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="90dp"
+                    android:text="Add Shirt"
+                    android:textAlignment="center"
+                    android:textColor="@android:color/black"
+                    android:textSize="16sp" />
+            </RelativeLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- RecyclerView hiển thị danh sách ảnh áo -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerViewShirts"
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:layout_marginTop="8dp"
+            android:orientation="horizontal" />
+
+        <!-- Phần chọn ảnh quần -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardPant"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="10dp">
+
+            <RelativeLayout
+                android:layout_width="128dp"
+                android:layout_height="128dp">
+
+                <FrameLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true">
+
+                    <Button
+                        android:id="@+id/btnAddPant"
+                        android:layout_width="50dp"
+                        android:layout_height="60dp"
+                        android:layout_marginBottom="30dp"
+                        android:backgroundTint="#FFC1C1"
+                        android:drawableRight="@drawable/baseline_photo_24" />
+                </FrameLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="90dp"
+                    android:text="Add Pant"
+                    android:textAlignment="center"
+                    android:textColor="@android:color/black"
+                    android:textSize="16sp" />
+            </RelativeLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- RecyclerView hiển thị danh sách ảnh quần -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerViewPants"
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:layout_marginTop="8dp"
+            android:orientation="horizontal" />
+
+        <!-- Nút Save để cập nhật set đồ -->
+        <Button
+            android:id="@+id/btnSaveSet"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Update Set"
+            android:layout_marginTop="24dp"
+            android:layout_gravity="center_horizontal" />
+
+    </LinearLayout>
+</ScrollView>

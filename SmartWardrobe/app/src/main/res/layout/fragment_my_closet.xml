@@ -39,4 +39,19 @@
         android:backgroundTint="@color/background_app"
         app:rippleColor="@android:color/transparent" />
 
+    <Button
+        android:id="@+id/favourite"
+        android:layout_width="50dp"
+        android:layout_height="60dp"
+        android:layout_gravity="bottom|end"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="80dp"
+        app:cornerRadius="50dp"
+        android:text="+"
+        android:textColor="@color/black"
+        android:textSize="28sp"
+        android:fontFamily="@font/proximanova_extrabold"
+        android:backgroundTint="@color/background_app"
+        app:rippleColor="@android:color/transparent" />
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
