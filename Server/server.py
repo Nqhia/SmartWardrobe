@@ -1,3 +1,5 @@
+import uuid
+
 from flask import Flask, request, send_file, jsonify
 from rembg import remove
 from PIL import Image
@@ -839,6 +841,243 @@ def get_all_user_clothes():
     except Exception as e:
         logger.error(f"Error in get_all_user_clothes: {str(e)}")
         return jsonify({'error': str(e)}), 500
+
+@app.route('/add-to-favorite', methods=['POST'])
+def check_favorite_status():
+        try:
+            # Lấy dữ liệu từ JSON hoặc form-data
+            if request.is_json:
+                data = request.get_json()
+            else:
+                data = request.form
+
+            user_id = data.get('user_id')
+            filename = data.get('filename')
+
+            # Kiểm tra thông tin bắt buộc
+            if not user_id or not filename:
+                return jsonify({'error': 'Missing user_id or filename'}), 400
+
+            if not is_valid_firebase_uid(user_id):
+                return jsonify({'error': 'Invalid user ID'}), 400
+
+            metadata = load_metadata(user_id)
+            if not metadata:
+                return jsonify({'error': 'User metadata not found'}), 404
+
+            # Kiểm tra xem hình ảnh có tồn tại trong metadata hay không
+            if filename not in metadata.get('images', {}):
+                return jsonify({'error': 'Image not found'}), 404
+
+            # Lấy giá trị is_favorite, nếu chưa có thì mặc định False
+            image_info = metadata['images'][filename]
+            is_fav = image_info.get('is_favorite', False)
+
+            # Trả về kết quả
+            return jsonify({
+                'filename': filename,
+                'is_favorite': is_fav
+            }), 200
+
+        except Exception as e:
+            logger.error(f"Error in check_favorite_status: {str(e)}")
+            return jsonify({'error': str(e)}), 500
+
+from flask import url_for
+
+@app.route('/create-favorite-set', methods=['POST'])
+def create_favorite_set():
+        try:
+            # Nhận dữ liệu từ JSON hoặc form-data
+            data = request.get_json() if request.is_json else request.form
+            user_id = data.get('user_id')
+            set_name = data.get('set_name')
+            shirt_filenames = data.get('shirt_images')
+            pant_filenames = data.get('pant_images')
+
+            # Kiểm tra thông tin bắt buộc
+            if not user_id or not set_name or shirt_filenames is None or pant_filenames is None:
+                return jsonify({'error': 'Missing required parameters'}), 400
+
+            if not is_valid_firebase_uid(user_id):
+                return jsonify({'error': 'Invalid user ID'}), 400
+
+            # Nếu nhận được chuỗi, chuyển thành list (giả sử phân cách bởi dấu phẩy)
+            if isinstance(shirt_filenames, str):
+                shirt_filenames = [s.strip() for s in shirt_filenames.split(',')]
+            if isinstance(pant_filenames, str):
+                pant_filenames = [s.strip() for s in pant_filenames.split(',')]
+
+            metadata = load_metadata(user_id)
+            if not metadata:
+                return jsonify({'error': 'User metadata not found'}), 404
+
+            # Kiểm tra xem favorite set với tên này đã tồn tại chưa
+            if 'favorite_sets' not in metadata:
+                metadata['favorite_sets'] = []
+            for fav_set in metadata['favorite_sets']:
+                if fav_set.get('set_name') == set_name:
+                    return jsonify({'error': 'Favorite set with this name already exists'}), 400
+
+            # Tạo danh sách ảnh chi tiết cho áo
+            shirt_images = []
+            for filename in shirt_filenames:
+                if filename in metadata.get('images', {}):
+                    info = metadata['images'][filename]
+                    category = info.get('category', 'uncategorized')
+                    image_url = url_for('serve_image', user_id=user_id, category=category, filename=filename,
+                                        _external=True)
+                    shirt_images.append({
+                        "filename": filename,
+                        "category": category,
+                        "url": image_url
+                    })
+                else:
+                    shirt_images.append({
+                        "filename": filename,
+                        "category": "uncategorized",
+                        "url": ""
+                    })
+
+            # Tạo danh sách ảnh chi tiết cho quần
+            pant_images = []
+            for filename in pant_filenames:
+                if filename in metadata.get('images', {}):
+                    info = metadata['images'][filename]
+                    category = info.get('category', 'uncategorized')
+                    image_url = url_for('serve_image', user_id=user_id, category=category, filename=filename,
+                                        _external=True)
+                    pant_images.append({
+                        "filename": filename,
+                        "category": category,
+                        "url": image_url
+                    })
+                else:
+                    pant_images.append({
+                        "filename": filename,
+                        "category": "uncategorized",
+                        "url": ""
+                    })
+
+            new_set = {
+                "id": str(uuid.uuid4()),  # Tạo id duy nhất cho favorite set
+                "set_name": set_name,
+                "shirt_images": shirt_images,
+                "pant_images": pant_images,
+                "timestamp": datetime.datetime.now().isoformat()
+            }
+
+            metadata['favorite_sets'].append(new_set)
+            save_metadata(user_id, metadata)
+            return jsonify({'message': 'Favorite set created successfully'}), 200
+        except Exception as e:
+            logger.error(f"Error creating favorite set: {str(e)}")
+            return jsonify({'error': str(e)}), 500
+
+@app.route('/edit-favorite-set', methods=['POST'])
+def edit_favorite_set():
+        try:
+            data = request.get_json() if request.is_json else request.form
+            user_id = data.get('user_id')
+            set_id = data.get('set_id')  # Lấy set_id từ client
+            new_set_name = data.get('set_name')
+            shirt_filenames = data.get('shirt_images')
+            pant_filenames = data.get('pant_images')
+
+            # Kiểm tra thông tin bắt buộc
+            if not user_id or not set_id or new_set_name is None or shirt_filenames is None or pant_filenames is None:
+                return jsonify({'error': 'Missing required parameters'}), 400
+
+            # Nếu nhận được chuỗi, chuyển thành list
+            if isinstance(shirt_filenames, str):
+                shirt_filenames = [s.strip() for s in shirt_filenames.split(',')]
+            if isinstance(pant_filenames, str):
+                pant_filenames = [s.strip() for s in pant_filenames.split(',')]
+
+            metadata = load_metadata(user_id)
+            if not metadata:
+                return jsonify({'error': 'User metadata not found'}), 404
+
+            if 'favorite_sets' not in metadata:
+                return jsonify({'error': 'No favorite sets found'}), 404
+
+            found = False
+            for fav_set in metadata['favorite_sets']:
+                # Tìm bộ sưu tập theo set_id
+                if fav_set.get('id') == set_id:
+                    # Cập nhật danh sách ảnh áo
+                    new_shirt_images = []
+                    for filename in shirt_filenames:
+                        if filename in metadata.get('images', {}):
+                            info = metadata['images'][filename]
+                            category = info.get('category', 'uncategorized')
+                            image_url = url_for('serve_image', user_id=user_id, category=category, filename=filename,
+                                                _external=True)
+                            new_shirt_images.append({
+                                "filename": filename,
+                                "category": category,
+                                "url": image_url
+                            })
+                        else:
+                            new_shirt_images.append({
+                                "filename": filename,
+                                "category": "uncategorized",
+                                "url": ""
+                            })
+                    # Cập nhật danh sách ảnh quần
+                    new_pant_images = []
+                    for filename in pant_filenames:
+                        if filename in metadata.get('images', {}):
+                            info = metadata['images'][filename]
+                            category = info.get('category', 'uncategorized')
+                            image_url = url_for('serve_image', user_id=user_id, category=category, filename=filename,
+                                                _external=True)
+                            new_pant_images.append({
+                                "filename": filename,
+                                "category": category,
+                                "url": image_url
+                            })
+                        else:
+                            new_pant_images.append({
+                                "filename": filename,
+                                "category": "uncategorized",
+                                "url": ""
+                            })
+                    # Cập nhật favorite set
+                    fav_set['shirt_images'] = new_shirt_images
+                    fav_set['pant_images'] = new_pant_images
+                    fav_set['set_name'] = new_set_name  # Cập nhật tên mới nếu cần
+                    fav_set['timestamp'] = datetime.datetime.now().isoformat()
+                    found = True
+                    break
+
+            if not found:
+                return jsonify({'error': 'Favorite set not found'}), 404
+
+            save_metadata(user_id, metadata)
+            return jsonify({'message': 'Favorite set updated successfully'}), 200
+        except Exception as e:
+            logger.error(f"Error editing favorite set: {str(e)}")
+            return jsonify({'error': str(e)}), 500
+
+@app.route('/get-favorite-sets', methods=['GET'])
+def get_favorite_sets():
+        try:
+            user_id = request.args.get('user_id')
+            if not user_id or not is_valid_firebase_uid(user_id):
+                return jsonify({'error': 'Invalid user ID'}), 400
+
+            metadata = load_metadata(user_id)
+            if not metadata:
+                return jsonify({'error': 'User metadata not found'}), 404
+
+            # Nếu chưa có favorite_sets, trả về danh sách rỗng
+            favorite_sets = metadata.get('favorite_sets', [])
+            return jsonify(favorite_sets), 200
+
+        except Exception as e:
+            logger.error(f"Error getting favorite sets: {str(e)}")
+            return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
     # Create upload folder if it doesn't exist

@@ -20,6 +20,16 @@
             "category": "uncategorized",
             "timestamp": "20250206_180030",
             "original_filename": "upload_1738839631417_processed_1738839629865.png"
+        },
+        "processed_20250331_114447_upload_1743396285169_processed_1743396278065.png": {
+            "category": "long sleeves",
+            "timestamp": "20250331_114447",
+            "original_filename": "upload_1743396285169_processed_1743396278065.png"
+        },
+        "processed_20250331_114512_upload_1743396309363_processed_1743396301785.png": {
+            "category": "long leggings",
+            "timestamp": "20250331_114512",
+            "original_filename": "upload_1743396309363_processed_1743396301785.png"
         }
     },
     "categories": {
@@ -28,11 +38,36 @@
             "processed_20250206_175949_upload_1738839589725_processed_1738839587954.png",
             "processed_20250206_180030_upload_1738839631417_processed_1738839629865.png"
         ],
-        "long sleeves": [],
+        "long sleeves": [
+            "processed_20250331_114447_upload_1743396285169_processed_1743396278065.png"
+        ],
         "short sleeves": [],
-        "long leggings": [],
+        "long leggings": [
+            "processed_20250331_114512_upload_1743396309363_processed_1743396301785.png"
+        ],
         "short leggings": [
             "processed_20250206_172033_upload_1738837233628_processed_1738837214543.png"
         ]
-    }
+    },
+    "favorite_sets": [
+        {
+            "id": "f7f71ad2-c135-41ab-9730-565d5b93d2ce",
+            "set_name": "di choi",
+            "shirt_images": [
+                {
+                    "filename": "processed_20250331_114447_upload_1743396285169_processed_1743396278065.png",
+                    "category": "long sleeves",
+                    "url": "http://192.168.0.100:5000/images/39xTsxMQR7OvVORzHKjBSA26OEP2/long%20sleeves/processed_20250331_114447_upload_1743396285169_processed_1743396278065.png"
+                }
+            ],
+            "pant_images": [
+                {
+                    "filename": "processed_20250331_114512_upload_1743396309363_processed_1743396301785.png",
+                    "category": "long leggings",
+                    "url": "http://192.168.0.100:5000/images/39xTsxMQR7OvVORzHKjBSA26OEP2/long%20leggings/processed_20250331_114512_upload_1743396309363_processed_1743396301785.png"
+                }
+            ],
+            "timestamp": "2025-03-31T11:54:23.982564"
+        }
+    ]
 }
