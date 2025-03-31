@@ -39,6 +39,7 @@ public class FavoriteSetListFragment extends Fragment {
         adapter = new FavoriteSetListAdapter(favoriteSets, set -> {
             // Tạo instance của FavoriteSetEditFragment với dữ liệu từ set
             FavoriteSetEditFragment editFragment = FavoriteSetEditFragment.newInstance(
+                    set.getId(),      // Thêm setId
                     set.getSetName(),
                     new ArrayList<>(set.getShirtImages()),    // Sử dụng getter cho ảnh áo
                     new ArrayList<>(set.getPantsImages())       // Sử dụng getter cho ảnh quần

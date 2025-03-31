@@ -33,11 +33,12 @@ public class FavoriteSetEditFragment extends Fragment {
     private String setId; // Biến lưu setId
 
     // Factory method, bây giờ cũng nhận setId
-    public static FavoriteSetEditFragment newInstance(String setName,
+    public static FavoriteSetEditFragment newInstance(String setId,String setName,
                                                       ArrayList<GalleryImage> shirtImages,
                                                       ArrayList<GalleryImage> pantImages) {
         FavoriteSetEditFragment fragment = new FavoriteSetEditFragment();
         Bundle args = new Bundle();
+        args.putString("set_id", setId);  // Thêm setId vào arguments
         args.putString("set_name", setName);
         args.putParcelableArrayList("shirt_images", shirtImages);
         args.putParcelableArrayList("pant_images", pantImages);
@@ -98,17 +99,40 @@ public class FavoriteSetEditFragment extends Fragment {
         shirtAdapter.setItems(shirtImages);
         pantAdapter.setItems(pantImages);
 
-        // Xử lý các nút thêm ảnh (các xử lý mở GallerySelectionFragment như cũ)
         btnAddShirt.setOnClickListener(v -> {
-            Toast.makeText(getContext(), "Chọn thêm ảnh áo", Toast.LENGTH_SHORT).show();
-            // TODO: Mở fragment chọn ảnh cho áo
+            getParentFragmentManager().beginTransaction()
+                    .add(R.id.fragment_container, GallerySelectionFragment.newInstance("shirt"))
+                    .addToBackStack(null)
+                    .commit();
         });
+
         btnAddPant.setOnClickListener(v -> {
-            Toast.makeText(getContext(), "Chọn thêm ảnh quần", Toast.LENGTH_SHORT).show();
-            // TODO: Mở fragment chọn ảnh cho quần
+            getParentFragmentManager().beginTransaction()
+                    .add(R.id.fragment_container, GallerySelectionFragment.newInstance("pant"))
+                    .addToBackStack(null)
+                    .commit();
+        });
+
+        // Lắng nghe kết quả chọn ảnh từ GallerySelectionFragment cho áo
+        getParentFragmentManager().setFragmentResultListener("shirt_selection", this, (requestKey, bundle) -> {
+            GalleryImage selectedImage = bundle.getParcelable(GallerySelectionFragment.BUNDLE_KEY_FILENAME);
+            if (selectedImage != null) {
+                shirtImages.add(selectedImage);
+                shirtAdapter.setItems(new ArrayList<>(shirtImages));
+            }
+        });
+
+// Lắng nghe kết quả chọn ảnh từ GallerySelectionFragment cho quần
+        getParentFragmentManager().setFragmentResultListener("pant_selection", this, (requestKey, bundle) -> {
+            GalleryImage selectedImage = bundle.getParcelable(GallerySelectionFragment.BUNDLE_KEY_FILENAME);
+            if (selectedImage != null) {
+                pantImages.add(selectedImage);
+                pantAdapter.setItems(new ArrayList<>(pantImages));
+            }
         });
 
         // Xử lý nút cập nhật set đồ
+        // Trong phương thức onViewCreated của FavoriteSetEditFragment
         btnUpdateSet.setOnClickListener(v -> {
             String newSetName = editSetName.getText().toString().trim();
             if (newSetName.isEmpty()) {
@@ -119,6 +143,13 @@ public class FavoriteSetEditFragment extends Fragment {
                 Toast.makeText(getContext(), "Bạn cần có ít nhất 1 ảnh áo và 1 ảnh quần", Toast.LENGTH_SHORT).show();
                 return;
             }
+
+            // Kiểm tra setId không được null
+            if (setId == null || setId.isEmpty()) {
+                Toast.makeText(getContext(), "Lỗi: không tìm thấy ID của set", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
             List<String> shirtFilenames = new ArrayList<>();
             for (GalleryImage img : shirtImages) {
                 shirtFilenames.add(img.getFilename());
@@ -127,18 +158,25 @@ public class FavoriteSetEditFragment extends Fragment {
             for (GalleryImage img : pantImages) {
                 pantFilenames.add(img.getFilename());
             }
+
             new FlaskNetwork().editFavoriteSet(setId, newSetName, shirtFilenames, pantFilenames, new FlaskNetwork.OnFavoriteSetSaveListener() {
                 @Override
                 public void onSuccess(String message) {
-                    getActivity().runOnUiThread(() ->
-                            Toast.makeText(getContext(), "Favorite set updated successfully: " + message, Toast.LENGTH_SHORT).show()
-                    );
+                    if (getActivity() != null) {
+                        getActivity().runOnUiThread(() ->
+                                Toast.makeText(getContext(), "Favorite set updated successfully: " + message, Toast.LENGTH_SHORT).show()
+                        );
+                        // Quay lại màn hình danh sách
+                        getActivity().getSupportFragmentManager().popBackStack();
+                    }
                 }
                 @Override
                 public void onError(String message) {
-                    getActivity().runOnUiThread(() ->
-                            Toast.makeText(getContext(), "Error updating favorite set: " + message, Toast.LENGTH_SHORT).show()
-                    );
+                    if (getActivity() != null) {
+                        getActivity().runOnUiThread(() ->
+                                Toast.makeText(getContext(), "Error updating favorite set: " + message, Toast.LENGTH_SHORT).show()
+                        );
+                    }
                 }
             });
         });

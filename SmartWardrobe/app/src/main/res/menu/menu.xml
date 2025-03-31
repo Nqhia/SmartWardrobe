@@ -1,11 +1,18 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
+        android:id="@+id/chatButton"
+        android:icon="@drawable/ic_chat"
+        android:title="Chat"
+        app:showAsAction="ifRoom"
+        />
+
+    <item
         android:id="@+id/setting_button"
         android:icon="@drawable/baseline_settings_suggest_24"
         android:title="setting"
         app:showAsAction="ifRoom"
-        android:orderInCategory="1"
         />
+
 
 </menu>

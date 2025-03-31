@@ -160,6 +160,9 @@ public class SmartWardrobe extends AppCompatActivity {
         if (itemId == R.id.setting_button) {
             startActivity(new Intent(this, SettingsActivity.class));
             return true;
+        } else if (itemId == R.id.chatButton) {
+            startActivity(new Intent(this, UsersActivity.class));
+            return true;
         }
 
         return super.onOptionsItemSelected(item);
