@@ -88,8 +88,6 @@ public class ProfileFragment extends Fragment {
                                             .into(avatarImageView);
                                 }
                             }
-                        } else if (isAdded()) {
-                            Toast.makeText(getContext(), "Failed to load profile", Toast.LENGTH_SHORT).show();
                         }
                     });
         }

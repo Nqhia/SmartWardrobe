@@ -56,7 +56,7 @@ public class FriendRequestAdapter extends RecyclerView.Adapter<FriendRequestAdap
         }
 
         void setFriendRequestData(FriendRequest request) {
-            binding.textSenderName.setText(request.getSenderId());
+            binding.textSenderName.setText(request.getSenderName());
             binding.textSenderEmail.setText(request.getSenderEmail());
             binding.buttonAccept.setOnClickListener(v -> listener.onAcceptClicked(request));
             binding.buttonReject.setOnClickListener(v -> listener.onRejectClicked(request));
