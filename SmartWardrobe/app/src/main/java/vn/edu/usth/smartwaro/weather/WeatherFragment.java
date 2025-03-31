@@ -1,5 +1,7 @@
 package vn.edu.usth.smartwaro.weather;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -26,7 +28,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-
 import vn.edu.usth.smartwaro.R;
 import vn.edu.usth.smartwaro.fragment.RandomFragment;
 import vn.edu.usth.smartwaro.network.FlaskNetwork;
@@ -38,6 +39,10 @@ public class WeatherFragment extends Fragment {
     public static final String KEY_LOCATION_TEXT = "locationText";
     public static final String KEY_LATITUDE = "latitude";
     public static final String KEY_LONGITUDE = "longitude";
+    // Key để lưu vị trí đã chọn trong SharedPreferences
+    private static final String PREF_KEY_LOCATION = "current_location_query";
+    // Tên SharedPreferences
+    private static final String PREFS_NAME = "WeatherFragmentPrefs";
 
     private static final String TAG = "WeatherFragment";
     private static final String BASE_URL = "https://api.weatherapi.com/v1/";
@@ -46,7 +51,7 @@ public class WeatherFragment extends Fragment {
     private TextView tempTextView;
     private TextView locationTextView;
     private TextView conditionTextView;
-    private TextView recommendationTextView; // Add this to show the AI recommendation explanation
+    private TextView recommendationTextView;
     private RecyclerView topClothingRecyclerView;
     private RecyclerView bottomClothingRecyclerView;
     private ClothingAdapter topAdapter;
@@ -57,35 +62,41 @@ public class WeatherFragment extends Fragment {
     private Button randombutton;
     private TextView humidityTextView;
     private TextView windSpeedTextView;
-
     private Button btnSelectLocation;
-    private String currentLocationQuery = "Korea"; // giá trị mặc định
+
+    // Biến lưu vị trí hiện tại; mặc định là "Thailand"
+    private String currentLocationQuery = "Hanoi";
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        // Nếu có savedInstanceState, khôi phục lại currentLocationQuery, nếu không thì thử lấy từ SharedPreferences
+        if (savedInstanceState != null) {
+            currentLocationQuery = savedInstanceState.getString("current_location_query", currentLocationQuery);
+        } else {
+            SharedPreferences prefs = requireContext().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+            currentLocationQuery = prefs.getString(PREF_KEY_LOCATION, currentLocationQuery);
+        }
+
         View view = inflater.inflate(R.layout.fragment_weather, container, false);
 
-        randombutton=view.findViewById(R.id.random_frag);
-        randombutton.setOnClickListener(v -> openFragment( new RandomFragment()));
-
+        randombutton = view.findViewById(R.id.random_frag);
+        randombutton.setOnClickListener(v -> openFragment(new RandomFragment()));
 
         tempTextView = view.findViewById(R.id.temp);
         locationTextView = view.findViewById(R.id.locationText);
         conditionTextView = view.findViewById(R.id.conditionText);
         btnSelectLocation = view.findViewById(R.id.btnSelectLocation);
-        btnSelectLocation.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openLocationFragment();
-            }
-        });
+        btnSelectLocation.setOnClickListener(v -> openLocationFragment());
 
         getParentFragmentManager().setFragmentResultListener(REQUEST_KEY_MANUAL_LOCATION_SEARCH, this, new FragmentResultListener() {
             @Override
             public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle bundle) {
-                String locationText = bundle.getString(KEY_LOCATION_TEXT, "Korea");
+                String locationText = bundle.getString(KEY_LOCATION_TEXT, "Hanoi");
                 // Có thể sử dụng thêm tọa độ nếu cần: double lat = bundle.getDouble(KEY_LATITUDE);
                 currentLocationQuery = locationText;
+                // Lưu lại vị trí vào SharedPreferences
+                SharedPreferences prefs = requireContext().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+                prefs.edit().putString(PREF_KEY_LOCATION, currentLocationQuery).apply();
                 // Gọi lại API thời tiết với thành phố mới
                 fetchWeatherData();
             }
@@ -98,11 +109,17 @@ public class WeatherFragment extends Fragment {
         return view;
     }
 
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString("current_location_query", currentLocationQuery);
+    }
+
     private void initializeViews(View view) {
         tempTextView = view.findViewById(R.id.temp);
         locationTextView = view.findViewById(R.id.locationText);
         conditionTextView = view.findViewById(R.id.conditionText);
-        recommendationTextView = view.findViewById(R.id.recommendationText); // Make sure to add this in your layout
+        recommendationTextView = view.findViewById(R.id.recommendationText);
         topClothingRecyclerView = view.findViewById(R.id.topClothingRecyclerView);
         bottomClothingRecyclerView = view.findViewById(R.id.bottomClothingRecyclerView);
         humidityTextView = view.findViewById(R.id.humidityText);
@@ -120,16 +137,12 @@ public class WeatherFragment extends Fragment {
     }
 
     private void setupRecyclerViews() {
-        // Top clothing RecyclerView
-        LinearLayoutManager topLayoutManager = new LinearLayoutManager(getContext(),
-                LinearLayoutManager.HORIZONTAL, false);
+        LinearLayoutManager topLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
         topClothingRecyclerView.setLayoutManager(topLayoutManager);
         topAdapter = new ClothingAdapter();
         topClothingRecyclerView.setAdapter(topAdapter);
 
-        // Bottom clothing RecyclerView
-        LinearLayoutManager bottomLayoutManager = new LinearLayoutManager(getContext(),
-                LinearLayoutManager.HORIZONTAL, false);
+        LinearLayoutManager bottomLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
         bottomClothingRecyclerView.setLayoutManager(bottomLayoutManager);
         bottomAdapter = new ClothingAdapter();
         bottomClothingRecyclerView.setAdapter(bottomAdapter);
@@ -149,7 +162,6 @@ public class WeatherFragment extends Fragment {
             public void onResponse(@NonNull Call<WeatherResponse> call, @NonNull Response<WeatherResponse> response) {
                 mainHandler.post(() -> {
                     if (!isAdded()) return;
-
                     if (response.isSuccessful() && response.body() != null) {
                         updateWeatherUI(response.body());
                         if (userId != null) {
@@ -157,9 +169,6 @@ public class WeatherFragment extends Fragment {
                             int humidity = response.body().getCurrent().getHumidity();
                             double windSpeed = response.body().getCurrent().getWindKph();
                             fetchClothingRecommendations(temperature, humidity, windSpeed);
-
-                            // Update recommendation text based on temperature
-                            // updateRecommendationText(temperature);
                         }
                     } else {
                         showError("Failed to load weather data");
@@ -202,11 +211,8 @@ public class WeatherFragment extends Fragment {
             public void onSuccess(String topWear, String bottomWear) {
                 mainHandler.post(() -> {
                     if (isAdded()) {
-                        // Hiển thị thông tin đề xuất trên recommendationTextView
                         String recommendationText = topWear + " + " + bottomWear;
                         recommendationTextView.setText(recommendationText);
-
-                        // Tìm và hiển thị ảnh áo
                         flaskNetwork.getUserImages(topWear, new FlaskNetwork.OnImagesLoadedListener() {
                             @Override
                             public void onSuccess(String[] imageUrls) {
@@ -216,14 +222,11 @@ public class WeatherFragment extends Fragment {
                                     }
                                 });
                             }
-
                             @Override
                             public void onError(String message) {
                                 mainHandler.post(() -> showError("Lỗi tải ảnh áo: " + message));
                             }
                         });
-
-                        // Tìm và hiển thị ảnh quần
                         flaskNetwork.getUserImages(bottomWear, new FlaskNetwork.OnImagesLoadedListener() {
                             @Override
                             public void onSuccess(String[] imageUrls) {
@@ -233,7 +236,6 @@ public class WeatherFragment extends Fragment {
                                     }
                                 });
                             }
-
                             @Override
                             public void onError(String message) {
                                 mainHandler.post(() -> showError("Lỗi tải ảnh quần: " + message));
@@ -242,13 +244,13 @@ public class WeatherFragment extends Fragment {
                     }
                 });
             }
-
             @Override
             public void onError(String message) {
                 mainHandler.post(() -> showError(message));
             }
         });
     }
+
     private void showError(String message) {
         if (getContext() != null && isAdded()) {
             mainHandler.post(() -> {
@@ -268,12 +270,10 @@ public class WeatherFragment extends Fragment {
     }
 
     private void openLocationFragment() {
-        // Mở LocationFragment (thêm vào backstack để khi chọn xong có thể quay lại)
         LocationFragment locationFragment = new LocationFragment();
         getParentFragmentManager().beginTransaction()
                 .replace(R.id.fragment_container, locationFragment)
                 .addToBackStack(null)
                 .commit();
     }
-
 }

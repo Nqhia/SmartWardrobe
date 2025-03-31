@@ -213,49 +213,99 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:padding="8dp">
 
                     <ImageButton
                         android:id="@+id/top_blazer_icon"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:background="@color/white"
                         android:scaleType="centerInside"
                         android:src="@drawable/top_blazer_icon" />
 
                     <ImageButton
+                        android:id="@+id/buy_button_blazer"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_gravity="center_horizontal"
+                        android:background="@null"
+                        android:src="@android:drawable/ic_menu_add"
+                        android:visibility="gone"
+                        android:contentDescription="Buy blazer" />
+
+                    <ImageButton
                         android:id="@+id/top_cardigan_icon"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:background="@null"
                         android:scaleType="centerInside"
                         android:src="@drawable/top_cardigan_icon" />
 
                     <ImageButton
+                        android:id="@+id/buy_button_cardigan"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_gravity="center_horizontal"
+                        android:background="@null"
+                        android:src="@android:drawable/ic_menu_add"
+                        android:visibility="gone"
+                        android:contentDescription="Buy cardigan" />
+
+                    <ImageButton
                         android:id="@+id/top_tanktop_icon"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:background="@null"
                         android:scaleType="centerInside"
                         android:src="@drawable/top_tanktop_icon" />
 
                     <ImageButton
+                        android:id="@+id/buy_button_tanktop"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_gravity="center_horizontal"
+                        android:background="@null"
+                        android:src="@android:drawable/ic_menu_add"
+                        android:visibility="gone"
+                        android:contentDescription="Buy tanktop" />
+
+                    <ImageButton
                         android:id="@+id/top_sweater_icon"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:background="@null"
                         android:scaleType="centerInside"
                         android:src="@drawable/top_sweater_icon" />
 
                     <ImageButton
+                        android:id="@+id/buy_button_sweater"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_gravity="center_horizontal"
+                        android:background="@null"
+                        android:src="@android:drawable/ic_menu_add"
+                        android:visibility="gone"
+                        android:contentDescription="Buy sweater" />
+
+                    <ImageButton
                         android:id="@+id/top_mockneck_icon"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:background="@null"
                         android:scaleType="centerInside"
                         android:src="@drawable/top_mockneck_icon" />
+
+                    <ImageButton
+                        android:id="@+id/buy_button_mockneck"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_gravity="center_horizontal"
+                        android:background="@null"
+                        android:src="@android:drawable/ic_menu_add"
+                        android:visibility="gone"
+                        android:contentDescription="Buy mockneck" />
                 </LinearLayout>
             </ScrollView>
 
@@ -277,18 +327,38 @@
                     <ImageButton
                         android:id="@+id/bot_jeans_icon"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:background="@null"
                         android:scaleType="centerInside"
                         android:src="@drawable/bot_jeans_icon" />
 
                     <ImageButton
+                        android:id="@+id/buy_button_jean"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_gravity="center_horizontal"
+                        android:background="@null"
+                        android:src="@android:drawable/ic_menu_add"
+                        android:visibility="gone"
+                        android:contentDescription="Buy jean" />
+
+                    <ImageButton
                         android:id="@+id/bot_legging_icon"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:background="@null"
                         android:scaleType="centerInside"
                         android:src="@drawable/bot_legging_icon" />
+
+                    <ImageButton
+                        android:id="@+id/buy_button_legging"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_gravity="center_horizontal"
+                        android:background="@null"
+                        android:src="@android:drawable/ic_menu_add"
+                        android:visibility="gone"
+                        android:contentDescription="Buy legging" />
                 </LinearLayout>
             </ScrollView>
 
@@ -310,10 +380,20 @@
                     <ImageButton
                         android:id="@+id/bot_skirt_icon"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:background="@null"
                         android:scaleType="centerInside"
                         android:src="@drawable/bot_skirt_icon" />
+
+                    <ImageButton
+                        android:id="@+id/buy_button_skirt"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_gravity="center_horizontal"
+                        android:background="@null"
+                        android:src="@android:drawable/ic_menu_add"
+                        android:visibility="gone"
+                        android:contentDescription="Buy skirt" />
                 </LinearLayout>
             </ScrollView>
 
@@ -335,26 +415,56 @@
                     <ImageButton
                         android:id="@+id/tube_purple_icon"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:background="@null"
                         android:scaleType="centerInside"
                         android:src="@drawable/tube_purple_icon" />
 
                     <ImageButton
+                        android:id="@+id/buy_button_tube_purple"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_gravity="center_horizontal"
+                        android:background="@null"
+                        android:src="@android:drawable/ic_menu_add"
+                        android:visibility="gone"
+                        android:contentDescription="Buy tube purple" />
+
+                    <ImageButton
                         android:id="@+id/black_tube_icon"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:background="@null"
                         android:scaleType="centerInside"
                         android:src="@drawable/black_tube_icon" />
 
                     <ImageButton
+                        android:id="@+id/buy_button_tube_black"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_gravity="center_horizontal"
+                        android:background="@null"
+                        android:src="@android:drawable/ic_menu_add"
+                        android:visibility="gone"
+                        android:contentDescription="Buy tube black" />
+
+                    <ImageButton
                         android:id="@+id/tube_red_icon"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:background="@null"
                         android:scaleType="centerInside"
                         android:src="@drawable/tube_red_icon" />
+
+                    <ImageButton
+                        android:id="@+id/buy_button_tube_red"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_gravity="center_horizontal"
+                        android:background="@null"
+                        android:src="@android:drawable/ic_menu_add"
+                        android:visibility="gone"
+                        android:contentDescription="Buy tube red" />
                 </LinearLayout>
             </ScrollView>
 
@@ -376,18 +486,38 @@
                     <ImageButton
                         android:id="@+id/female_loafer_icon"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:background="@null"
                         android:scaleType="centerInside"
                         android:src="@drawable/female_loafer_icon" />
 
                     <ImageButton
+                        android:id="@+id/buy_button_loafer"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_gravity="center_horizontal"
+                        android:background="@null"
+                        android:src="@android:drawable/ic_menu_add"
+                        android:visibility="gone"
+                        android:contentDescription="Buy loafer" />
+
+                    <ImageButton
                         android:id="@+id/female_heels_icon"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:background="@null"
                         android:scaleType="centerInside"
                         android:src="@drawable/female_heels_icon" />
+
+                    <ImageButton
+                        android:id="@+id/buy_button_heels"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_gravity="center_horizontal"
+                        android:background="@null"
+                        android:src="@android:drawable/ic_menu_add"
+                        android:visibility="gone"
+                        android:contentDescription="Buy heels" />
                 </LinearLayout>
             </ScrollView>
 
@@ -409,7 +539,7 @@
                     <ImageButton
                         android:id="@+id/buttonChangeSkinColor"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:background="@null"
                         android:scaleType="centerInside"
                         android:src="@drawable/skintone" />

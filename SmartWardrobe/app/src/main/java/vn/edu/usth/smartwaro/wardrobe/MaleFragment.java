@@ -2,6 +2,7 @@ package vn.edu.usth.smartwaro.wardrobe;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
+import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
@@ -12,6 +13,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.Toast;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.squareup.picasso.Picasso;
@@ -45,7 +47,32 @@ public class MaleFragment extends BaseWardrobeFragment {
             R.drawable.bot_pant            // bot_pant_icon
     };
     private int[] footwareImages = {
-            R.drawable.male_footware       // male_loafer_icon (đổi nếu cần)
+            R.drawable.male_footware       // male_loafer_icon
+    };
+
+    // Thêm mảng cho affiliate links
+    private final String[] baseProductLinks = {
+            "https://www2.hm.com/en_us/productpage.1236723003.html", // Blazer
+            "https://www2.hm.com/en_us/productpage.1250094001.html", // Breast
+            "https://www2.hm.com/en_us/productpage.1232261002.html", // Sweater
+            "https://www2.hm.com/en_us/productpage.0956343001.html", // Polo
+            "https://www2.hm.com/en_us/productpage.1272904001.html", // Tank
+            "https://www2.hm.com/en_us/productpage.1096385014.html", // Jean
+            "https://www2.hm.com/en_us/productpage.1253395001.html", // Pant
+            "https://www2.hm.com/en_us/productpage.1250662001.html"  // Loafer
+    };
+    private final String affiliateCode = "?affiliate_id=my_swaro";
+
+    // Mảng các ID của buy buttons trong layout
+    private final int[] buyButtonIds = {
+            R.id.buy_button_blazer_male,
+            R.id.buy_button_breast,
+            R.id.buy_button_sweater_male,
+            R.id.buy_button_polo,
+            R.id.buy_button_tanktop,
+            R.id.buy_button_jean_male,
+            R.id.buy_button_pant,
+            R.id.buy_button_loafer_male
     };
 
     private int currentModelSkinIndex = 0;
@@ -172,38 +199,23 @@ public class MaleFragment extends BaseWardrobeFragment {
 
         scaleGestureDetector = new ScaleGestureDetector(requireContext(), new ScaleListener());
 
-        // Clothing listeners
-        buttontopBlazerMale.setOnClickListener(v -> {
-            updateClothingSafely(topMale, shirtImages, 0);
-            hideAllCustomClothing();
-        });
-        buttontopBreast.setOnClickListener(v -> {
-            updateClothingSafely(topMale, shirtImages, 1);
-            hideAllCustomClothing();
-        });
-        buttontopSw.setOnClickListener(v -> {
-            updateClothingSafely(topMale, shirtImages, 2);
-            hideAllCustomClothing();
-        });
-        buttontopPolo.setOnClickListener(v -> {
-            updateClothingSafely(topMale, shirtImages, 3);
-            hideAllCustomClothing();
-        });
-        buttontopTanktop.setOnClickListener(v -> {
-            updateClothingSafely(topMale, shirtImages, 4);
-            hideAllCustomClothing();
-        });
+        // Ẩn tất cả buy buttons khi khởi tạo
+        hideAllBuyButtons(view);
 
-        buttonbotJeanMale.setOnClickListener(v -> {
-            updateClothingSafely(botMale, pantsImages, 0);
-            hideAllCustomClothing();
-        });
-        buttonbotPant.setOnClickListener(v -> {
-            updateClothingSafely(botMale, pantsImages, 1);
-            hideAllCustomClothing();
-        });
+        // Clothing listeners với hiển thị buy button
+        buttontopBlazerMale.setOnClickListener(v -> handleClothingClick(topMale, shirtImages, 0));
+        buttontopBreast.setOnClickListener(v -> handleClothingClick(topMale, shirtImages, 1));
+        buttontopSw.setOnClickListener(v -> handleClothingClick(topMale, shirtImages, 2));
+        buttontopPolo.setOnClickListener(v -> handleClothingClick(topMale, shirtImages, 3));
+        buttontopTanktop.setOnClickListener(v -> handleClothingClick(topMale, shirtImages, 4));
 
-        buttonloafermale.setOnClickListener(v -> updateClothingSafely(footwareMale, footwareImages, 0));
+        buttonbotJeanMale.setOnClickListener(v -> handleClothingClick(botMale, pantsImages, 0));
+        buttonbotPant.setOnClickListener(v -> handleClothingClick(botMale, pantsImages, 1));
+
+        buttonloafermale.setOnClickListener(v -> handleClothingClick(footwareMale, footwareImages, 0));
+
+        // Setup listener cho các buy buttons
+        setupBuyButtons(view);
 
         buttonChangeSkinColor.setOnClickListener(v -> {
             currentModelSkinIndex = (currentModelSkinIndex + 1) % 3;
@@ -224,6 +236,71 @@ public class MaleFragment extends BaseWardrobeFragment {
                 selectClothingItem(null);
             }
         });
+    }
+
+    // Xử lý khi bấm vào nút quần áo mặc định
+    private void handleClothingClick(ImageView view, int[] images, int index) {
+        updateClothingSafely(view, images, index);
+        hideAllCustomClothing();
+        hideAllBuyButtons(requireView());
+        int affiliateIndex = getAffiliateIndex(view, index);
+        ImageButton buyButton = requireView().findViewById(buyButtonIds[affiliateIndex]);
+        if (buyButton != null) {
+            buyButton.setVisibility(View.VISIBLE);
+        }
+    }
+
+    // Setup listener cho buy buttons
+    private void setupBuyButtons(View view) {
+        for (int i = 0; i < buyButtonIds.length; i++) {
+            int index = i;
+            ImageButton buyButton = view.findViewById(buyButtonIds[index]);
+            if (buyButton != null) {
+                buyButton.setOnClickListener(v -> openAffiliateFragment(index));
+            }
+        }
+    }
+
+    // Ẩn tất cả buy buttons
+    private void hideAllBuyButtons(View view) {
+        for (int buyButtonId : buyButtonIds) {
+            ImageButton buyButton = view.findViewById(buyButtonId);
+            if (buyButton != null) {
+                buyButton.setVisibility(View.GONE);
+            }
+        }
+    }
+
+    // Chuyển đổi index trong danh mục thành index trong baseProductLinks
+    private int getAffiliateIndex(ImageView view, int index) {
+        if (view == topMale) return index; // Top: 0-4
+        if (view == botMale) return 5 + index; // Bot: 5-6
+        if (view == footwareMale) return 7; // Footware: 7
+        return -1;
+    }
+
+    // Phương thức mở AffiliateFragment
+    private void openAffiliateFragment(int index) {
+        if (index >= 0 && index < baseProductLinks.length) {
+            String fullUrl = baseProductLinks[index] + affiliateCode;
+            AffiliateFragment fragment = new AffiliateFragment();
+            Bundle bundle = new Bundle();
+            bundle.putString("affiliate_url", fullUrl);
+            bundle.putInt("product_image", getProductImage(index));
+            fragment.setArguments(bundle);
+
+            FragmentTransaction transaction = requireActivity().getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.fragment_container, fragment);
+            transaction.addToBackStack(null);
+            transaction.commit();
+        }
+    }
+
+    // Phương thức lấy hình ảnh sản phẩm theo index
+    private int getProductImage(int index) {
+        if (index < 5) return shirtImages[index];
+        else if (index < 7) return pantsImages[index - 5];
+        else return footwareImages[0];
     }
 
     // Phương thức an toàn để cập nhật quần áo, tránh crash

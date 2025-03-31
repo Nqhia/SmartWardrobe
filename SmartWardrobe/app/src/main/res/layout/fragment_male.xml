@@ -165,7 +165,7 @@
                     <ImageButton
                         android:id="@+id/male_model_icon"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:background="@null"
                         android:scaleType="centerInside"
                         android:src="@drawable/male_model_icon" />
@@ -173,42 +173,92 @@
                     <ImageButton
                         android:id="@+id/top_tanktop_male_icon"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:background="@null"
                         android:scaleType="centerInside"
                         android:src="@drawable/top_tanktop_male_icon" />
 
                     <ImageButton
+                        android:id="@+id/buy_button_tanktop"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_gravity="center_horizontal"
+                        android:background="@null"
+                        android:src="@android:drawable/ic_menu_add"
+                        android:visibility="gone"
+                        android:contentDescription="Buy tanktop" />
+
+                    <ImageButton
                         android:id="@+id/top_polo_icon"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:background="@null"
                         android:scaleType="centerInside"
                         android:src="@drawable/top_polo_icon" />
 
                     <ImageButton
+                        android:id="@+id/buy_button_polo"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_gravity="center_horizontal"
+                        android:background="@null"
+                        android:src="@android:drawable/ic_menu_add"
+                        android:visibility="gone"
+                        android:contentDescription="Buy polo" />
+
+                    <ImageButton
                         android:id="@+id/top_sweater_male_icon"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:background="@null"
                         android:scaleType="centerInside"
                         android:src="@drawable/top_sweater_male_icon" />
 
                     <ImageButton
+                        android:id="@+id/buy_button_sweater_male"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_gravity="center_horizontal"
+                        android:background="@null"
+                        android:src="@android:drawable/ic_menu_add"
+                        android:visibility="gone"
+                        android:contentDescription="Buy sweater" />
+
+                    <ImageButton
                         android:id="@+id/top_blazer_male_icon"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:background="@null"
                         android:scaleType="centerInside"
                         android:src="@drawable/top_blazer_male_icon" />
 
                     <ImageButton
+                        android:id="@+id/buy_button_blazer_male"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_gravity="center_horizontal"
+                        android:background="@null"
+                        android:src="@android:drawable/ic_menu_add"
+                        android:visibility="gone"
+                        android:contentDescription="Buy blazer" />
+
+                    <ImageButton
                         android:id="@+id/top_breast_icon"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:background="@null"
                         android:scaleType="centerInside"
                         android:src="@drawable/top_breast_icon" />
+
+                    <ImageButton
+                        android:id="@+id/buy_button_breast"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_gravity="center_horizontal"
+                        android:background="@null"
+                        android:src="@android:drawable/ic_menu_add"
+                        android:visibility="gone"
+                        android:contentDescription="Buy breast" />
                 </LinearLayout>
             </ScrollView>
 
@@ -230,18 +280,38 @@
                     <ImageButton
                         android:id="@+id/bot_jean_male_icon"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:background="@null"
                         android:scaleType="centerInside"
                         android:src="@drawable/bot_jean_male_icon" />
 
                     <ImageButton
+                        android:id="@+id/buy_button_jean_male"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_gravity="center_horizontal"
+                        android:background="@null"
+                        android:src="@android:drawable/ic_menu_add"
+                        android:visibility="gone"
+                        android:contentDescription="Buy jean" />
+
+                    <ImageButton
                         android:id="@+id/bot_pant_icon"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:background="@null"
                         android:scaleType="centerInside"
                         android:src="@drawable/bot_pant_icon" />
+
+                    <ImageButton
+                        android:id="@+id/buy_button_pant"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_gravity="center_horizontal"
+                        android:background="@null"
+                        android:src="@android:drawable/ic_menu_add"
+                        android:visibility="gone"
+                        android:contentDescription="Buy pant" />
                 </LinearLayout>
             </ScrollView>
 
@@ -263,10 +333,20 @@
                     <ImageButton
                         android:id="@+id/male_loafer_icon"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:background="@null"
                         android:scaleType="centerInside"
                         android:src="@drawable/female_loafer_icon" />
+
+                    <ImageButton
+                        android:id="@+id/buy_button_loafer_male"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_gravity="center_horizontal"
+                        android:background="@null"
+                        android:src="@android:drawable/ic_menu_add"
+                        android:visibility="gone"
+                        android:contentDescription="Buy loafer" />
                 </LinearLayout>
             </ScrollView>
 
@@ -288,7 +368,7 @@
                     <ImageButton
                         android:id="@+id/buttonChangeSkinColorMale"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:background="@null"
                         android:scaleType="centerInside"
                         android:src="@drawable/skintone" />
