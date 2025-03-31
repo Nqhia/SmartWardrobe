@@ -16,9 +16,12 @@
         android:id="@+id/favorite"
         android:icon="@drawable/round_star_outline_24"
         android:title="Set" />
+
+
     <item
-        android:id="@+id/profile"
-        android:icon="@drawable/user"
-        android:title="Profile" />
+        android:id="@+id/chatButton"
+        android:icon="@drawable/ic_chat"
+        android:title="Chat"
+        />
 
 </menu>

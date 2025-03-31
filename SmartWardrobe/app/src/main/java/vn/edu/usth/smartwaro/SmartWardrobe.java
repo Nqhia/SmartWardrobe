@@ -114,17 +114,16 @@ public class SmartWardrobe extends AppCompatActivity {
     }
 
     private void switchFragment(int itemId) {
-//        if (itemId == R.id.social) {
-//            Intent intent = new Intent(this, UsersActivity.class);
-//            startActivity(intent);
-//            return;
-//        }
+        if (itemId == R.id.chatButton) {
+            Intent intent = new Intent(this, UsersActivity.class);
+            startActivity(intent);
+            return;
+        }
 
         Fragment fragment = null;
 
-        if (itemId == R.id.profile) {
-            fragment = new ProfileFragment();
-        } else if (itemId == R.id.my_closet) {
+
+        if (itemId == R.id.my_closet) {
             fragment = new MyClosetFragment();
         } else if (itemId == R.id.stylist) {
             fragment = new WardrobeFragment();
@@ -156,18 +155,18 @@ public class SmartWardrobe extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int itemId = item.getItemId();
-
         if (itemId == R.id.setting_button) {
             startActivity(new Intent(this, SettingsActivity.class));
             return true;
-        } else if (itemId == R.id.chatButton) {
-            startActivity(new Intent(this, UsersActivity.class));
+        } else if (itemId == R.id.profile) {
+            Fragment fragment = new ProfileFragment();
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragment_container, fragment)
+                    .commit();
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
-
-
 
 }
