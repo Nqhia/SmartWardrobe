@@ -16,7 +16,7 @@ import vn.edu.usth.smartwaro.utils.PreferenceManager;
 
 public class SettingsActivity extends AppCompatActivity {
     ImageButton themeButton, logoutButton;
-
+    ImageButton settingBackButton;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,6 +26,9 @@ public class SettingsActivity extends AppCompatActivity {
 
         logoutButton = findViewById(R.id.logoutButton);
 
+        settingBackButton = findViewById(R.id.Setting_back_button);
+        settingBackButton.setOnClickListener(v -> navigateBackToFragment());
+
         logoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -33,6 +36,13 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
     }
+
+    private void navigateBackToFragment() {
+        // Pop the current activity and go back to the previous fragment
+        getSupportFragmentManager().popBackStack();
+        finish(); // Close the current activity
+    }
+
 
     private void logoutUser() {
         try {

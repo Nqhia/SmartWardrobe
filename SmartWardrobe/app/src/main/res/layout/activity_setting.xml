@@ -10,22 +10,35 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <TextView
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="12dp"
-            android:fontFamily="@font/agbalumo_regular"
-            android:text="Setting"
-            android:textColor="@color/black"
-            android:textSize="28sp"
-            />
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_margin="12dp">
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/agbalumo_regular"
+                android:text="Setting"
+                android:textColor="@color/black"
+                android:textSize="28sp"/>
+
+            <ImageButton
+                android:id="@+id/Setting_back_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Additional Settings Information"
+                android:src="@drawable/ic_back" />
+        </LinearLayout>
 
         <LinearLayout
             android:id="@+id/settingsButtons"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
-
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -40,8 +53,7 @@
                     android:fontFamily="@font/proximanova_bold"
                     android:textSize="18sp"
                     android:textColor="@color/black"
-                    android:layout_weight="1"
-                     />
+                    android:layout_weight="1"/>
                 <ImageButton
                     android:id="@+id/theme_button"
                     android:layout_width="wrap_content"
@@ -50,8 +62,7 @@
                     android:contentDescription="Theme"
                     android:padding="8dp"
                     app:tint="#808080"
-                    android:src="@drawable/baseline_navigate_next_24" />
-
+                    android:src="@drawable/baseline_navigate_next_24"/>
             </LinearLayout>
 
             <LinearLayout
@@ -67,23 +78,17 @@
                     android:fontFamily="@font/proximanova_bold"
                     android:textSize="18sp"
                     android:textColor="@color/colorError"
-                    android:layout_weight="1" />
+                    android:layout_weight="1"/>
                 <ImageButton
                     android:id="@+id/logoutButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="?attr/selectableItemBackground"
-                    android:contentDescription="Theme"
+                    android:contentDescription="Log Out"
                     android:padding="8dp"
                     app:tint="#808080"
-                    android:src="@drawable/baseline_logout_24" />
-
+                    android:src="@drawable/baseline_logout_24"/>
             </LinearLayout>
-
-
         </LinearLayout>
-
     </LinearLayout>
-
-
 </FrameLayout>

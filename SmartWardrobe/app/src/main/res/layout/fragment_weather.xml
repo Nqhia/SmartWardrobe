@@ -125,6 +125,7 @@
                     android:layout_height="wrap_content"
                     android:text="Select Location"
                     android:layout_gravity="center_horizontal"
+                    android:backgroundTint="@android:color/darker_gray"
                     android:layout_marginTop="10dp" />
 
             </LinearLayout>
@@ -164,6 +165,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
+                android:backgroundTint="@android:color/darker_gray"
                 android:text="Random Suggestion"/>
 
         </LinearLayout>

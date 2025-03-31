@@ -2,7 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/background_app_pastel"
+    android:background="#DDDDDD"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -10,6 +10,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:orientation="vertical"
+        android:background="#FFFFF0"
         android:padding="32dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -87,14 +88,14 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/loginButton"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Login"
             android:layout_marginTop="16dp"
-            android:backgroundTint="@color/background_app"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-            app:cornerRadius="30dp"
-            android:textColor="@android:color/black"/>
+            android:backgroundTint="#BF8F68"
+            android:text="Login"
+            android:textColor="@android:color/black"
+            app:cornerRadius="30dp" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/registerButton"
@@ -102,7 +103,7 @@
             android:layout_height="wrap_content"
             android:text="Register"
             android:layout_marginTop="16dp"
-            app:strokeColor="@color/background_app"
+            app:strokeColor="@color/black"
             app:cornerRadius="30dp"
             style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:textColor="@android:color/black"/>

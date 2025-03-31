@@ -16,20 +16,28 @@
         <FrameLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1">
+            android:layout_weight="1.4">
 
             <Button
                 android:id="@+id/button_show_friends"
                 android:layout_width="wrap_content"
                 android:layout_height="40dp"
+                android:textSize="14sp"
+                android:backgroundTint="@android:color/darker_gray"
+                android:paddingHorizontal="8dp"
+                app:cornerRadius="40dp"
                 android:text="@string/share" />
 
             <Button
                 android:id="@+id/button_my_closet"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:layout_gravity="bottom"
-                android:text="My Closet" />
+                android:text="My Closet"
+                android:backgroundTint="@android:color/darker_gray"
+                android:textSize="14sp"
+                app:cornerRadius="40dp"
+                android:paddingHorizontal="8dp"/>
         </FrameLayout>
 
         <!-- View model -->
@@ -37,7 +45,7 @@
             android:id="@+id/model_container"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="3">
+            android:layout_weight="2.6">
 
             <FrameLayout
                 android:id="@+id/fragmentContainer"

@@ -149,11 +149,9 @@ public class GallerySelectionFragment extends Fragment implements GalleryAdapter
         Bundle result = new Bundle();
         result.putParcelable(BUNDLE_KEY_FILENAME, image);
         getParentFragmentManager().setFragmentResult(resultKey, result);
-        getParentFragmentManager().setFragmentResult("shirt_selection", result);
         // Đóng fragment chọn
         getParentFragmentManager().popBackStack();
     }
-
 
 
 

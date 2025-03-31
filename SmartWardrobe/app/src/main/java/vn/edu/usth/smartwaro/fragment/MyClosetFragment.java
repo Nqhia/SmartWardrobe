@@ -13,6 +13,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
@@ -38,8 +39,8 @@ public class MyClosetFragment extends Fragment {
 
         viewPager = view.findViewById(R.id.viewPager);
         tabLayout = view.findViewById(R.id.tabLayout);
-        Button fabAddItem = view.findViewById(R.id.fabAddItem);
-        Button btnFavourite = view.findViewById(R.id.favourite);
+        FloatingActionButton fabAddItem = view.findViewById(R.id.fabAddItem);
+        FloatingActionButton btnFavourite = view.findViewById(R.id.favourite);
 
         fetchCategories();
 

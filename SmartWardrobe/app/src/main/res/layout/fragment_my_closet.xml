@@ -25,33 +25,26 @@
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
-    <Button
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabAddItem"
-        android:layout_width="50dp"
-        android:layout_height="60dp"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="16dp"
-        app:cornerRadius="50dp"
-        android:text="+"
-        android:textColor="@color/black"
-        android:textSize="28sp"
-        android:fontFamily="@font/proximanova_extrabold"
-        android:backgroundTint="@color/background_app"
-        app:rippleColor="@android:color/transparent" />
-
-    <Button
-        android:id="@+id/favourite"
-        android:layout_width="50dp"
-        android:layout_height="60dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_marginEnd="16dp"
-        android:layout_marginBottom="80dp"
-        app:cornerRadius="50dp"
-        android:text="+"
-        android:textColor="@color/black"
-        android:textSize="28sp"
-        android:fontFamily="@font/proximanova_extrabold"
-        android:backgroundTint="@color/background_app"
-        app:rippleColor="@android:color/transparent" />
+        android:layout_marginBottom="16dp"
+        app:backgroundTint="@android:color/darker_gray"
+        app:srcCompat="@drawable/camera_solid"
+        app:rippleColor="@android:color/transparent"/>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/favourite"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="96dp"
+        app:backgroundTint="@android:color/darker_gray"
+        app:srcCompat="@drawable/heart_solid"
+        app:rippleColor="@android:color/transparent"/>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
