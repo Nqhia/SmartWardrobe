@@ -5,7 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bgimage"
+    android:background="@drawable/bg2"
     tools:context=".fragment.WardrobeFragment">
 
     <!-- Male Model -->
@@ -16,8 +16,11 @@
         android:src="@drawable/model_start_mode_male"
         android:scaleType="centerCrop"
         android:visibility="invisible"
+        android:scaleX="1.2"
+        android:scaleY="1.2"
+        android:translationY="40dp"
         app:layout_constraintWidth_percent="0.45"
-        app:layout_constraintHeight_percent="0.75"
+        app:layout_constraintHeight_percent="0.85"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/female_model"
@@ -32,8 +35,11 @@
         android:src="@drawable/model_start_mode_female"
         android:scaleType="centerCrop"
         android:visibility="invisible"
+        android:scaleX="1.2"
+        android:scaleY="1.2"
+        android:translationY="40dp"
         app:layout_constraintWidth_percent="0.45"
-        app:layout_constraintHeight_percent="0.75"
+        app:layout_constraintHeight_percent="0.85"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/male_model"
@@ -41,22 +47,24 @@
         app:layout_constraintBottom_toTopOf="@id/button_female"/>
 
     <!-- Button Male -->
+    <!-- Button Male -->
     <Button
         android:id="@+id/button_male"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="Style me"
+        android:textColor="@color/black"
         android:textAllCaps="false"
         android:fontFamily="@font/agbalumo_regular"
-        android:backgroundTint="@android:color/darker_gray"
-        app:cornerRadius="40dp"
-        android:visibility="invisible"
+        android:background="@drawable/button_border_wardrobe"
+        android:visibility="visible"
         app:layout_constraintWidth_percent="0.4"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/button_female"
         app:layout_constraintTop_toBottomOf="@id/male_model"
-        app:layout_constraintVertical_bias="0.3"/>
+        app:layout_constraintVertical_bias="0.3"
+        android:theme="@style/Theme.AppCompat.NoActionBar"/>
 
     <!-- Button Female -->
     <Button
@@ -64,16 +72,17 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="Style me"
+        android:textColor="@color/black"
         android:textAllCaps="false"
         android:fontFamily="@font/agbalumo_regular"
-        android:backgroundTint="@android:color/darker_gray"
-        app:cornerRadius="40dp"
+        android:background="@drawable/button_border_wardrobe"
         android:visibility="visible"
         app:layout_constraintWidth_percent="0.4"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/button_male"
         app:layout_constraintTop_toBottomOf="@id/female_model"
-        app:layout_constraintVertical_bias="0.3"/>
+        app:layout_constraintVertical_bias="0.3"
+        android:theme="@style/Theme.AppCompat.NoActionBar"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

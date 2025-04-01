@@ -87,40 +87,44 @@ public class MyClosetFragment extends Fragment {
     }
 
     private void setupViewPager() {
-        Log.d("VIEWPAGER", "Setting up ViewPager with categories: " + categories);
-        if (pagerAdapter == null) {
-            pagerAdapter = new ClosetAdapter(this, categories);
-            viewPager.setAdapter(pagerAdapter);
-        } else {
-            pagerAdapter.setCategories(categories);
-            pagerAdapter.notifyDataSetChanged();
+        // Check if the fragment is attached
+        if (!isAdded() || getActivity() == null) {
+            Log.w("VIEWPAGER", "Fragment not attached, skipping setup");
+            return;
         }
 
+        Log.d("VIEWPAGER", "Setting up ViewPager with categories: " + categories);
+
+        // Always create a new adapter instance to avoid reuse issues
+        pagerAdapter = new ClosetAdapter(this, categories);
+        viewPager.setAdapter(pagerAdapter); // Line 98: Safe now
+
+        // Detach existing mediator if it exists
         if (tabLayoutMediator != null) {
             tabLayoutMediator.detach();
         }
 
+        // Clear existing tabs
         tabLayout.removeAllTabs();
 
-        tabLayout.removeAllTabs();
-        // Now create and attach the mediator
+        // Create and attach the mediator
         tabLayoutMediator = new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> {
             if (position == 0) {
                 tab.setText("Gallery");
-            } else {
+            } else if (position - 1 < categories.size()) {
                 tab.setText(categories.get(position - 1));
             }
         });
         tabLayoutMediator.attach();
 
+        // Set up tab selection listener
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 if (tab != null) {
                     viewPager.setCurrentItem(tab.getPosition(), true);
-
-                    // Set long click listener on the selected tab if it's a user-added category
-                    if (tab.getPosition() > 0 && !FlaskNetwork.DEFAULT_CATEGORIES.contains(categories.get(tab.getPosition() - 1))) {
+                    if (tab.getPosition() > 0 && tab.getPosition() - 1 < categories.size() &&
+                            !FlaskNetwork.DEFAULT_CATEGORIES.contains(categories.get(tab.getPosition() - 1))) {
                         tab.view.setOnLongClickListener(v -> {
                             showDeleteCategoryDialog(categories.get(tab.getPosition() - 1));
                             return true;
@@ -134,7 +138,6 @@ public class MyClosetFragment extends Fragment {
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
                 if (tab != null) {
-                    // Remove long click listener when tab is unselected
                     tab.view.setOnLongClickListener(null);
                 }
             }
@@ -143,6 +146,7 @@ public class MyClosetFragment extends Fragment {
             public void onTabReselected(TabLayout.Tab tab) {}
         });
 
+        // Sync ViewPager2 with TabLayout
         viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
             public void onPageSelected(int position) {

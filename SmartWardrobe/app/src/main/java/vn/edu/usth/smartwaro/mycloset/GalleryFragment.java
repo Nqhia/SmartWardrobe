@@ -88,14 +88,11 @@ public class GalleryFragment extends Fragment implements GalleryAdapter.OnImageC
         inflater.inflate(R.menu.gallery_menu, menu);
         deleteMenuItem = menu.findItem(R.id.action_delete);
         shareMenuItem = menu.findItem(R.id.action_share);
-        favoriteMenuItem = menu.findItem(R.id.action_favourite); // Khởi tạo favoriteMenuItem
 
         if (deleteMenuItem != null) {
             deleteMenuItem.setVisible(false);
         }
-        if (favoriteMenuItem != null) {
-            favoriteMenuItem.setVisible(false);
-        }
+
         if (shareMenuItem != null) {
             shareMenuItem.setVisible(false);
         }
@@ -132,6 +129,9 @@ public class GalleryFragment extends Fragment implements GalleryAdapter.OnImageC
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.action_delete) {
             showDeleteConfirmationDialog();
+            return true;
+        }else if(item.getItemId() == R.id.action_share){
+            shareSelectedImage();
             return true;
         }
         return super.onOptionsItemSelected(item);

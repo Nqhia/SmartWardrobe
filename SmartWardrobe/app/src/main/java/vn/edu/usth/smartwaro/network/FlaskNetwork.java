@@ -38,7 +38,7 @@ import vn.edu.usth.smartwaro.utils.FileUtils;
 
 public class FlaskNetwork {
     private static final String TAG = "FlaskNetwork";
-    public static final String BASE_URL = "http://192.168.1.11:5000";
+    public static final String BASE_URL = "http://42.118.110.84:5000";
     private final OkHttpClient client;
     private final Handler mainHandler;
     public static final String CATEGORY_UNCATEGORIZED = "uncategorized";

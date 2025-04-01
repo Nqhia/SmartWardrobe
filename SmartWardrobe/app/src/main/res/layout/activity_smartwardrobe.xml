@@ -1,47 +1,217 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:clipChildren="false"
+    android:clipToPadding="false">
 
+    <!-- Toolbar -->
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="5dp">
+        android:layout_height="40dp"
+        android:background="@android:color/white"
+        android:layout_marginTop="5dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center">
             <ImageView
-                android:layout_width="50dp"
-                android:layout_height="60dp"
+                android:layout_width="@dimen/toolbar_icon_size"
+                android:layout_height="@dimen/toolbar_icon_size"
+                android:layout_centerInParent="true"
                 android:src="@drawable/imagelogormbg"
                 app:tint="@color/black" />
-
         </RelativeLayout>
-
     </androidx.appcompat.widget.Toolbar>
 
+    <!-- Fragment Container -->
     <FrameLayout
         android:id="@+id/fragment_container"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/toolbar"
-        android:layout_above="@id/bottom_nav" />
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@android:color/transparent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar"
+        app:layout_constraintBottom_toTopOf="@id/bottom_nav_container"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
-
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottom_nav"
-        android:layout_width="match_parent"
+    <!-- Bottom Navigation Container -->
+    <LinearLayout
+        android:id="@+id/bottom_nav_container"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="7dp"
-        android:background="@color/white"
-        app:itemIconTint="@color/bot_nav_color"
-        app:itemTextColor="@color/black"
-        app:menu="@menu/menu_bottom" />
+        android:background="@android:color/white"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:weightSum="5"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:paddingLeft="@dimen/nav_padding"
+        android:paddingRight="@dimen/nav_padding"
 
-</RelativeLayout>
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <!-- Stylist -->
+        <LinearLayout
+            android:id="@+id/stylist"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="@dimen/nav_padding"
+            android:clipChildren="false"
+            android:clipToPadding="false">
+
+            <ImageView
+                android:id="@+id/stylist_icon"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/mannequin"
+                android:stateListAnimator="@animator/icon_elevation"
+                android:padding="@dimen/nav_padding"
+                android:clipChildren="false"
+                android:clipToPadding="false"
+                app:tint="@color/nav_unselected_color" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Stylist"
+                android:textColor="@color/nav_unselected_color"
+                android:textSize="@dimen/nav_text_size" />
+        </LinearLayout>
+
+        <!-- Weather -->
+        <LinearLayout
+            android:id="@+id/weather"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="@dimen/nav_padding"
+            android:clipChildren="false"
+            android:clipToPadding="false">
+
+            <ImageView
+                android:id="@+id/weather_icon"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/cloudy"
+                android:background="@drawable/circle_black_background"
+                android:stateListAnimator="@animator/icon_elevation"
+                android:padding="@dimen/nav_padding"
+                android:clipChildren="false"
+                android:clipToPadding="false"
+                app:tint="@android:color/white" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Weather"
+                android:textColor="@color/nav_selected_color"
+                android:textSize="@dimen/nav_text_size" />
+        </LinearLayout>
+
+        <!-- Closet -->
+        <LinearLayout
+            android:id="@+id/my_closet"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="@dimen/nav_padding"
+            android:clipChildren="false"
+            android:clipToPadding="false">
+
+            <ImageView
+                android:id="@+id/closet_icon"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/clothes_hanger"
+                android:stateListAnimator="@animator/icon_elevation"
+                android:padding="@dimen/nav_padding"
+                android:clipChildren="false"
+                android:clipToPadding="false"
+                app:tint="@color/nav_unselected_color" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Closet"
+                android:textColor="@color/nav_unselected_color"
+                android:textSize="@dimen/nav_text_size" />
+        </LinearLayout>
+
+        <!-- Set -->
+        <LinearLayout
+            android:id="@+id/favorite"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="@dimen/nav_padding"
+            android:clipChildren="false"
+            android:clipToPadding="false">
+
+            <ImageView
+                android:id="@+id/favorite_icon"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/round_star_outline_24"
+                android:stateListAnimator="@animator/icon_elevation"
+                android:padding="@dimen/nav_padding"
+                android:clipChildren="false"
+                android:clipToPadding="false"
+                app:tint="@color/nav_unselected_color" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Set"
+                android:textColor="@color/nav_unselected_color"
+                android:textSize="@dimen/nav_text_size" />
+        </LinearLayout>
+
+        <!-- Chat -->
+        <LinearLayout
+            android:id="@+id/chatButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="@dimen/nav_padding"
+            android:clipChildren="false"
+            android:clipToPadding="false">
+
+            <ImageView
+                android:id="@+id/chat_icon"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/ic_chat"
+                android:stateListAnimator="@animator/icon_elevation"
+                android:padding="@dimen/nav_padding"
+                android:clipChildren="false"
+                android:clipToPadding="false"
+                app:tint="@color/nav_unselected_color" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Chat"
+                android:textColor="@color/nav_unselected_color"
+                android:textSize="@dimen/nav_text_size" />
+        </LinearLayout>
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

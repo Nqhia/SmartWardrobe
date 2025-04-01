@@ -56,10 +56,17 @@ public class FavoriteSetItemAdapter extends RecyclerView.Adapter<FavoriteSetItem
         if (!fullUrl.startsWith("http")) {
             fullUrl = FlaskNetwork.BASE_URL + (fullUrl.startsWith("/") ? fullUrl : "/" + fullUrl);
         }
+
+        // Clear previous image to prevent ghosting
+        holder.imageView.setImageDrawable(null);
+
         Glide.with(context)
                 .load(fullUrl)
                 .placeholder(R.drawable.placeholder_image)
                 .error(R.drawable.ic_error_image)
+                .dontAnimate()        // Prevent transition animations
+                .dontTransform()      // Prevent transformations
+                .override(800, 800)   // Request specific image size
                 .into(holder.imageView);
 
         // Nếu người dùng long press, báo hiệu xóa item
