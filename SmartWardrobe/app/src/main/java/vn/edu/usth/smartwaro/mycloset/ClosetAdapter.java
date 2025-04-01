@@ -22,7 +22,7 @@ public class ClosetAdapter extends FragmentStateAdapter {
         } else {
             CategoriesFragment fragment = new CategoriesFragment();
             Bundle args = new Bundle();
-            args.putString("category", categories.get(position - 1)); // ✅ Lấy đúng category từ danh sách
+            args.putString("category", categories.get(position - 1)); //Lấy đúng category từ danh sách
             fragment.setArguments(args);
             return fragment;
         }
@@ -30,7 +30,7 @@ public class ClosetAdapter extends FragmentStateAdapter {
 
     @Override
     public int getItemCount() {
-        return categories.size() + 1; // ✅ 1 "Gallery" + danh sách category từ API
+        return categories.size() + 1; // 1 "Gallery" + danh sách category từ API
     }
 
     public void setCategories(List<String> newCategories) {

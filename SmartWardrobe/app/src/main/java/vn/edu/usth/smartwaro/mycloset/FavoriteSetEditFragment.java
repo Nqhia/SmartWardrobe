@@ -155,17 +155,17 @@ public class FavoriteSetEditFragment extends Fragment {
         btnUpdateSet.setOnClickListener(v -> {
             String newSetName = editSetName.getText().toString().trim();
             if (newSetName.isEmpty()) {
-                Toast.makeText(getContext(), "Vui lòng nhập tên set", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Please enter a name for the set", Toast.LENGTH_SHORT).show();
                 return;
             }
             if (shirtImages.isEmpty() || pantImages.isEmpty()) {
-                Toast.makeText(getContext(), "Bạn cần có ít nhất 1 ảnh áo và 1 ảnh quần", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "You should select at least one shirt and one pant", Toast.LENGTH_SHORT).show();
                 return;
             }
 
             // Kiểm tra setId không được null
             if (setId == null || setId.isEmpty()) {
-                Toast.makeText(getContext(), "Lỗi: không tìm thấy ID của set", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Error: Invalid ID", Toast.LENGTH_SHORT).show();
                 return;
             }
 
@@ -204,12 +204,12 @@ public class FavoriteSetEditFragment extends Fragment {
         shirtAdapter.setOnItemRemoveListener((image, position) -> {
             shirtImages.remove(position);
             shirtAdapter.setItems(new ArrayList<>(shirtImages));
-            Toast.makeText(getContext(), "Đã xóa ảnh áo", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "Deleted Image", Toast.LENGTH_SHORT).show();
         });
         pantAdapter.setOnItemRemoveListener((image, position) -> {
             pantImages.remove(position);
             pantAdapter.setItems(new ArrayList<>(pantImages));
-            Toast.makeText(getContext(), "Đã xóa ảnh quần", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "Deleted Image", Toast.LENGTH_SHORT).show();
         });
     }
 }

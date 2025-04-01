@@ -3,9 +3,9 @@
     <!-- Existing colors -->
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="colorPrimary">#6200EE</color>
-    <color name="colorPrimaryDark">#3700B3</color>
-    <color name="colorPrimaryVariant">#AF00EE</color>
+    <color name="colorPrimary">#007AFF</color> <!-- Xanh dương iOS -->
+    <color name="colorPrimaryDark">#0056B3</color> <!-- Xanh dương đậm -->
+    <color name="colorPrimaryVariant">#4D8CFF</color>
     <color name="colorOnPrimary">#FFFFFF</color>
 
     <color name="colorSecondary">#03DAC5</color>
@@ -23,14 +23,15 @@
     <color name="selected_color">#dc4e41</color>
     <color name="unselected_color">#808080</color>
 
-    <color name="background_app">#B00020</color>
+    <color name="background_app">#007AFF</color>
     <color name="background_app_pastel">#FFF0F5</color>
 
     <!-- Add these missing colors -->
-    <color name="purple_500">#6200EE</color>
-    <color name="purple_700">#3700B3</color>
-    <color name="teal_200">#03DAC5</color>
-    <color name="teal_700">#018786</color>
+    <color name="purple_500">#007AFF</color>  <!-- Xanh dương iOS -->
+    <color name="purple_700">#004AAD</color>  <!-- Xanh dương đậm -->
+    <color name="teal_200">#5AC8FA</color>   <!-- Xanh dương nhạt -->
+    <color name="teal_700">#007BB5</color>   <!-- Xanh biển đậm -->
+
 
     <color name="primary">#1C2E46</color>
     <color name="primary_dark">#142232</color>

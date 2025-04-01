@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
@@ -21,8 +22,11 @@
 
     <Button
         android:id="@+id/btnAddNewCategory"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Add New Category"
+        android:backgroundTint="@android:color/darker_gray"
+        app:cornerRadius="40dp"
+        android:layout_gravity="center"
         android:layout_marginTop="16dp"/>
 </LinearLayout>

@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:animateLayoutChanges="true"
-    android:background="@color/background_app"
+    android:background="#3F51B5"
     tools:context=".chat.ChatActivity">
 
     <View
@@ -22,7 +22,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:id="@+id/headerBackground"
-        android:background="@color/background_app"
+        android:background="#3F51B5"
         app:layout_constraintBottom_toTopOf="@id/viewSupporter"
         app:layout_constraintTop_toTopOf="parent"/>
 
