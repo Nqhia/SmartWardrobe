@@ -224,7 +224,7 @@ public class WeatherFragment extends Fragment {
                             }
                             @Override
                             public void onError(String message) {
-                                mainHandler.post(() -> showError("Lỗi tải ảnh áo: " + message));
+                                mainHandler.post(() -> showError("Fail to load images for top wear: " + message));
                             }
                         });
                         flaskNetwork.getUserImages(bottomWear, new FlaskNetwork.OnImagesLoadedListener() {
@@ -238,7 +238,7 @@ public class WeatherFragment extends Fragment {
                             }
                             @Override
                             public void onError(String message) {
-                                mainHandler.post(() -> showError("Lỗi tải ảnh quần: " + message));
+                                mainHandler.post(() -> showError("Fail to load images for bottom wear: " + message));
                             }
                         });
                     }

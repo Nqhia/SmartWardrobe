@@ -16,7 +16,7 @@
             android:id="@+id/editSetName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Nhập tên set đồ"
+            android:hint="Edit Name"
             android:padding="8dp"
             android:layout_marginBottom="16dp" />
 
@@ -136,7 +136,9 @@
             android:layout_height="wrap_content"
             android:text="Save Set"
             android:layout_marginTop="24dp"
-            android:layout_gravity="center_horizontal" />
+            android:layout_gravity="center_horizontal"
+            android:backgroundTint="@android:color/darker_gray"
+            app:cornerRadius="40dp"/>
 
     </LinearLayout>
 </ScrollView>

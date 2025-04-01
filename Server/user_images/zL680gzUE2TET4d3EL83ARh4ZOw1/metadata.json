@@ -1,0 +1,47 @@
+{
+    "user_id": "zL680gzUE2TET4d3EL83ARh4ZOw1",
+    "images": {
+        "processed_20250401_063425_upload_1743464074591_processed_1743464069468.png": {
+            "category": "uncategorized",
+            "timestamp": "20250401_063425",
+            "original_filename": "upload_1743464074591_processed_1743464069468.png"
+        },
+        "processed_20250401_063708_upload_1743464236673_processed_1743464110122.png": {
+            "category": "short sleeves",
+            "timestamp": "20250401_063708",
+            "original_filename": "upload_1743464236673_processed_1743464110122.png"
+        }
+    },
+    "categories": {
+        "uncategorized": [
+            "processed_20250401_063425_upload_1743464074591_processed_1743464069468.png"
+        ],
+        "long sleeves": [],
+        "short sleeves": [
+            "processed_20250401_063708_upload_1743464236673_processed_1743464110122.png"
+        ],
+        "long leggings": [],
+        "short leggings": []
+    },
+    "favorite_sets": [
+        {
+            "id": "a02eb872-7b81-4035-80b5-1431006ffd50",
+            "set_name": "gh",
+            "shirt_images": [
+                {
+                    "filename": "processed_20250401_063708_upload_1743464236673_processed_1743464110122.png",
+                    "category": "short sleeves",
+                    "url": "http://192.168.1.11:5000/images/zL680gzUE2TET4d3EL83ARh4ZOw1/short%20sleeves/processed_20250401_063708_upload_1743464236673_processed_1743464110122.png"
+                }
+            ],
+            "pant_images": [
+                {
+                    "filename": "processed_20250401_063425_upload_1743464074591_processed_1743464069468.png",
+                    "category": "uncategorized",
+                    "url": "http://192.168.1.11:5000/images/zL680gzUE2TET4d3EL83ARh4ZOw1/uncategorized/processed_20250401_063425_upload_1743464074591_processed_1743464069468.png"
+                }
+            ],
+            "timestamp": "2025-04-01T07:50:15.664808"
+        }
+    ]
+}

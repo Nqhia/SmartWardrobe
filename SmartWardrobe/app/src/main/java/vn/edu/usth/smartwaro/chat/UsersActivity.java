@@ -95,12 +95,12 @@ public class UsersActivity extends AppCompatActivity implements UserListener{
                                         if (friends.size() > 0) {
                                             showFriends(friends); // Hiển thị danh sách bạn bè
                                         } else {
-                                            showErrorMessage("Không có bạn bè!");
+                                            showErrorMessage("Empty!");
                                         }
                                     });
                         }
                     } else {
-                        showErrorMessage("Không thể tải danh sách bạn bè!");
+                        showErrorMessage("Can Not Load Friend List!");
                     }
                 });
     }

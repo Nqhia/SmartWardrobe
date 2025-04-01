@@ -113,7 +113,7 @@ public class FriendRequestActivity extends AppCompatActivity {
                                         .document(request.getId())
                                         .delete()
                                         .addOnSuccessListener(unused2 -> {
-                                            Toast.makeText(this, "Đã chấp nhận lời mời kết bạn!", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(this, "Accepted Friend Request!", Toast.LENGTH_SHORT).show();
                                             // Xóa khỏi giao diện
                                             FriendRequestAdapter adapter = (FriendRequestAdapter) binding.usersRecyclerView.getAdapter();
                                             if (adapter != null) {
@@ -132,7 +132,7 @@ public class FriendRequestActivity extends AppCompatActivity {
                 .document(request.getId())
                 .delete()
                 .addOnSuccessListener(unused -> {
-                    Toast.makeText(this, "Đã từ chối lời mời kết bạn!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Rejected Friend Request!", Toast.LENGTH_SHORT).show();
                     // Xóa lời mời khỏi danh sách hiển thị
                     FriendRequestAdapter adapter = (FriendRequestAdapter) binding.usersRecyclerView.getAdapter();
                     if (adapter != null) {
@@ -155,7 +155,7 @@ public class FriendRequestActivity extends AppCompatActivity {
                             sendFriendRequest(user); // Gửi lời mời kết bạn
                         }
                     } else {
-                        Toast.makeText(this, "Không tìm thấy người dùng!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, "Not Found User!", Toast.LENGTH_SHORT).show();
                     }
                 });
     }
@@ -165,7 +165,7 @@ public class FriendRequestActivity extends AppCompatActivity {
         String currentUserId = preferenceManager.getString(Constants.KEY_USER_ID);
 
         if (currentUserId.equals(user.getId())) {
-            Toast.makeText(this, "Bạn không thể kết bạn với chính mình!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Can not send friend request to yourself!", Toast.LENGTH_SHORT).show();
             return; // Dừng lại, không tiếp tục gửi lời mời
         }
         // Kiểm tra xem đã là bạn bè chưa
@@ -176,7 +176,7 @@ public class FriendRequestActivity extends AppCompatActivity {
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful() && task.getResult() != null && !task.getResult().isEmpty()) {
                         // Nếu đã là bạn bè
-                        Toast.makeText(this, "Người này đã là bạn bè của bạn!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, "Already friends!", Toast.LENGTH_SHORT).show();
                     } else {
                         // Nếu chưa là bạn bè, tiến hành gửi lời mời
                         proceedToSendFriendRequest(user);
@@ -201,10 +201,10 @@ public class FriendRequestActivity extends AppCompatActivity {
         database.collection(Constants.KEY_COLLECTION_FRIEND_REQUESTS)
                 .add(request)
                 .addOnSuccessListener(documentReference -> {
-                    Toast.makeText(this, "Lời mời kết bạn đã được gửi!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Sent Friend Request!", Toast.LENGTH_SHORT).show();
                 })
                 .addOnFailureListener(e -> {
-                    Toast.makeText(this, "Không thể gửi lời mời kết bạn!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Can Not Sent Friend Request!", Toast.LENGTH_SHORT).show();
                 });
     }
 

@@ -140,7 +140,7 @@ public class ShareUsersFragment extends Fragment implements UserListener {
     }
 
     private void showErrorMessage() {
-        binding.textErrorMessage.setText(String.format("%s", "Không có người dùng nào"));
+        binding.textErrorMessage.setText(String.format("%s", "Invalid User"));
         binding.textErrorMessage.setVisibility(View.VISIBLE);
     }
 

@@ -73,13 +73,13 @@ public class FavoriteSetCreationFragment extends Fragment {
         shirtAdapter.setOnItemRemoveListener((image, position) -> {
             selectedShirtImages.remove(position);
             shirtAdapter.setItems(new ArrayList<>(selectedShirtImages));
-            Toast.makeText(getContext(), "Đã xóa ảnh", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "Deleted Image", Toast.LENGTH_SHORT).show();
         });
         // Xử lý sự kiện xóa ảnh cho quần
         pantAdapter.setOnItemRemoveListener((image, position) -> {
             selectedPantImages.remove(position);
             pantAdapter.setItems(new ArrayList<>(selectedPantImages));
-            Toast.makeText(getContext(), "Đã xóa ảnh", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "Deleted Image", Toast.LENGTH_SHORT).show();
         });
 
         // Lắng nghe kết quả chọn ảnh từ GallerySelectionFragment cho áo
@@ -118,11 +118,11 @@ public class FavoriteSetCreationFragment extends Fragment {
         btnSaveSet.setOnClickListener(v -> {
             String setName = editSetName.getText().toString().trim();
             if (setName.isEmpty()) {
-                Toast.makeText(getContext(), "Vui lòng nhập tên set đồ", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Please enter a name for the set", Toast.LENGTH_SHORT).show();
                 return;
             }
             if (selectedShirtImages.isEmpty() || selectedPantImages.isEmpty()) {
-                Toast.makeText(getContext(), "Bạn cần chọn ít nhất 1 áo và 1 quần", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "You should select at least one shirt and one pant", Toast.LENGTH_SHORT).show();
                 return;
             }
             List<String> shirtFilenames = new ArrayList<>();
