@@ -28,7 +28,7 @@ public class FileUtils {
                     return null;
                 }
 
-                byte[] buffer = new byte[4 * 1024]; // 4kb buffer
+                byte[] buffer = new byte[4 * 1024];
                 int read;
 
                 while ((read = inputStream.read(buffer)) != -1) {

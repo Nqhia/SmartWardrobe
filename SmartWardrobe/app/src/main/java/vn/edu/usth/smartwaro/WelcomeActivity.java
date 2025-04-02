@@ -37,13 +37,11 @@ public class WelcomeActivity extends AppCompatActivity {
         preferenceManager = new PreferenceManager(getApplicationContext());
 
 
-        // Check if user is already logged in
         if (preferenceManager.getBoolean(Constants.KEY_IS_SIGNED_IN)) {
             navigateToMain();
             return;
         }
 
-        // Check if first launch
         if (!isFirstLaunch()) {
             navigateToLogin();
             return;

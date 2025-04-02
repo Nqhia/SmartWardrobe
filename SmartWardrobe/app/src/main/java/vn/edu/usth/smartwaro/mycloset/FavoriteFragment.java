@@ -29,13 +29,12 @@ public class FavoriteFragment extends Fragment implements GalleryAdapter.OnImage
     private GalleryAdapter adapter;
     private ProgressBar progressBar;
     private FlaskNetwork flaskNetwork;
-    private List<GalleryImage> allImages = new ArrayList<>();  // Tất cả ảnh từ server
-    private List<GalleryImage> favouriteImages = new ArrayList<>(); // Ảnh lọc favourite
+    private List<GalleryImage> allImages = new ArrayList<>();
+    private List<GalleryImage> favouriteImages = new ArrayList<>();
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // Nếu muốn có menu, setHasOptionsMenu(true);
     }
 
     @Nullable
@@ -47,7 +46,6 @@ public class FavoriteFragment extends Fragment implements GalleryAdapter.OnImage
 
         recyclerView = view.findViewById(R.id.favouriteRecyclerView);
         progressBar = new ProgressBar(requireContext());
-        // Bạn có thể thêm ProgressBar vào layout hoặc tùy chỉnh hiển thị
 
         flaskNetwork = new FlaskNetwork();
         setupRecyclerView();
@@ -60,14 +58,12 @@ public class FavoriteFragment extends Fragment implements GalleryAdapter.OnImage
         adapter = new GalleryAdapter(requireContext());
         adapter.setOnImageClickListener(this);
 
-        // Tính toán số cột Grid tùy theo màn hình
         int spanCount = getResources().getConfiguration().screenWidthDp / 180;
         recyclerView.setLayoutManager(new GridLayoutManager(requireContext(), Math.max(2, spanCount)));
         recyclerView.setAdapter(adapter);
     }
 
     private void loadAllImages() {
-        // Gọi getUserImages không truyền category => lấy tất cả ảnh
         flaskNetwork.getUserImages(null, new FlaskNetwork.OnImagesLoadedListener() {
             @Override
             public void onSuccess(String[] imageUrls) {
@@ -76,14 +72,7 @@ public class FavoriteFragment extends Fragment implements GalleryAdapter.OnImage
                     try {
                         allImages.clear();
                         for (String url : imageUrls) {
-                            // server trả về JSON object => Mình cần parse sang GalleryImage
-                            // => Thực tế code server trả về list object { url, category, filename, is_favorite }
-                            // => code getUserImages() trong FlaskNetwork.java đang parse sang string[]
-                            //    => cần tùy chỉnh cho khớp (xem chú thích bên dưới).
                         }
-                        // 1. Nếu getUserImages() chỉ trả về mảng url String[],
-                        //    ta cần 1 endpoint hoặc parse chi tiết JSON
-                        // 2. Giả sử ta đã có 'is_favorite' => Lọc:
                         favouriteImages.clear();
                         for (GalleryImage img : allImages) {
                             if (img.isFavorite()) {
@@ -111,14 +100,11 @@ public class FavoriteFragment extends Fragment implements GalleryAdapter.OnImage
 
     @Override
     public void onImageClick(GalleryImage image) {
-        // Tương tự GalleryFragment: mở ImageViewerFragment, v.v...
-        // Hoặc chỉ Toast
         Toast.makeText(requireContext(), "Clicked: " + image.getFilename(), Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onSelectionChanged(int selectedCount) {
-        // Không xử lý multi-select trong favourite nếu không cần
     }
 
 }

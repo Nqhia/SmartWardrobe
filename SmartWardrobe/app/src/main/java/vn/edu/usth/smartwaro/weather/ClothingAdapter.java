@@ -47,10 +47,8 @@ public class ClothingAdapter extends RecyclerView.Adapter<ClothingAdapter.Clothi
     public void onBindViewHolder(@NonNull ClothingViewHolder holder, int position) {
         String imageUrl = imageUrls.get(position);
 
-        // Construct the full URL using the FlaskNetwork BASE_URL
         String fullImageUrl = FlaskNetwork.BASE_URL + imageUrl;
 
-        // Load image using Glide with error handling and caching
         Glide.with(holder.itemView.getContext())
                 .load(fullImageUrl)
                 .apply(new RequestOptions()
@@ -60,7 +58,6 @@ public class ClothingAdapter extends RecyclerView.Adapter<ClothingAdapter.Clothi
                         .centerCrop())
                 .into(holder.imageView);
 
-        // Set click listener
         holder.itemView.setOnClickListener(v -> {
             if (listener != null) {
                 listener.onItemClick(imageUrl, position);

@@ -37,7 +37,6 @@ public class ImageViewerFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_gallery_image_detail, container, false);
 
-        // Hide status bar and action bar
         hideSystemUI();
 
         viewPager = view.findViewById(R.id.view_pager);
@@ -83,12 +82,10 @@ public class ImageViewerFragment extends Fragment {
 
     private void hideSystemUI() {
         if (getActivity() != null) {
-            // Hide the action bar
             if (getActivity() instanceof AppCompatActivity) {
                 ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
             }
 
-            // Hide the status bar and make the content fullscreen
             getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
             getActivity().getWindow().getDecorView().setSystemUiVisibility(
                     View.SYSTEM_UI_FLAG_LAYOUT_STABLE |
@@ -103,12 +100,10 @@ public class ImageViewerFragment extends Fragment {
 
     private void showSystemUI() {
         if (getActivity() != null) {
-            // Show the action bar
             if (getActivity() instanceof AppCompatActivity) {
                 ((AppCompatActivity) getActivity()).getSupportActionBar().show();
             }
 
-            // Show the status bar and restore normal UI
             getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
             getActivity().getWindow().getDecorView().setSystemUiVisibility(
                     View.SYSTEM_UI_FLAG_LAYOUT_STABLE |

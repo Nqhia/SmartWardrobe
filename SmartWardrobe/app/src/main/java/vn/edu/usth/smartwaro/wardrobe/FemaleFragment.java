@@ -212,10 +212,8 @@ public class FemaleFragment extends BaseWardrobeFragment {
 
         scaleGestureDetector = new ScaleGestureDetector(requireContext(), new ScaleListener());
 
-        // Ẩn tất cả buy buttons khi khởi tạo
         hideAllBuyButtons(view);
 
-        // Clothing listeners với hiển thị buy button
         buttontopBlazer.setOnClickListener(v -> handleClothingClick(topFemale, shirtImages, 0, true));
         buttontopCar.setOnClickListener(v -> handleClothingClick(topFemale, shirtImages, 1, true));
         buttontopTank.setOnClickListener(v -> handleClothingClick(topFemale, shirtImages, 2, true));
@@ -233,7 +231,6 @@ public class FemaleFragment extends BaseWardrobeFragment {
         buttonloafer.setOnClickListener(v -> handleClothingClick(footwareFemale, footwareImages, 0, false));
         buttonheels.setOnClickListener(v -> handleClothingClick(footwareFemale, footwareImages, 1, false));
 
-        // Setup listener cho các buy buttons
         setupBuyButtons(view);
 
         buttonChangeSkinColor.setOnClickListener(v -> {
@@ -254,7 +251,6 @@ public class FemaleFragment extends BaseWardrobeFragment {
         });
     }
 
-    // Xử lý khi bấm vào nút quần áo mặc định
     private void handleClothingClick(ImageView view, int[] images, int index, boolean hideDress) {
         updateClothingSafely(view, images, index);
         hideAllCustomClothing();
@@ -272,7 +268,6 @@ public class FemaleFragment extends BaseWardrobeFragment {
         }
     }
 
-    // Setup listener cho buy buttons
     private void setupBuyButtons(View view) {
         for (int i = 0; i < buyButtonIds.length; i++) {
             int index = i;
@@ -283,7 +278,6 @@ public class FemaleFragment extends BaseWardrobeFragment {
         }
     }
 
-    // Ẩn tất cả buy buttons
     private void hideAllBuyButtons(View view) {
         for (int buyButtonId : buyButtonIds) {
             ImageButton buyButton = view.findViewById(buyButtonId);
@@ -293,16 +287,14 @@ public class FemaleFragment extends BaseWardrobeFragment {
         }
     }
 
-    // Chuyển đổi index trong danh mục thành index trong baseProductLinks
     private int getAffiliateIndex(ImageView view, int index) {
-        if (view == topFemale) return index; // Top: 0-4
-        if (view == botFemale) return 5 + index; // Bot: 5-7
-        if (view == tubedress) return 8 + index; // Dress: 8-10
-        if (view == footwareFemale) return 11 + index; // Footware: 11-12
+        if (view == topFemale) return index;
+        if (view == botFemale) return 5 + index;
+        if (view == tubedress) return 8 + index;
+        if (view == footwareFemale) return 11 + index;
         return -1;
     }
 
-    // Phương thức mở AffiliateFragment
     private void openAffiliateFragment(int index) {
         if (index >= 0 && index < baseProductLinks.length) {
             String fullUrl = baseProductLinks[index] + affiliateCode;
@@ -319,7 +311,6 @@ public class FemaleFragment extends BaseWardrobeFragment {
         }
     }
 
-    // Phương thức lấy hình ảnh sản phẩm theo index
     private int getProductImage(int index) {
         if (index < 5) return shirtImages[index];
         else if (index < 8) return pantsImages[index - 5];
@@ -327,7 +318,6 @@ public class FemaleFragment extends BaseWardrobeFragment {
         else return footwareImages[index - 11];
     }
 
-    // Phương thức an toàn để cập nhật quần áo, tránh crash
     private void updateClothingSafely(ImageView view, int[] images, int index) {
         try {
             if (index >= 0 && index < images.length) {

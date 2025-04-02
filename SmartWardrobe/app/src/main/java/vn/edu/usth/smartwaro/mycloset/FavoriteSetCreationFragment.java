@@ -29,7 +29,6 @@ public class FavoriteSetCreationFragment extends Fragment {
     private RecyclerView recyclerViewShirts, recyclerViewPants;
     private Button btnAddShirt, btnAddPant, btnSaveSet;
     private FavoriteSetItemAdapter shirtAdapter, pantAdapter;
-    // Danh sách lưu ảnh đã chọn
     private List<GalleryImage> selectedShirtImages = new ArrayList<>();
     private List<GalleryImage> selectedPantImages = new ArrayList<>();
 
@@ -41,7 +40,6 @@ public class FavoriteSetCreationFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_favorite_set_creation, container, false);
 
-        // Ánh xạ view từ layout
         editSetName = view.findViewById(R.id.editSetName);
         recyclerViewShirts = view.findViewById(R.id.recyclerViewShirts);
         recyclerViewPants = view.findViewById(R.id.recyclerViewPants);
@@ -52,37 +50,30 @@ public class FavoriteSetCreationFragment extends Fragment {
         shirtAdapter = new FavoriteSetItemAdapter();
         pantAdapter = new FavoriteSetItemAdapter();
 
-
-        // Thiết lập RecyclerView cho áo với LinearLayoutManager ngang
         LinearLayoutManager shirtLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
         recyclerViewShirts.setLayoutManager(shirtLayoutManager);
         recyclerViewShirts.setAdapter(shirtAdapter);
-        // Attach SnapHelper để tạo hiệu ứng slide
+
         LinearSnapHelper shirtSnapHelper = new LinearSnapHelper();
         shirtSnapHelper.attachToRecyclerView(recyclerViewShirts);
 
-        // Thiết lập RecyclerView cho quần với LinearLayoutManager ngang
         LinearLayoutManager pantLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
         recyclerViewPants.setLayoutManager(pantLayoutManager);
         recyclerViewPants.setAdapter(pantAdapter);
-        // Attach SnapHelper để tạo hiệu ứng slide
         LinearSnapHelper pantSnapHelper = new LinearSnapHelper();
         pantSnapHelper.attachToRecyclerView(recyclerViewPants);
 
-        // Xử lý sự kiện xóa ảnh cho áo
         shirtAdapter.setOnItemRemoveListener((image, position) -> {
             selectedShirtImages.remove(position);
             shirtAdapter.setItems(new ArrayList<>(selectedShirtImages));
             Toast.makeText(getContext(), "Deleted Image", Toast.LENGTH_SHORT).show();
         });
-        // Xử lý sự kiện xóa ảnh cho quần
         pantAdapter.setOnItemRemoveListener((image, position) -> {
             selectedPantImages.remove(position);
             pantAdapter.setItems(new ArrayList<>(selectedPantImages));
             Toast.makeText(getContext(), "Deleted Image", Toast.LENGTH_SHORT).show();
         });
 
-        // Lắng nghe kết quả chọn ảnh từ GallerySelectionFragment cho áo
         getParentFragmentManager().setFragmentResultListener("shirt_selection", this, (requestKey, bundle) -> {
             GalleryImage selectedImage = bundle.getParcelable(GallerySelectionFragment.BUNDLE_KEY_FILENAME);
             if (selectedImage != null) {
@@ -90,7 +81,6 @@ public class FavoriteSetCreationFragment extends Fragment {
                 shirtAdapter.setItems(new ArrayList<>(selectedShirtImages));
             }
         });
-        // Lắng nghe kết quả chọn ảnh từ GallerySelectionFragment cho quần
         getParentFragmentManager().setFragmentResultListener("pant_selection", this, (requestKey, bundle) -> {
             GalleryImage selectedImage = bundle.getParcelable(GallerySelectionFragment.BUNDLE_KEY_FILENAME);
             if (selectedImage != null) {
@@ -100,7 +90,6 @@ public class FavoriteSetCreationFragment extends Fragment {
         });
 
         btnAddShirt.setOnClickListener(v -> {
-            // Mở GallerySelectionFragment với tham số "shirt"
             getParentFragmentManager().beginTransaction()
                     .add(R.id.fragment_container, GallerySelectionFragment.newInstance("shirt"))
                     .addToBackStack(null)
@@ -108,7 +97,6 @@ public class FavoriteSetCreationFragment extends Fragment {
         });
 
         btnAddPant.setOnClickListener(v -> {
-            // Mở GallerySelectionFragment với tham số "pant"
             getParentFragmentManager().beginTransaction()
                     .add(R.id.fragment_container, GallerySelectionFragment.newInstance("pant"))
                     .addToBackStack(null)

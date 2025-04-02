@@ -26,7 +26,6 @@ public class FavoriteSetListAdapter extends RecyclerView.Adapter<FavoriteSetList
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        // Inflate layout chứa TextView tvSetName
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_favorite_set, parent, false);
         return new ViewHolder(view);

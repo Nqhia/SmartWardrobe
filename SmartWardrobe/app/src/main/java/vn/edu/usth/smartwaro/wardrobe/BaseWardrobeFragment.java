@@ -26,16 +26,13 @@ public abstract class BaseWardrobeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(getLayoutResourceId(), container, false);
 
-        // Initialize common views
         modelView = view.findViewById(getModelViewId());
         primaryScrollView = view.findViewById(R.id.primary_scroll_view);
         modelContainer = view.findViewById(R.id.model_container);
         buttonShowFriends = view.findViewById(R.id.button_show_friends);
 
-        // Setup overlay scroll views (implement in subclasses)
         setupOverlayScrollViews(view);
 
-        // Close overlays when touching outside
         view.setOnTouchListener((v, event) -> {
             for (ScrollView scrollView : overlayScrollViews) {
                 if (scrollView.getVisibility() == View.VISIBLE) {
@@ -48,7 +45,7 @@ public abstract class BaseWardrobeFragment extends Fragment {
         });
 
         setListeners();
-        setupClothingListeners(view); // Abstract method for clothing-specific listeners
+        setupClothingListeners(view);
 
         return view;
     }

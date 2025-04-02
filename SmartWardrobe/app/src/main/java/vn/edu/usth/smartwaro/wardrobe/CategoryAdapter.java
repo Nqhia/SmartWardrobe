@@ -19,7 +19,6 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
     private List<FlaskNetwork.Category> categoryList;
     private OnImageClickListener onImageClickListener;
 
-    // Interface để xử lý sự kiện click vào hình ảnh
     public interface OnImageClickListener {
         void onImageClick(String category, String imageUrl);
     }

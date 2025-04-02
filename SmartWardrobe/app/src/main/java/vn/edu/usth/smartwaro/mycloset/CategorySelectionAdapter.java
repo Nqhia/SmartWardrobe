@@ -41,7 +41,6 @@ public class CategorySelectionAdapter extends RecyclerView.Adapter<CategorySelec
         String category = categories.get(position);
         holder.categoryText.setText(category);
 
-        // Highlight selected category
         holder.itemView.setBackgroundColor(category.equals(selectedCategory)
                 ? Color.parseColor("#E0E0E0")
                 : Color.TRANSPARENT);

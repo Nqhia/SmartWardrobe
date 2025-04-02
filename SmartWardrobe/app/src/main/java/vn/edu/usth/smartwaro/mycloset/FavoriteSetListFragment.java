@@ -37,17 +37,15 @@ public class FavoriteSetListFragment extends Fragment {
         recyclerView = view.findViewById(R.id.recyclerViewFavoriteSetList);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         adapter = new FavoriteSetListAdapter(favoriteSets, set -> {
-            // Tạo instance của FavoriteSetEditFragment với dữ liệu từ set
             FavoriteSetEditFragment editFragment = FavoriteSetEditFragment.newInstance(
-                    set.getId(),      // Thêm setId
+                    set.getId(),
                     set.getSetName(),
-                    new ArrayList<>(set.getShirtImages()),    // Sử dụng getter cho ảnh áo
-                    new ArrayList<>(set.getPantsImages())       // Sử dụng getter cho ảnh quần
+                    new ArrayList<>(set.getShirtImages()),
+                    new ArrayList<>(set.getPantsImages())
             );
-            // Thực hiện giao dịch Fragment: thay thế fragment hiện tại bằng editFragment
             getActivity().getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, editFragment) // R.id.fragment_container là id của ViewGroup chứa fragment trong layout Activity
-                    .addToBackStack(null) // Thêm vào back stack để có thể quay lại
+                    .replace(R.id.fragment_container, editFragment)
+                    .addToBackStack(null)
                     .commit();
         });
 

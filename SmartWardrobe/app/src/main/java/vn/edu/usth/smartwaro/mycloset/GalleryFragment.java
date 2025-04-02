@@ -265,7 +265,7 @@ public class GalleryFragment extends Fragment implements GalleryAdapter.OnImageC
             return "";
         }
         if (url.startsWith("http")) {
-            return url; // Already a full URL
+            return url;
         }
         return BASE_URL + url;
     }
@@ -278,7 +278,7 @@ public class GalleryFragment extends Fragment implements GalleryAdapter.OnImageC
         }
 
         GalleryImage imageToShare = selectedImages.get(0);
-        String imageUrl = formatImageUrl(imageToShare.getUrl()); // Ensure full URL
+        String imageUrl = formatImageUrl(imageToShare.getUrl());
         progressBar.setVisibility(View.VISIBLE);
 
         Log.d(TAG, "Attempting to load image for sharing: " + imageUrl);
@@ -316,7 +316,7 @@ public class GalleryFragment extends Fragment implements GalleryAdapter.OnImageC
                                 .addToBackStack(null)
                                 .commit();
 
-                        adapter.setMultiSelectMode(false); // Exit selection mode
+                        adapter.setMultiSelectMode(false);
                     }
 
                     @Override
@@ -333,33 +333,6 @@ public class GalleryFragment extends Fragment implements GalleryAdapter.OnImageC
                         Log.e(TAG, "Failed to load image for sharing: " + imageUrl);
                     }
                 });
-    }
-
-    private void favouriteSelectedImages() {
-        List<GalleryImage> selectedImages = adapter.getSelectedImages();
-        if (selectedImages.isEmpty()) {
-            Toast.makeText(requireContext(), "Chọn ít nhất 1 hình để thêm vào favourite", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        // Thêm từng hình được chọn vào favourite set
-        for (GalleryImage image : selectedImages) {
-            new FlaskNetwork().addImageToFavoriteSet(image.getFilename(), new FlaskNetwork.OnFavoriteOperationListener() {
-                @Override
-                public void onSuccess(String message) {
-                    requireActivity().runOnUiThread(() ->
-                            Toast.makeText(requireContext(), "Đã thêm " + image.getFilename() + " vào favourite", Toast.LENGTH_SHORT).show()
-                    );
-                }
-                @Override
-                public void onError(String message) {
-                    requireActivity().runOnUiThread(() ->
-                            Toast.makeText(requireContext(), "Lỗi khi thêm " + image.getFilename() + ": " + message, Toast.LENGTH_SHORT).show()
-                    );
-                }
-            });
-        }
-        // Thoát chế độ chọn nhiều nếu đang hoạt động
-        adapter.setMultiSelectMode(false);
     }
 
 }

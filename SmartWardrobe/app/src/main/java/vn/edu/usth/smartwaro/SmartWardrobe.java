@@ -48,23 +48,19 @@ public class SmartWardrobe extends AppCompatActivity {
 
         firebaseAuth = FirebaseAuth.getInstance();
 
-        // Check if user is logged in
         if (firebaseAuth.getCurrentUser() == null) {
             redirectToLogin();
-            return;  // Important: stop the execution of onCreate
+            return;
         }
 
         setContentView(R.layout.activity_smartwardrobe);
 
-        // Setup auth state listener
         setupAuthStateListener();
 
-        // Setup toolbar
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
 
-        // Initialize bottom navigation views
         View stylistView = findViewById(R.id.stylist);
         View weatherView = findViewById(R.id.weather);
         View closetView = findViewById(R.id.my_closet);
@@ -77,11 +73,9 @@ public class SmartWardrobe extends AppCompatActivity {
         ImageView favoriteIcon = findViewById(R.id.favorite_icon);
         ImageView chatIcon = findViewById(R.id.chat_icon);
 
-        // Setup bottom navigation
         setupBottomNavigation(stylistView, weatherView, closetView, favoriteView, chatView,
                 stylistIcon, weatherIcon, closetIcon, favoriteIcon, chatIcon);
 
-        // Load saved tab or default
         SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         selectedTab = prefs.getInt(KEY_SELECTED_TAB, R.id.stylist);
 
@@ -192,14 +186,12 @@ public class SmartWardrobe extends AppCompatActivity {
                                      View favoriteView, View chatView, ImageView stylistIcon,
                                      ImageView weatherIcon, ImageView closetIcon, ImageView favoriteIcon,
                                      ImageView chatIcon) {
-        // Reset all to unselected state
         resetNavigationItem(stylistView, stylistIcon, R.id.stylist_icon);
         resetNavigationItem(weatherView, weatherIcon, R.id.weather_icon);
         resetNavigationItem(closetView, closetIcon, R.id.closet_icon);
         resetNavigationItem(favoriteView, favoriteIcon, R.id.favorite_icon);
         resetNavigationItem(chatView, chatIcon, R.id.chat_icon);
 
-        // Set selected state for the clicked item
         if (selectedItemId == R.id.stylist) {
             applySelectedAnimation(stylistIcon);
             stylistIcon.setBackgroundResource(R.drawable.circle_black_background);
@@ -233,13 +225,11 @@ public class SmartWardrobe extends AppCompatActivity {
     }
 
     private void applySelectedAnimation(ImageView icon) {
-        // Reset scale and position to normal
         icon.setScaleX(1.0f);
         icon.setScaleY(1.0f);
         icon.setElevation(4f);
         icon.setTranslationY(0f);
 
-        // Create animation for scaling, elevation, and translation
         AnimatorSet animatorSet = new AnimatorSet();
 
         ObjectAnimator scaleX = ObjectAnimator.ofFloat(icon, "scaleX", 1.0f, 1.3f);
@@ -254,13 +244,12 @@ public class SmartWardrobe extends AppCompatActivity {
     }
 
     private void resetNavigationItem(View view, ImageView icon, int iconId) {
-        // Reset animation
         icon.setScaleX(1.0f);
         icon.setScaleY(1.0f);
         icon.setElevation(4f);
         icon.setTranslationY(0f);
 
-        icon.setBackground(null); // Remove background
+        icon.setBackground(null);
         icon.setColorFilter(ContextCompat.getColor(this, R.color.nav_unselected_color));
         setTextColor(view, R.color.nav_unselected_color);
     }

@@ -10,7 +10,6 @@ public class FavoriteSet {
     @SerializedName("set_name")
     private String setName;
 
-    // Thêm annotation để ánh xạ đúng key từ JSON
     @SerializedName("shirt_images")
     private List<GalleryImage> shirtImages;
 

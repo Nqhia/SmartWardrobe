@@ -14,7 +14,6 @@ public class FirebaseService {
     private final DatabaseReference databaseReference;
     private final StorageReference storageReference;
 
-    // Database path constants
     public static final String USERS_PATH = "users";
     public static final String DEVICES_PATH = "devices";
     public static final String NOTIFICATIONS_PATH = "notifications";
@@ -35,17 +34,14 @@ public class FirebaseService {
         return instance;
     }
 
-    // Get Firebase Authentication instance
     public FirebaseAuth getFirebaseAuth() {
         return firebaseAuth;
     }
 
-    // Get Database Reference
     public DatabaseReference getDatabaseReference() {
         return databaseReference;
     }
 
-    // Get Storage Reference
     public StorageReference getStorageReference() {
         return storageReference;
     }

@@ -38,7 +38,7 @@ import vn.edu.usth.smartwaro.utils.FileUtils;
 
 public class FlaskNetwork {
     private static final String TAG = "FlaskNetwork";
-    public static final String BASE_URL = "http://42.118.110.84:5000";
+    public static final String BASE_URL = "http://172.20.10.2:5000";
     private final OkHttpClient client;
     private final Handler mainHandler;
     public static final String CATEGORY_UNCATEGORIZED = "uncategorized";
@@ -310,7 +310,6 @@ public class FlaskNetwork {
                     String topWear = jsonObject.optString("topWear", "long sleeves");
                     String bottomWear = jsonObject.optString("bottomWear", "long leggings");
 
-                    // Kiểm tra danh sách hình ảnh
                     JSONArray topImagesArray = jsonObject.optJSONArray("topImages");
                     JSONArray bottomImagesArray = jsonObject.optJSONArray("bottomImages");
 
@@ -329,7 +328,6 @@ public class FlaskNetwork {
                         }
                     }
 
-                    // Gửi dữ liệu về UI
                     mainHandler.post(() -> listener.onSuccess(topWear, bottomWear));
                 }
             } catch (Exception e) {
@@ -346,7 +344,6 @@ public class FlaskNetwork {
             try {
                 String userId = getCurrentUserId();
 
-                // Create JSON request body
                 JSONObject jsonBody = new JSONObject();
                 jsonBody.put("user_id", userId);
                 jsonBody.put("filenames", new JSONArray(Arrays.asList(filenames)));
@@ -489,7 +486,7 @@ public class FlaskNetwork {
 
                 Request request = new Request.Builder()
                         .url(BASE_URL + "/remove-categories")
-                        .delete(requestBody)  // Using DELETE method as specified in server
+                        .delete(requestBody)
                         .build();
 
                 try (Response response = client.newCall(request).execute()) {
@@ -512,42 +509,6 @@ public class FlaskNetwork {
             } catch (Exception e) {
                 Log.e(TAG, "Failed to remove category", e);
                 listener.onError("Failed to remove category: " + e.getMessage());
-            }
-        }).start();
-    }
-
-    public void moveImage(String filename, String newCategory, OnMoveImageListener listener) {
-        new Thread(() -> {
-            try {
-                String userId = getCurrentUserId();
-                JSONObject jsonBody = new JSONObject()
-                        .put("user_id", userId)
-                        .put("filename", filename)
-                        .put("new_category", newCategory);
-
-                RequestBody requestBody = RequestBody.create(
-                        MediaType.parse("application/json"),
-                        jsonBody.toString()
-                );
-
-                Request request = new Request.Builder()
-                        .url(BASE_URL + "/move-image")
-                        .post(requestBody)
-                        .build();
-
-                try (Response response = client.newCall(request).execute()) {
-                    if (!response.isSuccessful()) {
-                        String errorBody = response.body() != null ? response.body().string() : "No error details";
-                        listener.onError("Server error: " + response.code() + "\n" + errorBody);
-                        return;
-                    }
-
-                    JSONObject jsonResponse = new JSONObject(response.body().string());
-                    listener.onSuccess(jsonResponse.getString("new_category"));
-                }
-            } catch (Exception e) {
-                Log.e(TAG, "Failed to move image", e);
-                listener.onError("Failed to move image: " + e.getMessage());
             }
         }).start();
     }
@@ -575,7 +536,6 @@ public class FlaskNetwork {
                     String jsonResponse = response.body().string();
                     JSONObject jsonObject = new JSONObject(jsonResponse);
 
-                    // Parse top item
                     JSONObject topJson = jsonObject.getJSONObject("top");
                     RandomOutfit.OutfitItem top = new RandomOutfit.OutfitItem(
                             topJson.getString("category"),
@@ -583,7 +543,6 @@ public class FlaskNetwork {
                             topJson.getString("url")
                     );
 
-                    // Parse bottom item
                     JSONObject bottomJson = jsonObject.getJSONObject("bottom");
                     RandomOutfit.OutfitItem bottom = new RandomOutfit.OutfitItem(
                             bottomJson.getString("category"),
@@ -591,7 +550,6 @@ public class FlaskNetwork {
                             bottomJson.getString("url")
                     );
 
-                    // Create and return RandomOutfit
                     RandomOutfit outfit = new RandomOutfit(top, bottom);
                     listener.onSuccess(outfit);
 
@@ -609,7 +567,6 @@ public class FlaskNetwork {
         }).start();
     }
 
-    // Thêm phương thức getAllUserClothes
     public void getAllUserClothes(OnAllClothesLoadedListener listener) {
         new Thread(() -> {
             try {
@@ -683,41 +640,6 @@ public class FlaskNetwork {
     public interface OnFavoriteOperationListener {
         void onSuccess(String message);
         void onError(String message);
-    }
-
-    public void addImageToFavoriteSet(String filename, OnFavoriteOperationListener listener) {
-        new Thread(() -> {
-            try {
-                String userId = getCurrentUserId();
-                JSONObject jsonBody = new JSONObject();
-                jsonBody.put("user_id", userId);
-                jsonBody.put("filename", filename);
-                // Nếu cần, bạn có thể gửi thêm thông tin set (ở đây mặc định là favourite)
-                jsonBody.put("set", "favourite");
-
-                RequestBody requestBody = RequestBody.create(
-                        MediaType.parse("application/json"),
-                        jsonBody.toString()
-                );
-
-                Request request = new Request.Builder()
-                        .url(BASE_URL + "/add-to-favorite")
-                        .post(requestBody)
-                        .build();
-
-                try (Response response = client.newCall(request).execute()) {
-                    if (!response.isSuccessful()) {
-                        String errorBody = response.body() != null ? response.body().string() : "No error details";
-                        listener.onError("Server error: " + response.code() + "\n" + errorBody);
-                        return;
-                    }
-                    JSONObject jsonResponse = new JSONObject(response.body().string());
-                    listener.onSuccess(jsonResponse.getString("message"));
-                }
-            } catch (Exception e) {
-                listener.onError("Failed to add image to favorite set: " + e.getMessage());
-            }
-        }).start();
     }
 
     public interface OnFavoriteSetSaveListener {

@@ -29,7 +29,6 @@ public class GalleryImage implements Parcelable {
     private boolean isSelected;
     private boolean isFavorite;
 
-    // Default constructor (bắt buộc cho Gson)
     public GalleryImage() {
     }
 
@@ -37,12 +36,12 @@ public class GalleryImage implements Parcelable {
                         @NonNull String originalFilename,
                         @Nullable String uploadDate,
                         @NonNull String url,
-                        @Nullable String category) {    // Added category parameter
+                        @Nullable String category) {
         this.filename = filename;
         this.originalFilename = originalFilename;
         this.uploadDate = uploadDate != null ? uploadDate : "";
         this.url = url;
-        this.category = category != null ? category : "";    // Default to empty string if null
+        this.category = category != null ? category : "";
         this.isSelected = false;
         this.isFavorite = false;
     }
@@ -52,7 +51,7 @@ public class GalleryImage implements Parcelable {
         originalFilename = in.readString();
         uploadDate = in.readString();
         url = in.readString();
-        category = in.readString();    // Read category from parcel
+        category = in.readString();
         isSelected = in.readByte() != 0;
         isFavorite = in.readByte() != 0;
     }
@@ -94,7 +93,7 @@ public class GalleryImage implements Parcelable {
     public String getUrl() { return url; }
 
     @NonNull
-    public String getCategory() { return category; }    // Added getter for category
+    public String getCategory() { return category; }
 
     public void setCategory(String category) {
         this.category = category;
@@ -124,7 +123,7 @@ public class GalleryImage implements Parcelable {
         dest.writeString(originalFilename);
         dest.writeString(uploadDate);
         dest.writeString(url);
-        dest.writeString(category);    // Write category to parcel
+        dest.writeString(category);
         dest.writeByte((byte) (isSelected ? 1 : 0));
         dest.writeByte((byte) (isFavorite ? 1 : 0));
     }

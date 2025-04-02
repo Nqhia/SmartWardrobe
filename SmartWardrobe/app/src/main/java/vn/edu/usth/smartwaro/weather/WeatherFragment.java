@@ -39,9 +39,7 @@ public class WeatherFragment extends Fragment {
     public static final String KEY_LOCATION_TEXT = "locationText";
     public static final String KEY_LATITUDE = "latitude";
     public static final String KEY_LONGITUDE = "longitude";
-    // Key để lưu vị trí đã chọn trong SharedPreferences
     private static final String PREF_KEY_LOCATION = "current_location_query";
-    // Tên SharedPreferences
     private static final String PREFS_NAME = "WeatherFragmentPrefs";
 
     private static final String TAG = "WeatherFragment";
@@ -64,12 +62,10 @@ public class WeatherFragment extends Fragment {
     private TextView windSpeedTextView;
     private Button btnSelectLocation;
 
-    // Biến lưu vị trí hiện tại; mặc định là "Thailand"
     private String currentLocationQuery = "Hanoi";
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // Nếu có savedInstanceState, khôi phục lại currentLocationQuery, nếu không thì thử lấy từ SharedPreferences
         if (savedInstanceState != null) {
             currentLocationQuery = savedInstanceState.getString("current_location_query", currentLocationQuery);
         } else {
@@ -92,12 +88,9 @@ public class WeatherFragment extends Fragment {
             @Override
             public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle bundle) {
                 String locationText = bundle.getString(KEY_LOCATION_TEXT, "Hanoi");
-                // Có thể sử dụng thêm tọa độ nếu cần: double lat = bundle.getDouble(KEY_LATITUDE);
                 currentLocationQuery = locationText;
-                // Lưu lại vị trí vào SharedPreferences
                 SharedPreferences prefs = requireContext().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
                 prefs.edit().putString(PREF_KEY_LOCATION, currentLocationQuery).apply();
-                // Gọi lại API thời tiết với thành phố mới
                 fetchWeatherData();
             }
         });

@@ -21,14 +21,14 @@ import vn.edu.usth.smartwaro.R;
 import vn.edu.usth.smartwaro.network.FlaskNetwork;
 
 public class GallerySelectionFragment extends Fragment implements GalleryAdapter.OnImageClickListener {
-    public static final String ARG_TYPE = "type"; // "shirt" hoặc "pant"
+    public static final String ARG_TYPE = "type";
     public static final String REQUEST_KEY_SELECTION = "gallery_selection";
     public static final String BUNDLE_KEY_FILENAME = "selected_filename";
 
     private RecyclerView recyclerView;
     private GalleryAdapter adapter;
     private ProgressBar progressBar;
-    private String type; // "shirt" hoặc "pant"
+    private String type;
     private List<GalleryImage> allImages = new ArrayList<>();
     private List<GalleryImage> filteredImages = new ArrayList<>();
     private FlaskNetwork flaskNetwork;
@@ -45,7 +45,6 @@ public class GallerySelectionFragment extends Fragment implements GalleryAdapter
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Đảm bảo layout fragment_gallery_selection.xml tồn tại với các id: recyclerViewGallerySelection, progressBarGallerySelection
         return inflater.inflate(R.layout.fragment_gallery_selection, container, false);
     }
 
@@ -61,7 +60,6 @@ public class GallerySelectionFragment extends Fragment implements GalleryAdapter
         setupRecyclerView();
         loadImages();
 
-        // Hiển thị Toast xác nhận fragment mở
         Toast.makeText(getContext(), "GallerySelectionFragment (" + type + ") opened", Toast.LENGTH_SHORT).show();
     }
 
@@ -75,7 +73,6 @@ public class GallerySelectionFragment extends Fragment implements GalleryAdapter
 
     private void loadImages() {
         progressBar.setVisibility(View.VISIBLE);
-        // Gọi getUserImages (không truyền category để lấy tất cả ảnh)
         flaskNetwork.getUserImages(null, new FlaskNetwork.OnImagesLoadedListener() {
             @Override
             public void onSuccess(String[] imageUrls) {
@@ -83,13 +80,10 @@ public class GallerySelectionFragment extends Fragment implements GalleryAdapter
                 requireActivity().runOnUiThread(() -> {
                     try {
                         allImages.clear();
-                        // Giả sử server trả về mảng String[] chứa URL; bạn cần parse thành GalleryImage
                         for (String url : imageUrls) {
                             if (url != null && !url.isEmpty()) {
                                 String filename = extractFilename(url);
-                                // Nếu dữ liệu thực có category, hãy sử dụng nó; nếu không, dùng dummy
                                 String dummyCategory = "uncategorized";
-                                // Dummy logic: nếu filename chứa "shirt" hoặc "pant"
                                 if (filename.toLowerCase().contains("shirt")) {
                                     dummyCategory = "long sleeves";
                                 } else if (filename.toLowerCase().contains("pant")) {
@@ -98,7 +92,6 @@ public class GallerySelectionFragment extends Fragment implements GalleryAdapter
                                 allImages.add(new GalleryImage(filename, filename, "", url, dummyCategory));
                             }
                         }
-                        // Lọc theo loại nếu có dữ liệu dummy
                         filteredImages.clear();
                         for (GalleryImage img : allImages) {
                             String cat = img.getCategory().toLowerCase();
@@ -108,7 +101,6 @@ public class GallerySelectionFragment extends Fragment implements GalleryAdapter
                                 filteredImages.add(img);
                             }
                         }
-                        // Nếu không tìm thấy ảnh phù hợp, bạn có thể hiển thị tất cả
                         if (filteredImages.isEmpty()) {
                             filteredImages.addAll(allImages);
                         }
@@ -144,12 +136,10 @@ public class GallerySelectionFragment extends Fragment implements GalleryAdapter
 
     @Override
     public void onImageClick(GalleryImage image) {
-        // Sử dụng key riêng cho mỗi loại (shirt hoặc pant)
         String resultKey = type.equals("shirt") ? "shirt_selection" : "pant_selection";
         Bundle result = new Bundle();
         result.putParcelable(BUNDLE_KEY_FILENAME, image);
         getParentFragmentManager().setFragmentResult(resultKey, result);
-        // Đóng fragment chọn
         getParentFragmentManager().popBackStack();
     }
 
@@ -157,6 +147,5 @@ public class GallerySelectionFragment extends Fragment implements GalleryAdapter
 
     @Override
     public void onSelectionChanged(int selectedCount) {
-        // Không sử dụng multi-select ở đây.
     }
 }
